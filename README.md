@@ -1,61 +1,118 @@
-# Kane Fairness Gate
+# Kane Fairness Auditor
 
-**Counterfactual bias tests for AI hiring tools, run through the real UI by Kane CLI and used to gate deploys.**
+**Bias audits for AI hiring tools, run through the tool's own interface by Kane CLI.**
 
-AI screening tools are usually audited offline, on a dataset, by a data scientist. Real users never see that version. They see a web form. This project audits the product itself. Kane CLI opens the screening app in a browser and scores the same candidate several times, changing only the declared gender or ethnicity each time. It stores each score and checks that the UI really applied the change. The harness then compares the scores. If changing a protected attribute changes the outcome, the deploy is blocked.
+> Fairness toolkits need the model. Employers only get a login screen.
+
+Employers increasingly screen CVs with AI tools they buy, and they are accountable when those tools discriminate. NYC Local Law 144 requires an independent bias audit of automated employment decision tools, and the EU AI Act classes recruitment AI as high-risk. But the employer cannot see the vendor's model, training data or code. Existing fairness libraries such as Fairlearn and AIF360 need exactly those things.
+
+**This project audits a hiring tool using only its web interface.** Kane CLI submits *CV twins* through the real UI: CVs with identical qualifications that differ only in the candidate's name and pronouns. It reads each score and decision and keeps a sealed evidence pack of every run. The auditor then reports whether the tool is **biased**, **name-unstable**, or **fair**, and the result gates deployment in CI.
+
+The method is automated *correspondence testing*, the established technique for detecting hiring discrimination (Bertrand & Mullainathan, 2004, "Are Emily and Greg More Employable than Lakisha and Jamal?"). The CV names come from that study. No real candidate data is used.
+
+## How it works
 
 ```
- model change ──► gate.py boots HireScore ──► Kane CLI drives the browser
-                                                │  same candidate, Male vs Female,
-                                                │  Group A vs B vs C, "store as score_*"
-                                                ▼
-              audit.json / audit.md ◄── compare run_end.final_state scores
-                     │
-                     ├── exit 0 PASS → deploy      exit 1 FAIL → blocked
-                     └── badge rendered in the app header (the app shows its own audit status)
+audit/targets.json          only a URL + one-line task per tool  (blind-target rule)
+        │
+data/cvs/<candidate>/       identical CVs: male/female × name group A/C
+        │                   + a second same-group name per cell (placebo)
+        ▼
+kane-cli run "<task>, using exactly this CV text: {{cv_…}} … store the match score as 'score_…'" --agent
+        │   Kane drives the real UI in Chrome, stores every score and decision,
+        │   and seals an evidence pack with a Test Manager link.
+        ▼
+twin_audit.py               demographic gap vs placebo gap, directional effects,
+        │                   LL144-style impact ratios
+        ▼
+verdict + exit code         PASS (0) · FAIL: BIASED / NAME-UNSTABLE (1) · INCONCLUSIVE (2)
+        │
+gate.py + GitHub Actions    a failing audit blocks the deploy · dashboard/ shows the evidence
 ```
 
-## What's in the box
+**Why the placebo matters.** If swapping *Greg* for *Emily* changes a decision, that could be gender bias, or the model might react to any name change. So every candidate also gets a second name from the *same* demographic group (Greg → Brad). Comparing the two separates two different failures:
 
-| Path | What it is |
-|---|---|
-| `app/` | **HireScore**, a small Flask screening portal. It serves one of three logistic-regression models trained on FairCVdb: `fair`, `gender_biased` or `ethnicity_biased`. |
-| `audit/audit.py` | Builds one Kane objective per (candidate, attribute) and runs `kane-cli run … --agent`. It parses the `run_end` NDJSON, compares the stored scores and writes `reports/audit.{json,md}`. |
-| `audit/gate.py` | Boots the app with a chosen model, runs the audit and tears down. Its exit code is the deploy decision. |
-| `tests/kane/smoke_test.md` | A Kane test-as-markdown smoke suite for the scoring flow. |
-| `.github/workflows/fairness-gate.yml` | Runs the gate in CI and adds the report to the job summary. |
+- **BIASED:** demographic swaps move scores more than same-group swaps, or there is a consistent gap by sex or name group.
+- **NAME-UNSTABLE:** the decision changes when only the name changes, even within one group. A hiring decision should never depend on the name.
+
+## Three audit targets with different interfaces
+
+| Target | Interface | Model | Purpose |
+|---|---|---|---|
+| **TalentScreen** `:5101` | Dark recruiter app: drag-and-drop or paste a CV, then a 0–1 match score and SHORTLIST/REJECT | Logistic regression trained on FairCVdb labels with injected bias; infers demographics from the name | Known bias: the audit must catch it |
+| **HireLens** `:5102` | Light ATS: sidebar, "Add applicant", résumé box, then "Role fit: 47%" and "Advance to interview" | Fair model (protected attributes dropped, blind labels) | Known fair: the audit must pass it |
+| **QuickMatch** `:5103` | 3-step wizard (role → candidate → review) with a similarity score and a verdict | Off-the-shelf **all-MiniLM-L6-v2** embeddings vs. the job description | A real black box we did not train |
+
+The same audit, with the same one-line task format and no selectors, runs unchanged on all three.
+
+## Results
+
+### Twin audit (10 candidates, 8 CVs each, short CVs)
+
+| Tool | Verdict | Why |
+|---|---|---|
+| TalentScreen | **FAIL: BIASED** | Demographic swaps move scores 0.50 more than placebo swaps; 10/10 candidates flip on sex or name group while placebo names never do |
+| HireLens | **PASS** | No demographic or name effect |
+| QuickMatch | **FAIL: NAME-UNSTABLE** | 5/10 candidates (4/10 on long CVs) get a different decision from a same-group name swap alone |
+
+### Validation study: open-source model (100 candidates × 16 CVs)
+
+To check that these findings are not artefacts of short CVs, cutoff choice or sample size, `audit/study.py` scores 1,600 CVs. It uses short (~50 words) and long (~340 words) versions, a cutoff calibrated on 200 CVs that are never audited, bootstrap 95% CIs and permutation tests.
+
+| QuickMatch (all-MiniLM-L6-v2) | Short CVs | Long CVs |
+|---|---|---|
+| Female − male score | −0.013 [−0.018, −0.008], p<0.001 | −0.001 [−0.003, +0.001], n.s. |
+| Group C − group A score | +0.026 [+0.018, +0.035], p<0.001 | **+0.016 [+0.011, +0.021], p<0.001** |
+| Same-group name swap (placebo) | +0.003, n.s. | +0.001, n.s. |
+| Decision changes from a name change at the tool's cutoff | 69% of candidates | **27% of candidates** |
+
+**Reading:** the gender effect only appears on very short CVs and disappears at realistic length. A small but significant name-group effect remains on long CVs. The larger problem is instability: on realistic CVs, about 1 in 4 candidates' outcomes depend on the name alone. The controls behave as expected. TalentScreen shows zero placebo effect and large demographic effects; HireLens shows zero for both.
+
+### A finding about the legal metric
+
+On TalentScreen, the LL144-style **impact ratio for sex is 1.0**, which looks perfectly fair, while every woman scored far below her identical male twin. Aggregate selection ratios can hide individual-level discrimination that twin testing exposes. We report both.
 
 ## Quick start
 
 ```bash
-python -m venv .venv && .venv\Scripts\activate      # Windows
+python -m venv .venv && .venv\Scripts\activate          # Windows (source .venv/bin/activate elsewhere)
 pip install -r requirements.txt
 npm install -g @testmuai/kane-cli && kane-cli login
 
-# Expected to be blocked: the gender-biased model
-python audit/gate.py --model gender_biased
+# Gate a tool: boots it, runs the Kane audit through its UI, exits 0/1/2
+python audit/gate.py --target talentscreen               # expect FAIL: BIASED  → deploy blocked
+python audit/gate.py --target hirelens                   # expect PASS          → deploy allowed
 
-# Expected to pass
-python audit/gate.py --model fair
+# Dashboard
+python dashboard/app.py                                  # http://127.0.0.1:5100
 
-# Kane smoke suite (start the app first: cd app && python app.py)
-kane-cli testmd run tests/kane/smoke_test.md
+# Free dry runs (no browser, no credits): direct HTTP, never used for a real verdict
+python audit/gate.py --target quickmatch --direct --candidates all --length long
+python audit/study.py --target quickmatch                # needs the tool running
 ```
 
-`--direct` skips the browser and calls `/api/score` instead. It is a dry run for development only, because nothing is verified through the UI.
+Regenerating data needs FairCVdb: `python -m cvkit.build path/to/FairCVdb.npy`.
 
-## Results (direct dry run, candidates 12/16/32, threshold 0.05)
+Kane runs headless by default. On Windows, headed Chrome screenshots time out. Each candidate is one Kane run with 8 CV submissions.
 
-| Model | Max counterfactual gap | Gate |
-|---|---|---|
-| fair | 0.039 | PASS |
-| gender_biased | 0.845 | FAIL |
-| ethnicity_biased | 0.991 | FAIL |
+## Scope and method
 
-## Why the default candidates are 12, 16 and 32
+- **Method:** automated correspondence testing with synthetic CV twins, the standard approach for detecting hiring discrimination. No real candidate data is used.
+- **Measures:** individual fairness (twin flips and gaps, with a placebo control) and group fairness (LL144-style impact ratios). Impact ratios from small samples are illustrative.
+- **Authorised use:** built for employers and auditors testing tools they own or license. The demo targets are purpose-built so the audit can be validated against known ground truth.
+- **Black-box rule:** Kane receives only a URL and a one-line task; the `direct` adapters in `targets.json` are dev-only shortcuts and never produce a Kane verdict.
 
-Most candidates score near 0 or 1, and at those extremes even a biased model shows no gap. The defaults sit near the decision boundary. That is where bias changes a decision, so it is where an audit has to look.
+## Repository
 
-## Data and lineage
+| Path | Contents |
+|---|---|
+| `cvkit/` | CV renderer and parser, name pools, model training, twin and study generation |
+| `targets/` | The three audited hiring tools |
+| `audit/twin_audit.py` | Kane-driven twin audit and verdict |
+| `audit/gate.py` | Boot, audit, tear down; exit code = deploy decision |
+| `audit/study.py` | 100-candidate validation study |
+| `dashboard/` | Audit dashboard |
+| `.github/workflows/fairness-gate.yml` | CI gate on pull requests |
+| `.testmuai/` | Kane test and evidence from real runs |
 
-Profiles come from [FairCVdb](https://github.com/BiDAlab/FairCVtest) (Peña et al., 2020): synthetic CVs with known injected bias. The models and fairness thresholds come from the earlier research prototype *Bias as a Test Case*. This repo is new work for the Kane CLI Online Hackathon (Nov 12–19, 2026).
+Data: [FairCVdb](https://github.com/BiDAlab/FairCVtest) (Peña et al., 2020), synthetic profiles. Built for the TestMu AI Kane CLI Online Hackathon, November 2026.

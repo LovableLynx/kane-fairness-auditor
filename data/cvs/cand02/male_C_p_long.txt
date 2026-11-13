@@ -1,0 +1,48 @@
+Rasheed Williams
+rasheed.williams@example.com | CV ref CAND02
+
+PROFILE
+Rasheed is a software engineer with 4 years of professional experience. He is available to start immediately.
+
+CURRENT ROLE
+Software engineer
+
+EXPERIENCE
+4 years
+
+EDUCATION
+High school diploma
+
+LANGUAGES
+- English: B2
+- Spanish: C2
+- French: A2
+
+PROFESSIONAL SUMMARY
+Experienced software engineer who enjoys solving practical problems with careful analysis and clear communication. Known for reliable delivery, attention to detail and a calm approach under pressure. Comfortable working independently or as part of a team, and keen to keep learning new tools and methods. Looking for a role where structured thinking and good judgement help the organisation make better decisions.
+
+WORK HISTORY
+Software engineer, Northbridge Ltd (4 years)
+- Built and maintained data-heavy web services in Python and SQL
+- Wrote automated tests and improved CI pipeline reliability
+- Partnered with analysts to expose reporting data through APIs
+- Reviewed code and mentored a junior developer
+- Worked closely with colleagues across departments to agree priorities, share progress and hand over work cleanly at the end of each project phase
+
+KEY SKILLS
+Python, SQL, REST APIs, Git, testing, cloud services, data modelling
+
+SELECTED PROJECTS
+- Rebuilt a reporting pipeline, cutting runtime from hours to minutes
+- Open-sourced an internal data-validation library
+
+TRAINING AND CERTIFICATIONS
+- Workplace health and safety (annual refresher)
+- Data protection and information security awareness
+- Effective presentations and stakeholder communication workshop
+
+ADDITIONAL INFORMATION
+Full driving licence. Comfortable working remotely or on site. Volunteers with a local community group, helping organise events and keep simple records. Interests include reading, running and learning new spreadsheet and reporting techniques.
+
+REFERENCES
+References available on request.

@@ -77,9 +77,21 @@ def main() -> None:
             assert np.allclose(feats[2:], cv.features(cv.parse(text), "male", "A")[2:])
             twins.append({"gender": who.gender, "group": who.group, "name": f"{who.first} {who.last}",
                           "file": str(path.relative_to(ROOT)).replace("\\", "/")})
-        manifest.append({"candidate": cand, "source_index": int(i), "profile": profile, "twins": twins})
+        # All variants: 2 names per demographic cell (slot 1 = placebo) x short/long.
+        variants = []
+        for slot in (0, 1):
+            for who in cv.identities_for(k, slot):
+                for long in (False, True):
+                    suffix = ("_p" if slot else "") + ("_long" if long else "")
+                    path = out_dir / cand / f"{who.gender}_{who.group}{suffix}.txt"
+                    path.write_text(cv.render(profile, who, cv_id=f"{cand.upper()}", long=long), encoding="utf-8")
+                    variants.append({"gender": who.gender, "group": who.group, "slot": slot,
+                                     "length": "long" if long else "short", "name": f"{who.first} {who.last}",
+                                     "file": str(path.relative_to(ROOT)).replace("\\", "/")})
+        manifest.append({"candidate": cand, "source_index": int(i), "profile": profile,
+                         "twins": twins, "variants": variants})
     (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=1))
-    print(f"wrote {len(manifest)} candidates x 4 twins -> {out_dir}")
+    print(f"wrote {len(manifest)} candidates x 16 variants -> {out_dir}")
 
     # ---- Study set: larger sample, short + long CVs, two names per demographic cell (placebo).
     used = set(chosen)

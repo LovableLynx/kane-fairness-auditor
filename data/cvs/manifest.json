@@ -40,6 +40,136 @@
     "name": "Ebony Jones",
     "file": "data/cvs/cand01/female_C.txt"
    }
+  ],
+  "variants": [
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Brendan Kelly",
+    "file": "data/cvs/cand01/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Brendan Kelly",
+    "file": "data/cvs/cand01/male_A_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Hakim Jones",
+    "file": "data/cvs/cand01/male_C.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Hakim Jones",
+    "file": "data/cvs/cand01/male_C_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Anne Kelly",
+    "file": "data/cvs/cand01/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Anne Kelly",
+    "file": "data/cvs/cand01/female_A_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Ebony Jones",
+    "file": "data/cvs/cand01/female_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Ebony Jones",
+    "file": "data/cvs/cand01/female_C_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Jay Murphy",
+    "file": "data/cvs/cand01/male_A_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Jay Murphy",
+    "file": "data/cvs/cand01/male_A_p_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Leroy Washington",
+    "file": "data/cvs/cand01/male_C_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Leroy Washington",
+    "file": "data/cvs/cand01/male_C_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Laurie Murphy",
+    "file": "data/cvs/cand01/female_A_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Laurie Murphy",
+    "file": "data/cvs/cand01/female_A_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Latonya Washington",
+    "file": "data/cvs/cand01/female_C_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Latonya Washington",
+    "file": "data/cvs/cand01/female_C_p_long.txt"
+   }
   ]
  },
  {
@@ -82,6 +212,136 @@
     "group": "C",
     "name": "Keisha Robinson",
     "file": "data/cvs/cand02/female_C.txt"
+   }
+  ],
+  "variants": [
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Geoffrey McCarthy",
+    "file": "data/cvs/cand02/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Geoffrey McCarthy",
+    "file": "data/cvs/cand02/male_A_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Jamal Robinson",
+    "file": "data/cvs/cand02/male_C.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Jamal Robinson",
+    "file": "data/cvs/cand02/male_C_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Carrie McCarthy",
+    "file": "data/cvs/cand02/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Carrie McCarthy",
+    "file": "data/cvs/cand02/female_A_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Keisha Robinson",
+    "file": "data/cvs/cand02/female_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Keisha Robinson",
+    "file": "data/cvs/cand02/female_C_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Matthew Murray",
+    "file": "data/cvs/cand02/male_A_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Matthew Murray",
+    "file": "data/cvs/cand02/male_A_p_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Rasheed Williams",
+    "file": "data/cvs/cand02/male_C_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Rasheed Williams",
+    "file": "data/cvs/cand02/male_C_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Kristen Murray",
+    "file": "data/cvs/cand02/female_A_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Kristen Murray",
+    "file": "data/cvs/cand02/female_A_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Latoya Williams",
+    "file": "data/cvs/cand02/female_C_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Latoya Williams",
+    "file": "data/cvs/cand02/female_C_p_long.txt"
    }
   ]
  },
@@ -126,6 +386,136 @@
     "name": "Kenya Washington",
     "file": "data/cvs/cand03/female_C.txt"
    }
+  ],
+  "variants": [
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Greg Murphy",
+    "file": "data/cvs/cand03/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Greg Murphy",
+    "file": "data/cvs/cand03/male_A_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Jermaine Washington",
+    "file": "data/cvs/cand03/male_C.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Jermaine Washington",
+    "file": "data/cvs/cand03/male_C_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Emily Murphy",
+    "file": "data/cvs/cand03/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Emily Murphy",
+    "file": "data/cvs/cand03/female_A_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Kenya Washington",
+    "file": "data/cvs/cand03/female_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Kenya Washington",
+    "file": "data/cvs/cand03/female_C_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Neil O'Brien",
+    "file": "data/cvs/cand03/male_A_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Neil O'Brien",
+    "file": "data/cvs/cand03/male_A_p_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Tremayne Jackson",
+    "file": "data/cvs/cand03/male_C_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Tremayne Jackson",
+    "file": "data/cvs/cand03/male_C_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Meredith O'Brien",
+    "file": "data/cvs/cand03/female_A_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Meredith O'Brien",
+    "file": "data/cvs/cand03/female_A_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Tamika Jackson",
+    "file": "data/cvs/cand03/female_C_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Tamika Jackson",
+    "file": "data/cvs/cand03/female_C_p_long.txt"
+   }
   ]
  },
  {
@@ -168,6 +558,136 @@
     "group": "C",
     "name": "Lakisha Williams",
     "file": "data/cvs/cand04/female_C.txt"
+   }
+  ],
+  "variants": [
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Brett Murray",
+    "file": "data/cvs/cand04/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Brett Murray",
+    "file": "data/cvs/cand04/male_A_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Kareem Williams",
+    "file": "data/cvs/cand04/male_C.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Kareem Williams",
+    "file": "data/cvs/cand04/male_C_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Jill Murray",
+    "file": "data/cvs/cand04/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Jill Murray",
+    "file": "data/cvs/cand04/female_A_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Lakisha Williams",
+    "file": "data/cvs/cand04/female_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Lakisha Williams",
+    "file": "data/cvs/cand04/female_C_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Todd Ryan",
+    "file": "data/cvs/cand04/male_A_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Todd Ryan",
+    "file": "data/cvs/cand04/male_A_p_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Tyrone Jones",
+    "file": "data/cvs/cand04/male_C_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Tyrone Jones",
+    "file": "data/cvs/cand04/male_C_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Sarah Ryan",
+    "file": "data/cvs/cand04/female_A_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Sarah Ryan",
+    "file": "data/cvs/cand04/female_A_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Tanisha Jones",
+    "file": "data/cvs/cand04/female_C_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Tanisha Jones",
+    "file": "data/cvs/cand04/female_C_p_long.txt"
    }
   ]
  },
@@ -212,6 +732,136 @@
     "name": "Latonya Jackson",
     "file": "data/cvs/cand05/female_C.txt"
    }
+  ],
+  "variants": [
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Jay O'Brien",
+    "file": "data/cvs/cand05/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Jay O'Brien",
+    "file": "data/cvs/cand05/male_A_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Leroy Jackson",
+    "file": "data/cvs/cand05/male_C.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Leroy Jackson",
+    "file": "data/cvs/cand05/male_C_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Laurie O'Brien",
+    "file": "data/cvs/cand05/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Laurie O'Brien",
+    "file": "data/cvs/cand05/female_A_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Latonya Jackson",
+    "file": "data/cvs/cand05/female_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Latonya Jackson",
+    "file": "data/cvs/cand05/female_C_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Brad Sullivan",
+    "file": "data/cvs/cand05/male_A_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Brad Sullivan",
+    "file": "data/cvs/cand05/male_A_p_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Darnell Robinson",
+    "file": "data/cvs/cand05/male_C_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Darnell Robinson",
+    "file": "data/cvs/cand05/male_C_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Allison Sullivan",
+    "file": "data/cvs/cand05/female_A_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Allison Sullivan",
+    "file": "data/cvs/cand05/female_A_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Aisha Robinson",
+    "file": "data/cvs/cand05/female_C_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Aisha Robinson",
+    "file": "data/cvs/cand05/female_C_p_long.txt"
+   }
   ]
  },
  {
@@ -254,6 +904,136 @@
     "group": "C",
     "name": "Latoya Jones",
     "file": "data/cvs/cand06/female_C.txt"
+   }
+  ],
+  "variants": [
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Matthew Ryan",
+    "file": "data/cvs/cand06/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Matthew Ryan",
+    "file": "data/cvs/cand06/male_A_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Rasheed Jones",
+    "file": "data/cvs/cand06/male_C.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Rasheed Jones",
+    "file": "data/cvs/cand06/male_C_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Kristen Ryan",
+    "file": "data/cvs/cand06/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Kristen Ryan",
+    "file": "data/cvs/cand06/female_A_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Latoya Jones",
+    "file": "data/cvs/cand06/female_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Latoya Jones",
+    "file": "data/cvs/cand06/female_C_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Brendan Walsh",
+    "file": "data/cvs/cand06/male_A_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Brendan Walsh",
+    "file": "data/cvs/cand06/male_A_p_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Hakim Washington",
+    "file": "data/cvs/cand06/male_C_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Hakim Washington",
+    "file": "data/cvs/cand06/male_C_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Anne Walsh",
+    "file": "data/cvs/cand06/female_A_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Anne Walsh",
+    "file": "data/cvs/cand06/female_A_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Ebony Washington",
+    "file": "data/cvs/cand06/female_C_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Ebony Washington",
+    "file": "data/cvs/cand06/female_C_p_long.txt"
    }
   ]
  },
@@ -298,6 +1078,136 @@
     "name": "Tamika Robinson",
     "file": "data/cvs/cand07/female_C.txt"
    }
+  ],
+  "variants": [
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Neil Sullivan",
+    "file": "data/cvs/cand07/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Neil Sullivan",
+    "file": "data/cvs/cand07/male_A_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Tremayne Robinson",
+    "file": "data/cvs/cand07/male_C.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Tremayne Robinson",
+    "file": "data/cvs/cand07/male_C_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Meredith Sullivan",
+    "file": "data/cvs/cand07/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Meredith Sullivan",
+    "file": "data/cvs/cand07/female_A_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Tamika Robinson",
+    "file": "data/cvs/cand07/female_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Tamika Robinson",
+    "file": "data/cvs/cand07/female_C_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Geoffrey Baker",
+    "file": "data/cvs/cand07/male_A_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Geoffrey Baker",
+    "file": "data/cvs/cand07/male_A_p_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Jamal Williams",
+    "file": "data/cvs/cand07/male_C_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Jamal Williams",
+    "file": "data/cvs/cand07/male_C_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Carrie Baker",
+    "file": "data/cvs/cand07/female_A_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Carrie Baker",
+    "file": "data/cvs/cand07/female_A_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Keisha Williams",
+    "file": "data/cvs/cand07/female_C_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Keisha Williams",
+    "file": "data/cvs/cand07/female_C_p_long.txt"
+   }
   ]
  },
  {
@@ -340,6 +1250,136 @@
     "group": "C",
     "name": "Tanisha Washington",
     "file": "data/cvs/cand08/female_C.txt"
+   }
+  ],
+  "variants": [
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Todd Walsh",
+    "file": "data/cvs/cand08/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Todd Walsh",
+    "file": "data/cvs/cand08/male_A_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Tyrone Washington",
+    "file": "data/cvs/cand08/male_C.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Tyrone Washington",
+    "file": "data/cvs/cand08/male_C_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Sarah Walsh",
+    "file": "data/cvs/cand08/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Sarah Walsh",
+    "file": "data/cvs/cand08/female_A_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Tanisha Washington",
+    "file": "data/cvs/cand08/female_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Tanisha Washington",
+    "file": "data/cvs/cand08/female_C_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Greg Kelly",
+    "file": "data/cvs/cand08/male_A_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Greg Kelly",
+    "file": "data/cvs/cand08/male_A_p_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Jermaine Jackson",
+    "file": "data/cvs/cand08/male_C_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Jermaine Jackson",
+    "file": "data/cvs/cand08/male_C_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Emily Kelly",
+    "file": "data/cvs/cand08/female_A_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Emily Kelly",
+    "file": "data/cvs/cand08/female_A_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Kenya Jackson",
+    "file": "data/cvs/cand08/female_C_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Kenya Jackson",
+    "file": "data/cvs/cand08/female_C_p_long.txt"
    }
   ]
  },
@@ -384,6 +1424,136 @@
     "name": "Aisha Williams",
     "file": "data/cvs/cand09/female_C.txt"
    }
+  ],
+  "variants": [
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Brad Baker",
+    "file": "data/cvs/cand09/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Brad Baker",
+    "file": "data/cvs/cand09/male_A_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Darnell Williams",
+    "file": "data/cvs/cand09/male_C.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Darnell Williams",
+    "file": "data/cvs/cand09/male_C_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Allison Baker",
+    "file": "data/cvs/cand09/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Allison Baker",
+    "file": "data/cvs/cand09/female_A_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Aisha Williams",
+    "file": "data/cvs/cand09/female_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Aisha Williams",
+    "file": "data/cvs/cand09/female_C_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Brett McCarthy",
+    "file": "data/cvs/cand09/male_A_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Brett McCarthy",
+    "file": "data/cvs/cand09/male_A_p_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Kareem Jones",
+    "file": "data/cvs/cand09/male_C_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Kareem Jones",
+    "file": "data/cvs/cand09/male_C_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Jill McCarthy",
+    "file": "data/cvs/cand09/female_A_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Jill McCarthy",
+    "file": "data/cvs/cand09/female_A_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Lakisha Jones",
+    "file": "data/cvs/cand09/female_C_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Lakisha Jones",
+    "file": "data/cvs/cand09/female_C_p_long.txt"
+   }
   ]
  },
  {
@@ -426,6 +1596,136 @@
     "group": "C",
     "name": "Ebony Jackson",
     "file": "data/cvs/cand10/female_C.txt"
+   }
+  ],
+  "variants": [
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Brendan Kelly",
+    "file": "data/cvs/cand10/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Brendan Kelly",
+    "file": "data/cvs/cand10/male_A_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Hakim Jackson",
+    "file": "data/cvs/cand10/male_C.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Hakim Jackson",
+    "file": "data/cvs/cand10/male_C_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "short",
+    "name": "Anne Kelly",
+    "file": "data/cvs/cand10/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "length": "long",
+    "name": "Anne Kelly",
+    "file": "data/cvs/cand10/female_A_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "short",
+    "name": "Ebony Jackson",
+    "file": "data/cvs/cand10/female_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "length": "long",
+    "name": "Ebony Jackson",
+    "file": "data/cvs/cand10/female_C_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Jay Murphy",
+    "file": "data/cvs/cand10/male_A_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Jay Murphy",
+    "file": "data/cvs/cand10/male_A_p_long.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Leroy Robinson",
+    "file": "data/cvs/cand10/male_C_p.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Leroy Robinson",
+    "file": "data/cvs/cand10/male_C_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "short",
+    "name": "Laurie Murphy",
+    "file": "data/cvs/cand10/female_A_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "length": "long",
+    "name": "Laurie Murphy",
+    "file": "data/cvs/cand10/female_A_p_long.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "short",
+    "name": "Latonya Robinson",
+    "file": "data/cvs/cand10/female_C_p.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "length": "long",
+    "name": "Latonya Robinson",
+    "file": "data/cvs/cand10/female_C_p_long.txt"
    }
   ]
  }

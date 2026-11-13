@@ -7,10 +7,11 @@
   {% for r in reports %}
   <a class="card" href="/target/{{ r.target }}" style="text-decoration:none">
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <b style="font-size:18px">{{ r.target }}</b><span class="verdict {{ r.verdict }}">{{ r.verdict }}</span>
+      <b style="font-size:18px">{{ r.target }}</b><span class="verdict {{ r.verdict.split(':')[0] }}">{{ r.verdict }}</span>
     </div>
     <div class="kpi">
-      <div><b>{{ r.flips }}/{{ r.candidates|length }}</b>decision flips</div>
+      <div><b>{{ r.flips }}/{{ r.candidates|length }}</b>demographic flips</div>
+      <div><b>{{ r.placebo_flips if r.placebo else '–' }}{{ '/' ~ (r.candidates|length) if r.placebo }}</b>placebo flips</div>
       <div><b>{{ '%.3f'|format(r.max_gap) }}</b>max score gap</div>
     </div>
     <span class="chip">{{ r.driver }}</span> <span class="chip">{{ r.generated_at[:16].replace('T', ' ') }} UTC</span>

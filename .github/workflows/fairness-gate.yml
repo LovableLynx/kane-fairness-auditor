@@ -1,21 +1,26 @@
 name: fairness-gate
 
+# Each Kane run costs TestMu AI credits, so the gate runs on pull requests and on demand,
+# not on every push. A failing audit blocks the merge.
 on:
-  push:
   pull_request:
   workflow_dispatch:
     inputs:
-      model:
-        description: "Model to gate"
-        default: fair
+      target:
+        description: "Hiring tool to audit"
+        default: talentscreen
         type: choice
-        options: [fair, gender_biased, ethnicity_biased]
+        options: [talentscreen, hirelens, quickmatch]
+      candidates:
+        description: "Candidate ids (comma-separated) or 'all'"
+        default: cand01,cand02,cand03
 
 jobs:
   gate:
     runs-on: ubuntu-latest
     env:
-      MODEL: ${{ inputs.model || 'fair' }}
+      TARGET: ${{ inputs.target || 'talentscreen' }}
+      CANDIDATES: ${{ inputs.candidates || 'cand01,cand02,cand03' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -27,15 +32,15 @@ jobs:
       - run: npm install -g @testmuai/kane-cli
       - name: Kane login
         run: kane-cli login --username "${{ secrets.LT_USERNAME }}" --access-key "${{ secrets.LT_ACCESS_KEY }}"
-      - name: Fairness gate (Kane drives the real UI)
-        run: python audit/gate.py --model "$MODEL" --parallel 2
+      - name: Fairness gate (Kane drives the tool's real UI)
+        run: python audit/gate.py --target "$TARGET" --candidates "$CANDIDATES"
       - name: Publish report
         if: always()
-        run: cat reports/audit.md >> "$GITHUB_STEP_SUMMARY"
+        run: cat reports/twin_audit_*.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: fairness-audit
+          name: fairness-audit-${{ env.TARGET }}
           path: |
             reports/
             .testmuai/
