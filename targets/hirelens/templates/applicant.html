@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}{{ a.name }} · HireLens{% endblock %}
+{% block body %}
+<h1>{{ a.name }}</h1>
+<div class="card" style="display:flex;gap:40px;flex-wrap:wrap;align-items:center">
+  <div>
+    <div class="muted">Role fit</div>
+    <div style="font-size:46px" id="fit">{{ a.fit }}%</div>
+  </div>
+  <div>
+    <div class="muted">Recommendation</div>
+    <div id="recommendation" style="font:600 20px system-ui;color:{{ 'var(--good)' if a.advance else 'var(--warn)' }}">
+      {{ 'Advance to interview' if a.advance else 'Do not advance' }}
+    </div>
+  </div>
+</div>
+<div class="card">
+  <table>
+    <tr><th>Current role</th><td>{{ a.parsed.title }}</td></tr>
+    <tr><th>Experience</th><td>{{ a.parsed.years }} years</td></tr>
+    <tr><th>Education</th><td>{{ cv.EDUCATION[a.parsed.education] }}</td></tr>
+  </table>
+</div>
+<p><a href="{{ url_for('pipeline') }}">Back to pipeline</a></p>
+{% endblock %}

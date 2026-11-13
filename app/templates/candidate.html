@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Candidate C-{{ '%04d'|format(c.id) }} · HireScore{% endblock %}
+{% block body %}
+<h1>Candidate C-{{ '%04d'|format(c.id) }}</h1>
+<p class="muted">{{ c.first_name }} · {{ c.occupation }}</p>
+
+{% set f = c.features %}
+<dl class="facts">
+  <dt>Education</dt><dd>{{ f[4] }}</dd>
+  <dt>Experience</dt><dd>{{ f[5] }}</dd>
+  <dt>Recommendation letter</dt><dd>{{ 'Yes' if f[6] else 'No' }}</dd>
+  <dt>Availability</dt><dd>{{ f[7] }}</dd>
+  <dt>Languages</dt><dd>{{ f[8] }} / {{ f[9] }} / {{ f[10] }}</dd>
+</dl>
+
+<form method="post" action="{{ url_for('score_candidate', cid=c.id) }}" class="card">
+  <h2>Declared demographics</h2>
+  <label for="gender">Gender</label>
+  <select id="gender" name="gender">
+    {% for g in genders %}<option {{ 'selected' if g == current_gender }}>{{ g }}</option>{% endfor %}
+  </select>
+  <label for="ethnicity">Ethnicity</label>
+  <select id="ethnicity" name="ethnicity">
+    {% for e in ethnicities %}<option {{ 'selected' if e == current_ethnicity }}>{{ e }}</option>{% endfor %}
+  </select>
+  <button type="submit" id="score-btn">Score candidate</button>
+</form>
+{% endblock %}

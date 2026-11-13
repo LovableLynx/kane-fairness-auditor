@@ -1,0 +1,432 @@
+[
+ {
+  "candidate": "cand01",
+  "source_index": 190,
+  "profile": [
+   1.0,
+   1.0,
+   3.0,
+   0.25,
+   0.4,
+   0.6,
+   1.0,
+   0.8,
+   0.2,
+   0.8,
+   0.6
+  ],
+  "twins": [
+   {
+    "gender": "male",
+    "group": "A",
+    "name": "Brendan Kelly",
+    "file": "data/cvs/cand01/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "name": "Hakim Jones",
+    "file": "data/cvs/cand01/male_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "name": "Anne Kelly",
+    "file": "data/cvs/cand01/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "name": "Ebony Jones",
+    "file": "data/cvs/cand01/female_C.txt"
+   }
+  ]
+ },
+ {
+  "candidate": "cand02",
+  "source_index": 571,
+  "profile": [
+   1.0,
+   1.0,
+   6.0,
+   1.0,
+   0.2,
+   0.4,
+   0.0,
+   1.0,
+   0.8,
+   1.0,
+   0.4
+  ],
+  "twins": [
+   {
+    "gender": "male",
+    "group": "A",
+    "name": "Geoffrey McCarthy",
+    "file": "data/cvs/cand02/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "name": "Jamal Robinson",
+    "file": "data/cvs/cand02/male_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "name": "Carrie McCarthy",
+    "file": "data/cvs/cand02/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "name": "Keisha Robinson",
+    "file": "data/cvs/cand02/female_C.txt"
+   }
+  ]
+ },
+ {
+  "candidate": "cand03",
+  "source_index": 775,
+  "profile": [
+   0.0,
+   0.0,
+   8.0,
+   0.5,
+   1.0,
+   0.8,
+   0.0,
+   0.8,
+   0.6,
+   0.8,
+   0.2
+  ],
+  "twins": [
+   {
+    "gender": "male",
+    "group": "A",
+    "name": "Greg Murphy",
+    "file": "data/cvs/cand03/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "name": "Jermaine Washington",
+    "file": "data/cvs/cand03/male_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "name": "Emily Murphy",
+    "file": "data/cvs/cand03/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "name": "Kenya Washington",
+    "file": "data/cvs/cand03/female_C.txt"
+   }
+  ]
+ },
+ {
+  "candidate": "cand04",
+  "source_index": 2228,
+  "profile": [
+   2.0,
+   0.0,
+   2.0,
+   0.75,
+   0.6,
+   0.6,
+   0.0,
+   1.0,
+   1.0,
+   0.0,
+   0.8
+  ],
+  "twins": [
+   {
+    "gender": "male",
+    "group": "A",
+    "name": "Brett Murray",
+    "file": "data/cvs/cand04/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "name": "Kareem Williams",
+    "file": "data/cvs/cand04/male_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "name": "Jill Murray",
+    "file": "data/cvs/cand04/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "name": "Lakisha Williams",
+    "file": "data/cvs/cand04/female_C.txt"
+   }
+  ]
+ },
+ {
+  "candidate": "cand05",
+  "source_index": 2233,
+  "profile": [
+   1.0,
+   1.0,
+   4.0,
+   0.25,
+   0.4,
+   0.2,
+   1.0,
+   0.8,
+   0.8,
+   0.8,
+   0.6
+  ],
+  "twins": [
+   {
+    "gender": "male",
+    "group": "A",
+    "name": "Jay O'Brien",
+    "file": "data/cvs/cand05/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "name": "Leroy Jackson",
+    "file": "data/cvs/cand05/male_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "name": "Laurie O'Brien",
+    "file": "data/cvs/cand05/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "name": "Latonya Jackson",
+    "file": "data/cvs/cand05/female_C.txt"
+   }
+  ]
+ },
+ {
+  "candidate": "cand06",
+  "source_index": 2651,
+  "profile": [
+   0.0,
+   1.0,
+   8.0,
+   0.5,
+   0.6,
+   0.8,
+   0.0,
+   1.0,
+   0.8,
+   1.0,
+   0.2
+  ],
+  "twins": [
+   {
+    "gender": "male",
+    "group": "A",
+    "name": "Matthew Ryan",
+    "file": "data/cvs/cand06/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "name": "Rasheed Jones",
+    "file": "data/cvs/cand06/male_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "name": "Kristen Ryan",
+    "file": "data/cvs/cand06/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "name": "Latoya Jones",
+    "file": "data/cvs/cand06/female_C.txt"
+   }
+  ]
+ },
+ {
+  "candidate": "cand07",
+  "source_index": 2764,
+  "profile": [
+   0.0,
+   1.0,
+   1.0,
+   0.75,
+   0.8,
+   0.4,
+   0.0,
+   1.0,
+   0.6,
+   0.4,
+   0.8
+  ],
+  "twins": [
+   {
+    "gender": "male",
+    "group": "A",
+    "name": "Neil Sullivan",
+    "file": "data/cvs/cand07/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "name": "Tremayne Robinson",
+    "file": "data/cvs/cand07/male_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "name": "Meredith Sullivan",
+    "file": "data/cvs/cand07/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "name": "Tamika Robinson",
+    "file": "data/cvs/cand07/female_C.txt"
+   }
+  ]
+ },
+ {
+  "candidate": "cand08",
+  "source_index": 3120,
+  "profile": [
+   2.0,
+   0.0,
+   6.0,
+   1.0,
+   0.6,
+   0.4,
+   0.0,
+   1.0,
+   0.8,
+   0.0,
+   0.8
+  ],
+  "twins": [
+   {
+    "gender": "male",
+    "group": "A",
+    "name": "Todd Walsh",
+    "file": "data/cvs/cand08/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "name": "Tyrone Washington",
+    "file": "data/cvs/cand08/male_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "name": "Sarah Walsh",
+    "file": "data/cvs/cand08/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "name": "Tanisha Washington",
+    "file": "data/cvs/cand08/female_C.txt"
+   }
+  ]
+ },
+ {
+  "candidate": "cand09",
+  "source_index": 3395,
+  "profile": [
+   0.0,
+   1.0,
+   1.0,
+   0.75,
+   0.4,
+   0.8,
+   0.0,
+   0.8,
+   0.6,
+   0.4,
+   1.0
+  ],
+  "twins": [
+   {
+    "gender": "male",
+    "group": "A",
+    "name": "Brad Baker",
+    "file": "data/cvs/cand09/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "name": "Darnell Williams",
+    "file": "data/cvs/cand09/male_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "name": "Allison Baker",
+    "file": "data/cvs/cand09/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "name": "Aisha Williams",
+    "file": "data/cvs/cand09/female_C.txt"
+   }
+  ]
+ },
+ {
+  "candidate": "cand10",
+  "source_index": 4444,
+  "profile": [
+   1.0,
+   0.0,
+   9.0,
+   0.5,
+   0.8,
+   0.6,
+   0.0,
+   0.8,
+   1.0,
+   1.0,
+   0.2
+  ],
+  "twins": [
+   {
+    "gender": "male",
+    "group": "A",
+    "name": "Brendan Kelly",
+    "file": "data/cvs/cand10/male_A.txt"
+   },
+   {
+    "gender": "male",
+    "group": "C",
+    "name": "Hakim Jackson",
+    "file": "data/cvs/cand10/male_C.txt"
+   },
+   {
+    "gender": "female",
+    "group": "A",
+    "name": "Anne Kelly",
+    "file": "data/cvs/cand10/female_A.txt"
+   },
+   {
+    "gender": "female",
+    "group": "C",
+    "name": "Ebony Jackson",
+    "file": "data/cvs/cand10/female_C.txt"
+   }
+  ]
+ }
+]

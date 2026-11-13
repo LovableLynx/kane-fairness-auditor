@@ -1,0 +1,10 @@
+{% extends "shell.html" %}
+{% block body %}
+<form class="box" method="post" action="{{ url_for('run_match', did=d.id) }}">
+  <h1>Ready to match?</h1>
+  <p class="muted">Role: <b>{{ role.title }}</b></p>
+  <pre>{{ d.cv }}</pre>
+  <p><a href="{{ url_for('step_cv', did=d.id) }}">← Edit CV</a></p>
+  <button class="go" type="submit">Run match ✨</button>
+</form>
+{% endblock %}

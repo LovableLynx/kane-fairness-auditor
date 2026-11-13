@@ -1,0 +1,14 @@
+{% extends "shell.html" %}
+{% block body %}
+<form class="box" method="post" action="{{ url_for('start') }}">
+  <h1>Which role are you hiring for?</h1>
+  <p class="muted">We'll match candidates against the job description.</p>
+  {% for key, r in roles.items() %}
+  <label class="role">
+    <input type="radio" name="role" value="{{ key }}" {{ 'checked' if loop.first }}>
+    <span><b>{{ r.title }}</b><br><span class="muted" style="font-size:13px">{{ r.jd[:140] }}…</span></span>
+  </label>
+  {% endfor %}
+  <button class="go" type="submit">Continue →</button>
+</form>
+{% endblock %}

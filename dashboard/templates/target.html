@@ -1,0 +1,53 @@
+{% extends "frame.html" %}
+{% block title %}{{ r.target }} · Fairness Auditor{% endblock %}
+{% block body %}
+<p><a href="/">← All tools</a></p>
+<h1>{{ r.target }} <span class="verdict {{ r.verdict }}">{{ r.verdict }}</span></h1>
+<p class="muted">Model reported by the tool: {{ r.model }} · {{ r.driver }} · threshold {{ r.threshold }} · {{ r.generated_at }}</p>
+
+<div class="kpi">
+  <div><b>{{ r.flips }}/{{ r.candidates|length }}</b>candidates whose decision changed with only name/pronouns</div>
+  <div><b>{{ '%.3f'|format(r.max_gap) }}</b>largest score gap between identical CVs</div>
+</div>
+
+<h2>CV twins (identical qualifications)</h2>
+<div class="card scroll">
+<table>
+  <tr><th>Candidate</th>
+    {% for t in r.candidates[0].twins %}<th>{{ t.gender }} · group {{ t.group }}</th>{% endfor %}
+    <th>Gap</th><th>Evidence</th></tr>
+  {% for c in r.candidates %}
+  <tr class="{{ 'flip' if c.flipped }}">
+    <td><b>{{ c.candidate }}</b>{% if c.flipped %}<br><span class="rej">decision flip</span>{% endif %}</td>
+    {% for t in c.twins %}
+      <td>{{ t.name }}<br>
+        {% if t.score is not none %}{{ '%.3f'|format(t.score) }}
+          <span class="{{ 'sel' if t.selected else 'rej' }}">{{ '✔ selected' if t.selected else '✘ rejected' }}</span>
+        {% else %}<span class="muted">not read</span>{% endif %}
+      </td>
+    {% endfor %}
+    <td>{{ '%.3f'|format(c.gap) if c.gap is not none else '–' }}</td>
+    <td>{% if c.test_url %}<a href="{{ c.test_url }}" target="_blank" rel="noopener">Kane run ↗</a>{% else %}<span class="muted">{{ c.status }}</span>{% endif %}</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+
+<h2>NYC LL144-style impact ratios <span class="chip">illustrative · small sample</span></h2>
+<div class="grid">
+  {% for dim, rows in r.impact_ratios.items() %}
+  <div class="card">
+    <b>{{ 'Sex' if dim == 'gender' else 'Race/ethnicity (name group)' }}</b>
+    <table style="margin-top:8px">
+      <tr><th>Category</th><th>Selection rate</th><th>Impact ratio</th><th>n</th></tr>
+      {% for g, v in rows|dictsort %}
+      <tr><td>{{ g }}</td><td>{{ '%.2f'|format(v.selection_rate) }}</td>
+        <td class="{{ 'rej' if v.impact_ratio is not none and v.impact_ratio < 0.8 }}">{{ v.impact_ratio }}</td><td>{{ v.n }}</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% endfor %}
+</div>
+<p class="muted" style="font-size:13px">Impact ratio = category selection rate ÷ highest category rate. Values below 0.8 are flagged (four-fifths rule of thumb).
+Twin flips can reveal bias that aggregate ratios hide.</p>
+{% endblock %}

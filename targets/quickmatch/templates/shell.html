@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}QuickMatch{% endblock %}</title>
+<style>
+  :root { --bg:#fff8ee; --ink:#2b2118; --muted:#7a6a5a; --line:#ecdcc5; --sun:#ff8a1f; --leaf:#2f8f4e; --berry:#c43d52; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 "Trebuchet MS", "Segoe UI", sans-serif; }
+  .wrap { max-width:640px; margin:0 auto; padding:34px 16px 60px; }
+  .logo { font-weight:900; font-size:22px; } .logo i { color:var(--sun); font-style:normal; }
+  ol.steps { list-style:none; display:flex; gap:8px; padding:0; margin:22px 0 28px; }
+  ol.steps li { flex:1; text-align:center; font-size:12px; padding:8px 4px; border-radius:20px; background:#f6ead8; color:var(--muted); }
+  ol.steps li.on { background:var(--sun); color:#fff; font-weight:700; }
+  ol.steps li.done { background:#ffd7b0; color:var(--ink); }
+  .box { background:#fff; border:2px solid var(--line); border-radius:18px; padding:24px; }
+  h1 { font-size:26px; margin:0 0 6px; }
+  .muted { color:var(--muted); }
+  textarea { width:100%; min-height:230px; border:2px solid var(--line); border-radius:12px; padding:12px; font:13px/1.45 Consolas, monospace; }
+  .role { display:flex; gap:12px; align-items:flex-start; padding:14px; border:2px solid var(--line); border-radius:12px; cursor:pointer; }
+  .go { margin-top:18px; background:var(--sun); color:#fff; border:0; border-radius:999px; padding:12px 26px; font:700 15px inherit; cursor:pointer; }
+  pre { white-space:pre-wrap; background:#fffaf3; border:1px dashed var(--line); border-radius:12px; padding:12px; font-size:12.5px; max-height:260px; overflow:auto; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">Quick<i>Match</i></div>
+  <ol class="steps">
+    {% for label in ['1 · Role', '2 · Candidate', '3 · Review', 'Result'] %}
+      <li class="{{ 'on' if loop.index == step else ('done' if loop.index < step else '') }}">{{ label }}</li>
+    {% endfor %}
+  </ol>
+  {% block body %}{% endblock %}
+</div>
+</body>
+</html>

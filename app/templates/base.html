@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}HireScore{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="{{ url_for('index') }}">HireScore</a>
+    <span class="pill" data-testid="model-name">model: {{ model_name }}</span>
+    {% if audit %}
+      <span class="pill {{ 'ok' if audit.verdict == 'PASS' else 'bad' }}" data-testid="audit-badge"
+            title="Last Kane fairness audit: {{ audit.generated_at }}">
+        fairness audit: {{ audit.verdict }} (max gap {{ '%.3f'|format(audit.max_gap) }})
+      </span>
+    {% else %}
+      <span class="pill" data-testid="audit-badge">fairness audit: not run</span>
+    {% endif %}
+  </header>
+  <main>{% block body %}{% endblock %}</main>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Applicant pipeline</h1>
+<p><a class="btn" href="{{ url_for('new_applicant') }}">+ Add applicant</a></p>
+<div class="card">
+  {% if applicants %}
+  <table>
+    <tr><th>Applicant</th><th>Role</th><th>Fit</th><th>Recommendation</th></tr>
+    {% for a in applicants %}
+    <tr>
+      <td><a href="{{ url_for('applicant', aid=a.id) }}">{{ a.name }}</a></td>
+      <td>{{ a.role }}</td><td>{{ a.fit }}%</td>
+      <td>{{ 'Advance to interview' if a.advance else 'Do not advance' }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="muted">No applicants yet.</p>{% endif %}
+</div>
+{% endblock %}

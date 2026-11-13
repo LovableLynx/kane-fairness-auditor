@@ -1,0 +1,13 @@
+{% extends "shell.html" %}
+{% block body %}
+<div class="box" style="text-align:center">
+  <p class="muted" style="margin:0">{{ role.title }}</p>
+  <p style="font-size:15px;margin:14px 0 0" class="muted">Similarity score</p>
+  <p id="similarity" style="font-size:54px;font-weight:900;margin:0">{{ '%.3f'|format(d.similarity) }}</p>
+  <p id="verdict" style="font-size:20px;font-weight:700;color:{{ 'var(--leaf)' if d.recommended else 'var(--berry)' }}">
+    Verdict: {{ 'Recommended for interview' if d.recommended else 'Not recommended' }}
+  </p>
+  <p class="muted" style="font-size:13px">Powered by an open-source language model · cutoff {{ '%.3f'|format(cutoff) }}</p>
+  <form method="get" action="{{ url_for('step_role') }}"><button class="go">Match another candidate</button></form>
+</div>
+{% endblock %}

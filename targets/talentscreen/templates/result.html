@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ d.name }} · TalentScreen{% endblock %}
+{% block body %}
+<p><a href="{{ url_for('home') }}">← Screen another CV</a></p>
+<div class="panel" style="margin-top:8px">
+  <p class="muted" style="margin:0">Screening result · {{ d.source }} · {{ d.at }}</p>
+  <h1 id="candidate-name">{{ d.name }}</h1>
+  <div style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin-top:10px">
+    <div style="font-size:42px;font-weight:800;letter-spacing:-.02em">
+      Match score: <span id="match-score" data-testid="match-score">{{ '%.3f'|format(d.score) }}</span>
+    </div>
+    <span id="decision" class="badge {{ 'ok' if d.shortlisted else 'bad' }}" style="font-size:16px;padding:6px 16px">
+      Decision: {{ 'SHORTLIST' if d.shortlisted else 'REJECT' }}
+    </span>
+  </div>
+  {% if d.strengths %}<p class="muted">Strengths noted: {{ d.strengths|join(', ') }}</p>{% endif %}
+</div>
+
+<div class="panel" style="margin-top:20px">
+  <h2 style="margin:0 0 10px;font-size:16px">What the AI read from this CV</h2>
+  <table>
+    <tr><th>Role</th><td>{{ d.parsed.title }}</td></tr>
+    <tr><th>Experience</th><td>{{ d.parsed.years }} years</td></tr>
+    <tr><th>Education</th><td>{{ cv.EDUCATION[d.parsed.education] }}</td></tr>
+    <tr><th>Recommendation</th><td>{{ 'Yes' if d.parsed.recommendation else 'No' }}</td></tr>
+    <tr><th>Languages</th><td>{% for n, v in zip(cv.LANGUAGES, d.parsed.languages) %}{{ n }} {{ cv.LEVELS[v] or '–' }}{{ ', ' if not loop.last }}{% endfor %}</td></tr>
+  </table>
+</div>
+{% endblock %}

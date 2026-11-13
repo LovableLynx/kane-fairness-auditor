@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Score · C-{{ '%04d'|format(c.id) }} · HireScore{% endblock %}
+{% block body %}
+<h1>Screening result for C-{{ '%04d'|format(c.id) }}</h1>
+<div class="card result">
+  <p class="muted">Gender: <b>{{ gender }}</b> · Ethnicity: <b>{{ ethnicity }}</b></p>
+  <p class="score">Match score: <span id="match-score" data-testid="match-score">{{ '%.3f'|format(score) }}</span></p>
+  <p id="decision" class="{{ 'ok' if shortlisted else 'bad' }}">{{ 'Shortlisted' if shortlisted else 'Rejected' }}</p>
+</div>
+<p><a href="{{ url_for('candidate', cid=c.id) }}">Back to candidate</a></p>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>Screen a candidate</h1>
+<p class="muted">Drop a CV and our AI decides in seconds whether to shortlist.</p>
+{% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}
+
+<div class="grid">
+  <form class="panel" method="post" action="{{ url_for('screen_cv') }}" enctype="multipart/form-data">
+    <label class="drop" id="drop" for="cv_file">
+      <b>Drop CV here</b>
+      <span class="muted">or click to browse (.txt)</span>
+      <div class="file-name" id="file-name"></div>
+    </label>
+    <input type="file" id="cv_file" name="cv_file" accept=".txt" hidden>
+    <div class="or">or paste the CV</div>
+    <label for="cv_text" class="muted" style="font-size:13px">CV text</label>
+    <textarea id="cv_text" name="cv_text" placeholder="Paste the full CV text here"></textarea>
+    <button type="submit" id="screen-btn">Screen CV</button>
+  </form>
+
+  <section class="panel">
+    <h2 style="margin:0 0 10px;font-size:16px">Recent decisions</h2>
+    {% if recent %}
+    <table>
+      <thead><tr><th>Candidate</th><th>Score</th><th>Decision</th></tr></thead>
+      <tbody>
+      {% for d in recent %}
+        <tr>
+          <td><a href="{{ url_for('result', did=d.id) }}">{{ d.name }}</a></td>
+          <td>{{ '%.3f'|format(d.score) }}</td>
+          <td><span class="badge {{ 'ok' if d.shortlisted else 'bad' }}">{{ 'SHORTLIST' if d.shortlisted else 'REJECT' }}</span></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}<p class="muted">No CVs screened yet.</p>{% endif %}
+  </section>
+</div>
+
+<script>
+  const drop = document.getElementById('drop'), input = document.getElementById('cv_file'),
+        nameEl = document.getElementById('file-name');
+  const show = () => { nameEl.textContent = input.files.length ? input.files[0].name : ''; };
+  input.addEventListener('change', show);
+  ['dragenter','dragover'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave','drop'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', ev => { if (ev.dataTransfer.files.length) { input.files = ev.dataTransfer.files; show(); } });
+</script>
+{% endblock %}

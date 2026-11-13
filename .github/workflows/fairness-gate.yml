@@ -1,0 +1,41 @@
+name: fairness-gate
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "Model to gate"
+        default: fair
+        type: choice
+        options: [fair, gender_biased, ethnicity_biased]
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    env:
+      MODEL: ${{ inputs.model || 'fair' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - uses: browser-actions/setup-chrome@v1
+      - run: pip install -r requirements.txt
+      - run: npm install -g @testmuai/kane-cli
+      - name: Kane login
+        run: kane-cli login --username "${{ secrets.LT_USERNAME }}" --access-key "${{ secrets.LT_ACCESS_KEY }}"
+      - name: Fairness gate (Kane drives the real UI)
+        run: python audit/gate.py --model "$MODEL" --parallel 2
+      - name: Publish report
+        if: always()
+        run: cat reports/audit.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fairness-audit
+          path: |
+            reports/
+            .testmuai/
