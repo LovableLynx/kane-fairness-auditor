@@ -35,7 +35,9 @@ def train(X: np.ndarray, y: np.ndarray, drop_protected: bool):
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("db")
-    ap.add_argument("--n", type=int, default=10)
+    ap.add_argument("--n", type=int, default=10, help="candidates in the Kane audit set")
+    ap.add_argument("--study", type=int, default=100, help="candidates in the statistical study set")
+    ap.add_argument("--calib", type=int, default=200, help="CVs in the independent calibration pool")
     args = ap.parse_args()
 
     d = np.load(args.db, allow_pickle=True).item()
@@ -78,6 +80,36 @@ def main() -> None:
         manifest.append({"candidate": cand, "source_index": int(i), "profile": profile, "twins": twins})
     (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=1))
     print(f"wrote {len(manifest)} candidates x 4 twins -> {out_dir}")
+
+    # ---- Study set: larger sample, short + long CVs, two names per demographic cell (placebo).
+    used = set(chosen)
+    rest = np.setdiff1d(pool, list(used))
+    study_idx = sorted(np.random.default_rng(23).choice(rest, size=min(args.study, len(rest)), replace=False).tolist())
+    study = []
+    for k, i in enumerate(study_idx, start=1):
+        profile = [float(v) for v in Xte[i]]
+        cvs = []
+        for slot in (0, 1):
+            for who in cv.identities_for(k, slot):
+                for long in (False, True):
+                    text = cv.render(profile, who, cv_id=f"S{k:03d}", long=long)
+                    cvs.append({"gender": who.gender, "group": who.group, "slot": slot,
+                                "length": "long" if long else "short", "name": f"{who.first} {who.last}",
+                                "words": len(text.split()), "text": text})
+        study.append({"candidate": f"s{k:03d}", "source_index": int(i), "cvs": cvs})
+    (ROOT / "data" / "study.json").write_text(json.dumps(study))
+    print(f"wrote study set: {len(study)} candidates x {len(study[0]['cvs'])} CVs -> data/study.json")
+
+    # ---- Calibration pool: profiles never used in any audit, random identities, mixed length.
+    rng_c = np.random.default_rng(31)
+    taken = used | set(study_idx)
+    calib_idx = rng_c.choice(np.setdiff1d(np.arange(len(Xte)), list(taken)), size=args.calib, replace=False)
+    calib = []
+    for j, i in enumerate(calib_idx):
+        who = cv.identities_for(int(rng_c.integers(0, 9)), int(rng_c.integers(0, 2)))[int(rng_c.integers(0, 4))]
+        calib.append(cv.render([float(v) for v in Xte[i]], who, cv_id=f"K{j:03d}", long=bool(j % 2)))
+    (ROOT / "data" / "calibration.json").write_text(json.dumps(calib))
+    print(f"wrote calibration pool: {len(calib)} CVs (never audited) -> data/calibration.json")
 
 
 if __name__ == "__main__":

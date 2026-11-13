@@ -52,13 +52,14 @@ def similarity(cv_text: str, role: str) -> float:
 
 
 def calibrate() -> float:
-    """Shortlist cutoff = median similarity of the reference CV pool, so about half pass."""
-    manifest = ROOT / "data" / "cvs" / "manifest.json"
-    if not manifest.exists():
+    """Shortlist cutoff = median similarity over an independent calibration pool
+    (data/calibration.json: CVs that are never used in any audit), so about half pass."""
+    if os.environ.get("QUICKMATCH_CUTOFF"):
+        return float(os.environ["QUICKMATCH_CUTOFF"])
+    pool = ROOT / "data" / "calibration.json"
+    if not pool.exists():
         return 0.5
-    texts = [(ROOT / t["file"]).read_text(encoding="utf-8")
-             for c in json.loads(manifest.read_text()) for t in c["twins"]]
-    sims = embed(texts) @ JD_VEC["data-analyst"]
+    sims = embed(json.loads(pool.read_text())) @ JD_VEC["data-analyst"]
     return float(np.median(sims))
 
 

@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 reports/
 .testmuai/sessions/
+data/study.json
