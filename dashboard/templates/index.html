@@ -5,7 +5,7 @@
 {% if not reports %}<p class="card">No audits yet. Run <code>python audit/twin_audit.py --target …</code></p>{% endif %}
 <div class="grid">
   {% for r in reports %}
-  <a class="card" href="/target/{{ r.target }}" style="text-decoration:none">
+  <a class="card" href="{{ url_for('target', name=r.target) }}" style="text-decoration:none">
     <div style="display:flex;justify-content:space-between;align-items:center">
       <b style="font-size:18px">{{ r.target }}</b><span class="verdict {{ r.verdict.split(':')[0] }}">{{ r.verdict }}</span>
     </div>

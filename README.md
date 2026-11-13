@@ -95,6 +95,15 @@ Regenerating data needs FairCVdb: `python -m cvkit.build path/to/FairCVdb.npy`.
 
 Kane runs headless by default. On Windows, headed Chrome screenshots time out. Each candidate is one Kane run with 8 CV submissions.
 
+## Live deployment
+
+All three tools and the dashboard run as one web service (`serve.py`): `/talentscreen/`, `/hirelens/`, `/quickmatch/`, `/dashboard/`.
+`render.yaml` deploys it on Render's free tier straight from this repo. Real Kane audits are written to `results/`, which the hosted dashboard reads.
+
+```bash
+python serve.py        # the same service locally on http://127.0.0.1:8000
+```
+
 ## Scope and method
 
 - **Method:** automated correspondence testing with synthetic CV twins, the standard approach for detecting hiring discrimination. No real candidate data is used.

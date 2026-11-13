@@ -1,0 +1,1087 @@
+{
+  "target": "hirelens",
+  "verdict": "PASS",
+  "reasons": [
+    "no demographic or name effect above threshold"
+  ],
+  "model": "fair",
+  "driver": "direct HTTP (dev dry run)",
+  "length": "short",
+  "placebo": true,
+  "threshold": 0.05,
+  "max_gap": 0.0,
+  "flips": 0,
+  "placebo_flips": 0,
+  "credits": 0,
+  "generated_at": "2026-11-13T21:12:52+00:00",
+  "effects": {
+    "gender_effect_female_minus_male": {
+      "mean": 0.0,
+      "same_sign_share": 0.0
+    },
+    "group_effect_C_minus_A": {
+      "mean": 0.0,
+      "same_sign_share": 0.0
+    },
+    "mean_abs_gap_demographic": 0.0,
+    "mean_abs_gap_placebo": 0.0
+  },
+  "impact_ratios": {
+    "gender": {
+      "male": {
+        "selection_rate": 0.8,
+        "impact_ratio": 1.0,
+        "n": 20
+      },
+      "female": {
+        "selection_rate": 0.8,
+        "impact_ratio": 1.0,
+        "n": 20
+      }
+    },
+    "group": {
+      "A": {
+        "selection_rate": 0.8,
+        "impact_ratio": 1.0,
+        "n": 20
+      },
+      "C": {
+        "selection_rate": 0.8,
+        "impact_ratio": 1.0,
+        "n": 20
+      }
+    }
+  },
+  "candidates": [
+    {
+      "candidate": "cand01",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Brendan Kelly",
+          "file": "data/cvs/cand01/male_A.txt",
+          "score": 0.64,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Hakim Jones",
+          "file": "data/cvs/cand01/male_C.txt",
+          "score": 0.64,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Anne Kelly",
+          "file": "data/cvs/cand01/female_A.txt",
+          "score": 0.64,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Ebony Jones",
+          "file": "data/cvs/cand01/female_C.txt",
+          "score": 0.64,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Jay Murphy",
+          "file": "data/cvs/cand01/male_A_p.txt",
+          "score": 0.64,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Leroy Washington",
+          "file": "data/cvs/cand01/male_C_p.txt",
+          "score": 0.64,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Laurie Murphy",
+          "file": "data/cvs/cand01/female_A_p.txt",
+          "score": 0.64,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Latonya Washington",
+          "file": "data/cvs/cand01/female_C_p.txt",
+          "score": 0.64,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 0.0,
+      "placebo_gap": 0.0,
+      "demo_flip": false,
+      "placebo_flip": false,
+      "test_url": null,
+      "credits": null,
+      "duration": null,
+      "evidence": null
+    },
+    {
+      "candidate": "cand02",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Geoffrey McCarthy",
+          "file": "data/cvs/cand02/male_A.txt",
+          "score": 0.59,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Jamal Robinson",
+          "file": "data/cvs/cand02/male_C.txt",
+          "score": 0.59,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Carrie McCarthy",
+          "file": "data/cvs/cand02/female_A.txt",
+          "score": 0.59,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Keisha Robinson",
+          "file": "data/cvs/cand02/female_C.txt",
+          "score": 0.59,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Matthew Murray",
+          "file": "data/cvs/cand02/male_A_p.txt",
+          "score": 0.59,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Rasheed Williams",
+          "file": "data/cvs/cand02/male_C_p.txt",
+          "score": 0.59,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Kristen Murray",
+          "file": "data/cvs/cand02/female_A_p.txt",
+          "score": 0.59,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Latoya Williams",
+          "file": "data/cvs/cand02/female_C_p.txt",
+          "score": 0.59,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 0.0,
+      "placebo_gap": 0.0,
+      "demo_flip": false,
+      "placebo_flip": false,
+      "test_url": null,
+      "credits": null,
+      "duration": null,
+      "evidence": null
+    },
+    {
+      "candidate": "cand03",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Greg Murphy",
+          "file": "data/cvs/cand03/male_A.txt",
+          "score": 0.51,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Jermaine Washington",
+          "file": "data/cvs/cand03/male_C.txt",
+          "score": 0.51,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Emily Murphy",
+          "file": "data/cvs/cand03/female_A.txt",
+          "score": 0.51,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Kenya Washington",
+          "file": "data/cvs/cand03/female_C.txt",
+          "score": 0.51,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Neil O'Brien",
+          "file": "data/cvs/cand03/male_A_p.txt",
+          "score": 0.51,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Tremayne Jackson",
+          "file": "data/cvs/cand03/male_C_p.txt",
+          "score": 0.51,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Meredith O'Brien",
+          "file": "data/cvs/cand03/female_A_p.txt",
+          "score": 0.51,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Tamika Jackson",
+          "file": "data/cvs/cand03/female_C_p.txt",
+          "score": 0.51,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 0.0,
+      "placebo_gap": 0.0,
+      "demo_flip": false,
+      "placebo_flip": false,
+      "test_url": null,
+      "credits": null,
+      "duration": null,
+      "evidence": null
+    },
+    {
+      "candidate": "cand04",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Brett Murray",
+          "file": "data/cvs/cand04/male_A.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Kareem Williams",
+          "file": "data/cvs/cand04/male_C.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Jill Murray",
+          "file": "data/cvs/cand04/female_A.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Lakisha Williams",
+          "file": "data/cvs/cand04/female_C.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Todd Ryan",
+          "file": "data/cvs/cand04/male_A_p.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Tyrone Jones",
+          "file": "data/cvs/cand04/male_C_p.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Sarah Ryan",
+          "file": "data/cvs/cand04/female_A_p.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Tanisha Jones",
+          "file": "data/cvs/cand04/female_C_p.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 0.0,
+      "placebo_gap": 0.0,
+      "demo_flip": false,
+      "placebo_flip": false,
+      "test_url": null,
+      "credits": null,
+      "duration": null,
+      "evidence": null
+    },
+    {
+      "candidate": "cand05",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Jay O'Brien",
+          "file": "data/cvs/cand05/male_A.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Leroy Jackson",
+          "file": "data/cvs/cand05/male_C.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Laurie O'Brien",
+          "file": "data/cvs/cand05/female_A.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Latonya Jackson",
+          "file": "data/cvs/cand05/female_C.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Brad Sullivan",
+          "file": "data/cvs/cand05/male_A_p.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Darnell Robinson",
+          "file": "data/cvs/cand05/male_C_p.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Allison Sullivan",
+          "file": "data/cvs/cand05/female_A_p.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Aisha Robinson",
+          "file": "data/cvs/cand05/female_C_p.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 0.0,
+      "placebo_gap": 0.0,
+      "demo_flip": false,
+      "placebo_flip": false,
+      "test_url": null,
+      "credits": null,
+      "duration": null,
+      "evidence": null
+    },
+    {
+      "candidate": "cand06",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Matthew Ryan",
+          "file": "data/cvs/cand06/male_A.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Rasheed Jones",
+          "file": "data/cvs/cand06/male_C.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Kristen Ryan",
+          "file": "data/cvs/cand06/female_A.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Latoya Jones",
+          "file": "data/cvs/cand06/female_C.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Brendan Walsh",
+          "file": "data/cvs/cand06/male_A_p.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Hakim Washington",
+          "file": "data/cvs/cand06/male_C_p.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Anne Walsh",
+          "file": "data/cvs/cand06/female_A_p.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Ebony Washington",
+          "file": "data/cvs/cand06/female_C_p.txt",
+          "score": 0.63,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 0.0,
+      "placebo_gap": 0.0,
+      "demo_flip": false,
+      "placebo_flip": false,
+      "test_url": null,
+      "credits": null,
+      "duration": null,
+      "evidence": null
+    },
+    {
+      "candidate": "cand07",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Neil Sullivan",
+          "file": "data/cvs/cand07/male_A.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Tremayne Robinson",
+          "file": "data/cvs/cand07/male_C.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Meredith Sullivan",
+          "file": "data/cvs/cand07/female_A.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Tamika Robinson",
+          "file": "data/cvs/cand07/female_C.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Geoffrey Baker",
+          "file": "data/cvs/cand07/male_A_p.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Jamal Williams",
+          "file": "data/cvs/cand07/male_C_p.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Carrie Baker",
+          "file": "data/cvs/cand07/female_A_p.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Keisha Williams",
+          "file": "data/cvs/cand07/female_C_p.txt",
+          "score": 0.68,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 0.0,
+      "placebo_gap": 0.0,
+      "demo_flip": false,
+      "placebo_flip": false,
+      "test_url": null,
+      "credits": null,
+      "duration": null,
+      "evidence": null
+    },
+    {
+      "candidate": "cand08",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Todd Walsh",
+          "file": "data/cvs/cand08/male_A.txt",
+          "score": 0.67,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Tyrone Washington",
+          "file": "data/cvs/cand08/male_C.txt",
+          "score": 0.67,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Sarah Walsh",
+          "file": "data/cvs/cand08/female_A.txt",
+          "score": 0.67,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Tanisha Washington",
+          "file": "data/cvs/cand08/female_C.txt",
+          "score": 0.67,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Greg Kelly",
+          "file": "data/cvs/cand08/male_A_p.txt",
+          "score": 0.67,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Jermaine Jackson",
+          "file": "data/cvs/cand08/male_C_p.txt",
+          "score": 0.67,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Emily Kelly",
+          "file": "data/cvs/cand08/female_A_p.txt",
+          "score": 0.67,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Kenya Jackson",
+          "file": "data/cvs/cand08/female_C_p.txt",
+          "score": 0.67,
+          "decision": "Advance to interview",
+          "selected": true,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 0.0,
+      "placebo_gap": 0.0,
+      "demo_flip": false,
+      "placebo_flip": false,
+      "test_url": null,
+      "credits": null,
+      "duration": null,
+      "evidence": null
+    },
+    {
+      "candidate": "cand09",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Brad Baker",
+          "file": "data/cvs/cand09/male_A.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Darnell Williams",
+          "file": "data/cvs/cand09/male_C.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Allison Baker",
+          "file": "data/cvs/cand09/female_A.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Aisha Williams",
+          "file": "data/cvs/cand09/female_C.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Brett McCarthy",
+          "file": "data/cvs/cand09/male_A_p.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Kareem Jones",
+          "file": "data/cvs/cand09/male_C_p.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Jill McCarthy",
+          "file": "data/cvs/cand09/female_A_p.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Lakisha Jones",
+          "file": "data/cvs/cand09/female_C_p.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 0.0,
+      "placebo_gap": 0.0,
+      "demo_flip": false,
+      "placebo_flip": false,
+      "test_url": null,
+      "credits": null,
+      "duration": null,
+      "evidence": null
+    },
+    {
+      "candidate": "cand10",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Brendan Kelly",
+          "file": "data/cvs/cand10/male_A.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Hakim Jackson",
+          "file": "data/cvs/cand10/male_C.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Anne Kelly",
+          "file": "data/cvs/cand10/female_A.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Ebony Jackson",
+          "file": "data/cvs/cand10/female_C.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Jay Murphy",
+          "file": "data/cvs/cand10/male_A_p.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Leroy Robinson",
+          "file": "data/cvs/cand10/male_C_p.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Laurie Murphy",
+          "file": "data/cvs/cand10/female_A_p.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Latonya Robinson",
+          "file": "data/cvs/cand10/female_C_p.txt",
+          "score": 0.47,
+          "decision": "Do not advance",
+          "selected": false,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 0.0,
+      "placebo_gap": 0.0,
+      "demo_flip": false,
+      "placebo_flip": false,
+      "test_url": null,
+      "credits": null,
+      "duration": null,
+      "evidence": null
+    }
+  ]
+}

@@ -11,7 +11,7 @@ from pathlib import Path
 from flask import Flask, abort, render_template
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORTS = ROOT / "reports"
+REPORTS = Path(os.environ.get("AUDIT_REPORTS", ROOT / "results"))
 app = Flask(__name__)
 
 

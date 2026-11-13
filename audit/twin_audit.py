@@ -393,6 +393,9 @@ def main() -> int:
             "credits": sum(r.credits or 0 for r in done),
             "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")}
     write_reports(Path(args.out), meta, done, ratios, eff)
+    if not args.direct:
+        # Real Kane audits are published to results/, which the hosted dashboard reads.
+        write_reports(ROOT / "results", meta, done, ratios, eff)
     sys.stdout.reconfigure(encoding="utf-8")
     print(f"\nVERDICT {verdict}  target={args.target}  model={model}")
     for x in reasons:

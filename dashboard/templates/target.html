@@ -1,7 +1,7 @@
 {% extends "frame.html" %}
 {% block title %}{{ r.target }} · Fairness Auditor{% endblock %}
 {% block body %}
-<p><a href="/">← All tools</a></p>
+<p><a href="{{ url_for('index') }}">← All tools</a></p>
 <h1>{{ r.target }} <span class="verdict {{ r.verdict.split(':')[0] }}">{{ r.verdict }}</span></h1>
 <p class="muted">Model reported by the tool: {{ r.model }} · {{ r.driver }} · {{ r.length }} CVs ·
   placebo names {{ 'on' if r.placebo else 'off' }} · threshold {{ r.threshold }} · {{ r.generated_at }}</p>
