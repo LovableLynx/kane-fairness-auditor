@@ -13,7 +13,9 @@
     {% else %}
     <div class="grid-3" style="margin-top:40px">
       {% for key, t in TOOLS.items() %}{% set r = reports.get(key) %}{% if r %}
-      <a class="card reveal" style="--i:{{ loop.index0 }}" href="{{ url_for('result', name=key) }}">
+      <a class="window reveal" style="--i:{{ loop.index0 }}" href="{{ url_for('result', name=key) }}">
+        <div class="window-bar" aria-hidden="true"><span class="box"></span><span>{{ t.name|upper }}.AUDIT</span><span class="stripes"></span></div>
+        <div class="window-body">
         <div style="display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:12px">
           <h2 style="font-size:var(--step-2);margin:0">{{ t.name }}</h2>
           <span class="stamp {{ r.verdict_class }}" data-animate>{{ r.verdict.replace('FAIL: ', '') if r.verdict_class == 'FAIL' else r.verdict }}</span>
@@ -24,6 +26,7 @@
           <span class="chip {{ 'chip-verified' if r.verified else 'chip-dry' }} chip-dot">{{ 'Verified by Kane' if r.verified else 'Dry run' }}</span>
           <span class="chip chip-plain">{{ r.candidates|length }} candidates</span>
           <span class="chip chip-plain">{{ r.length }} CVs</span>
+        </div>
         </div>
       </a>
       {% endif %}{% endfor %}

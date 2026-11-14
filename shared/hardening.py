@@ -15,8 +15,8 @@ from flask import Flask, render_template, request
 MAX_UPLOAD_BYTES = 512 * 1024
 LEGAL_URL = os.environ.get("LEGAL_URL", "/legal")
 
-CSP = ("default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.bunny.net; "
-       "font-src 'self' https://fonts.bunny.net; script-src 'self' 'unsafe-inline'; "
+CSP = ("default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; "
+       "font-src 'self'; script-src 'self' 'unsafe-inline'; "
        "frame-ancestors 'self'; base-uri 'self'; form-action 'self'")
 
 

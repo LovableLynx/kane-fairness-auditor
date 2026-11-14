@@ -1,5 +1,6 @@
 {
   "target": "quickmatch",
+  "url": "http://127.0.0.1:5103/",
   "verdict": "FAIL: NAME-UNSTABLE",
   "reasons": [
     "5/10 candidates get a different decision from a same-group name swap",
@@ -14,7 +15,7 @@
   "flips": 4,
   "placebo_flips": 5,
   "credits": 0,
-  "generated_at": "2026-11-13T21:13:18+00:00",
+  "generated_at": "2026-11-14T13:59:25+00:00",
   "effects": {
     "gender_effect_female_minus_male": {
       "mean": -0.010275000000000001,

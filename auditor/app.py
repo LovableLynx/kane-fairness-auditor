@@ -75,6 +75,49 @@ def hero_twins(reports: dict) -> list[dict]:
     return out
 
 
+def lab_data(reports: dict) -> dict | None:
+    """Everything the interactive Twin Lab needs: per candidate, every name variant with
+    its CV text and what each tool decided (from the published audit results)."""
+    keys = [k for k in TOOLS if k in reports]
+    if len(keys) < 3:
+        return None
+    by_tool = {k: {c["candidate"]: c for c in reports[k]["candidates"]} for k in keys}
+    cands = []
+    for cand in by_tool[keys[0]]:
+        if not all(cand in by_tool[k] for k in keys):
+            continue
+        variants = []
+        for t in by_tool[keys[0]][cand]["twins"]:
+            entry = {"gender": t["gender"], "group": t["group"], "slot": t["slot"], "name": t["name"], "tools": {}}
+            for k in keys:
+                m = next((x for x in by_tool[k][cand]["twins"]
+                          if (x["gender"], x["group"], x["slot"]) == (t["gender"], t["group"], t["slot"])), None)
+                if m is None or m["score"] is None:
+                    break
+                entry["tools"][k] = {"score": round(m["score"], 3), "selected": bool(m["selected"])}
+            else:
+                try:
+                    entry["cv"] = (ROOT / t["file"]).read_text(encoding="utf-8")[:900]
+                except (OSError, KeyError):
+                    entry["cv"] = ""
+                variants.append(entry)
+        if len(variants) >= 4:
+            swing = max(v["tools"]["quickmatch"]["score"] for v in variants) - min(v["tools"]["quickmatch"]["score"] for v in variants)
+            cands.append({"id": cand, "variants": variants, "swing": swing})
+    if not cands:
+        return None
+    start = max(range(len(cands)), key=lambda i: cands[i]["swing"])
+    try:
+        qm_cut = float(json.loads((ROOT / "data" / "quickmatch_cutoff.json").read_text())["cutoff"])
+    except (OSError, ValueError, KeyError):
+        qm_cut = 0.5
+    # Bar scale and shortlist cutoff per tool (similarity scores live on a smaller range).
+    scale = {"talentscreen": (1.0, 0.5), "hirelens": (1.0, 0.5), "quickmatch": (0.5, qm_cut)}
+    return {"tools": [{"key": k, "name": TOOLS[k]["name"], "role": TOOLS[k]["role"],
+                       "max": scale.get(k, (1.0, 0.5))[0], "cutoff": scale.get(k, (1.0, 0.5))[1]} for k in keys],
+            "candidates": cands, "start": start}
+
+
 @app.context_processor
 def globals_():
     return {"REPO": REPO, "TOOLS": TOOLS, "TOOL_URLS": TOOL_URLS}
@@ -84,7 +127,7 @@ def globals_():
 def landing():
     reports = load_reports()
     return render_template("landing.html", reports=reports, study=load_study(),
-                           twins=hero_twins(reports), page="home")
+                           twins=hero_twins(reports), lab=lab_data(reports), page="home")
 
 
 @app.get("/results")
@@ -95,7 +138,8 @@ def results():
 @app.get("/results/<name>")
 def result(name: str):
     r = load_reports().get(name) or abort(404)
-    return render_template("result.html", r=r, tool=TOOLS.get(name, {}), page="results")
+    bar_max = 0.5 if name == "quickmatch" else 1.0  # similarity scores sit on a smaller range
+    return render_template("result.html", r=r, tool=TOOLS.get(name, {}), bar_max=bar_max, page="results")
 
 
 @app.get("/target/<name>")

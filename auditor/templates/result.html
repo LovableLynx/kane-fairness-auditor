@@ -21,15 +21,36 @@
 
 <section class="wrap">
   <div class="grid-4">
-    <div class="card stat reveal"><div class="num"><span data-count="{{ r.flips }}">{{ r.flips }}</span><span class="muted" style="font-size:.5em">/{{ r.candidates|length }}</span></div><div class="lbl">decisions changed across sex or name group</div></div>
+    <div class="card stat reveal" style="--i:0"><div class="num"><span data-count="{{ r.flips }}">{{ r.flips }}</span><span class="muted" style="font-size:.5em">/{{ r.candidates|length }}</span></div><div class="lbl">decisions changed across sex or name group</div></div>
     <div class="card stat reveal" style="--i:1"><div class="num"><span data-count="{{ r.placebo_flips or 0 }}">{{ r.placebo_flips or 0 }}</span><span class="muted" style="font-size:.5em">/{{ r.candidates|length }}</span></div><div class="lbl">decisions changed with a same-group name (placebo)</div></div>
     <div class="card stat reveal" style="--i:2"><div class="num">{{ '%+.3f'|format(r.effects.gender_effect_female_minus_male.mean) }}</div><div class="lbl">average female − male score</div></div>
     <div class="card stat reveal" style="--i:3"><div class="num">{{ '%+.3f'|format(r.effects.group_effect_C_minus_A.mean) }}</div><div class="lbl">average name group C − A score</div></div>
   </div>
 
-  <div class="card" style="margin-top:24px">
-    <span class="kicker">Why this verdict</span>
+  <div class="window" style="margin-top:24px"><div class="window-bar" aria-hidden="true"><span class="box"></span><span>WHY_THIS_VERDICT</span><span class="stripes"></span></div><div class="window-body">
     <ul style="margin:0;padding-left:20px">{% for x in r.reasons %}<li>{{ x }}</li>{% endfor %}</ul>
+  </div></div>
+</section>
+
+<section class="section" style="padding-bottom:0">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="kicker">At a glance</span><h2 style="font-size:var(--step-2)">Every CV, every decision</h2></div>
+      <div class="legend"><span class="l-ok">selected</span><span class="l-no">rejected</span><span class="l-ph">placebo name</span><span>bar height = score</span></div>
+    </div>
+    <div class="window">
+      <div class="window-bar" aria-hidden="true"><span class="box"></span><span>DECISION_MAP</span><span class="stripes"></span></div>
+      <div class="window-body" style="overflow-x:auto">
+        <div class="strips" role="img" aria-label="Decision map: one row per candidate, one cell per CV twin; colour shows the decision and height the score" style="--n:{{ r.candidates[0].twins|length }};min-width:520px">
+          <div class="strip"><span></span>{% for t in r.candidates[0].twins %}<span class="strip-head">{{ t.gender[0]|upper }}·{{ t.group }}{% if t.slot %}<br>PLC{% endif %}</span>{% endfor %}</div>
+          {% for c in r.candidates %}{% set row = loop.index0 %}
+          <div class="strip"><span class="lbl">{{ c.candidate|upper }}</span>
+            {% for t in c.twins %}<span class="cell {{ 'ok' if t.selected else '' }} {{ 'ph' if t.slot else '' }}" title="{{ t.name }}: {{ '%.3f'|format(t.score) if t.score is not none else 'n/a' }}"><i style="height:{{ (((t.score or 0) / bar_max) * 100)|round(1) if (t.score or 0) < bar_max else 100 }}%;--d:{{ row * 8 + loop.index0 }}"></i></span>{% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 

@@ -125,7 +125,7 @@ python serve.py        # the same service locally on http://127.0.0.1:8000
 | `audit/twin_audit.py` | Kane-driven twin audit and verdict |
 | `audit/gate.py` | Boot, audit, tear down; exit code = deploy decision |
 | `audit/study.py` | 100-candidate validation study |
-| `auditor/` | Product site: landing, results, method, legal; design system in `auditor/static/ds.css` |
+| `auditor/` | Product site: landing, Twin Lab, results, method, legal; "Blueprint 95" design system in `auditor/static/ds.css`, self-hosted OFL fonts |
 | `shared/` | Hardening shared by every app: size limits, bounded stores, security headers, fixed error messages |
 | `.github/workflows/fairness-gate.yml` | CI gate on pull requests |
 | `docs/` | Audit report and demo script |

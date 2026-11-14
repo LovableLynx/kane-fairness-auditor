@@ -4,40 +4,55 @@
   <div class="wrap hero-grid">
     <div>
       <span class="kicker reveal">Bias audits for hiring AI</span>
-      <h1 class="reveal" style="--i:1">Audit hiring AI through <em>the only door</em> you have.</h1>
-      <p class="lede reveal" style="--i:2">Employers buy CV-screening AI they can't inspect, then answer for its bias. Fairness Auditor tests any hiring tool through its own interface: identical CVs, different names, a placebo control, and evidence from every run.</p>
+      <h1 class="reveal" style="--i:1">Same CV.<br>Different name.<br><span class="hl hl-anim">Different verdict?</span></h1>
+      <p class="lede reveal" style="--i:2">Employers buy CV-screening AI they can't inspect, and they answer for its bias. Fairness Auditor tests any hiring tool through its own interface, with identical CVs under different names, a placebo control, and evidence from every run.</p>
       <div class="cta-row reveal" style="--i:3">
-        <a class="btn btn-primary" href="{{ url_for('results') }}">See the audit results <span class="arrow" aria-hidden="true">→</span></a>
-        <a class="btn" href="#how">How it works</a>
+        <a class="btn btn-primary" href="#lab">Open the Twin Lab <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn" href="{{ url_for('results') }}">See audit results</a>
       </div>
-      <ul class="reassure reveal" style="--i:4">
-        <li>Synthetic CVs only</li><li>No model access needed</li><li>Open source</li>
-      </ul>
+      <ul class="reassure reveal" style="--i:4"><li>Synthetic CVs only</li><li>No model access</li><li>Open source</li></ul>
     </div>
 
     {% if twins %}
-    <figure class="card twin reveal" style="--i:2;margin:0" id="twin-demo" data-twins='{{ twins|tojson }}' aria-labelledby="twin-cap">
-      <div class="twin-top" aria-hidden="true"><span></span><span></span><span></span><b>CV TWIN · LIVE REPLAY</b></div>
-      <div class="twin-body">
-        <div class="kicker" style="margin-bottom:6px">Same CV · only the name changes</div>
-        <div class="twin-name" aria-live="polite"><span class="txt">{{ twins[0].name }}</span><span class="caret" aria-hidden="true">&nbsp;</span></div>
-        <div class="twin-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-        <div class="twin-row" data-tool="biased"><span><b>TalentScreen</b> <span class="muted small">biased</span></span>
-          <span class="score">{{ '%.3f'|format(twins[0].biased.score) }}</span><span class="badge {{ 'ok' if twins[0].biased.selected else 'no' }}">{{ 'SHORTLIST' if twins[0].biased.selected else 'REJECT' }}</span></div>
-        <div class="twin-row" data-tool="fair"><span><b>HireLens</b> <span class="muted small">fair</span></span>
-          <span class="score">{{ '%.3f'|format(twins[0].fair.score) }}</span><span class="badge {{ 'ok' if twins[0].fair.selected else 'no' }}">{{ 'SHORTLIST' if twins[0].fair.selected else 'REJECT' }}</span></div>
-        <figcaption class="twin-foot" id="twin-cap">Real scores from the published audit. The fair tool gives every twin the same answer.</figcaption>
-      </div>
-    </figure>
+    <div class="hero-visual reveal" style="--i:2">
+      <span class="sticker s1">PLACEBO-CONTROLLED</span>
+      <span class="sticker blue s2">DRIVEN BY KANE CLI</span>
+      <span class="sticker white s3">NO MODEL ACCESS</span>
+      <figure class="window" id="twin-demo" data-twins='{{ twins|tojson }}' style="margin:0" aria-labelledby="twin-cap">
+        <div class="window-bar" aria-hidden="true"><span class="box"></span><span>TWIN_REPLAY.EXE</span><span class="stripes"></span><span class="box"></span></div>
+        <div class="window-body">
+          <div class="kicker" style="margin-bottom:6px">Same CV · only the name changes</div>
+          <div class="twin-name" aria-live="polite"><span class="txt">{{ twins[0].name }}</span><span class="caret" aria-hidden="true">&nbsp;</span></div>
+          <div class="cv-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <div class="twin-row" data-tool="biased"><span><b>TalentScreen</b> <span class="muted small">· biased</span></span>
+            <span class="score">{{ '%.3f'|format(twins[0].biased.score) }}</span><span class="badge {{ 'ok' if twins[0].biased.selected else 'no' }}">{{ 'SHORTLIST' if twins[0].biased.selected else 'REJECT' }}</span></div>
+          <div class="twin-row" data-tool="fair"><span><b>HireLens</b> <span class="muted small">· fair</span></span>
+            <span class="score">{{ '%.3f'|format(twins[0].fair.score) }}</span><span class="badge {{ 'ok' if twins[0].fair.selected else 'no' }}">{{ 'SHORTLIST' if twins[0].fair.selected else 'REJECT' }}</span></div>
+          <figcaption class="small muted" id="twin-cap" style="margin-top:12px">Real scores from the published audit. The fair tool gives every twin the same answer.</figcaption>
+        </div>
+      </figure>
+    </div>
     {% endif %}
   </div>
 </section>
-<div class="dither" aria-hidden="true"></div>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    {% for _ in range(2) %}
+    <span><b>GREG</b><i>→</i>EMILY<i>→</i><b>JAMAL</b><i>→</i>LAKISHA</span>
+    <span>■ SAME QUALIFICATIONS</span>
+    <span><b>BRENDAN</b><i>→</i>ANNE<i>→</i><b>HAKIM</b><i>→</i>EBONY</span>
+    <span>■ ONE-LINE TASK · NO SELECTORS</span>
+    <span><b>NEIL</b><i>→</i>MEREDITH<i>→</i><b>TREMAYNE</b><i>→</i>TAMIKA</span>
+    <span>■ PASS · BIASED · NAME-UNSTABLE</span>
+    {% endfor %}
+  </div>
+</div>
 
 <section class="section" id="problem">
   <div class="wrap">
     <div class="section-head">
-      <div><span class="kicker">The gap</span><h2>Fairness toolkits need the model.<br>Employers only get a login screen.</h2></div>
+      <div><span class="kicker">The gap</span><h2>Fairness toolkits need the model.<br>Employers get a <span class="hl">login screen</span>.</h2></div>
       <p class="muted">NYC Local Law 144 requires bias audits of automated hiring tools, and the EU AI Act classes recruitment AI as high-risk. But the model, data and code belong to the vendor.</p>
     </div>
     <div class="compare reveal">
@@ -53,37 +68,72 @@
 
 <section class="section" id="how" style="padding-top:0">
   <div class="wrap">
-    <div class="section-head"><div><span class="kicker">How it works</span><h2>Four steps, no access required</h2></div></div>
-    <div class="grid-4 steps">
-      <div class="card step reveal" style="--i:0"><h3>Write twins</h3><p class="muted">Identical CVs that differ only in name and pronouns: male/female × two name groups, from the classic Bertrand &amp; Mullainathan study.</p></div>
-      <div class="card step reveal" style="--i:1"><h3>Add a placebo</h3><p class="muted">A second name from the <em>same</em> group. If that moves the score too, the tool reacts to names, not demographics.</p></div>
-      <div class="card step reveal" style="--i:2"><h3>Kane drives the UI</h3><p class="muted">Kane CLI opens the real tool, submits every CV from a one-line task, stores each score and decision, and seals evidence.</p></div>
-      <div class="card step reveal" style="--i:3"><h3>Verdict gates deploys</h3><p class="muted">PASS, BIASED or NAME-UNSTABLE, as an exit code. CI blocks the release until the tool is fixed.</p></div>
+    <div class="section-head"><div><span class="kicker">How it works</span><h2>Four steps. Zero access.</h2></div></div>
+    <ol class="pipeline" id="pipeline">
+      <li class="pipe reveal" style="--i:0"><span class="num" aria-hidden="true"></span><h3>Write twins</h3><p class="muted small">Identical CVs that differ only in name and pronouns: male/female × two name groups, from the classic Bertrand &amp; Mullainathan study.</p></li>
+      <li class="pipe reveal" style="--i:1"><span class="num" aria-hidden="true"></span><h3>Add a placebo</h3><p class="muted small">A second name from the <em>same</em> group. If that moves the score too, the tool reacts to names, not demographics.</p></li>
+      <li class="pipe reveal" style="--i:2"><span class="num" aria-hidden="true"></span><h3>Kane drives the UI</h3><p class="muted small">Kane CLI opens the real tool, submits every CV from a one-line task, stores each score and decision, and seals evidence.</p></li>
+      <li class="pipe reveal" style="--i:3"><span class="num" aria-hidden="true"></span><h3>Verdict gates deploys</h3><p class="muted small">PASS, BIASED or NAME-UNSTABLE as an exit code. CI blocks the release until the tool is fixed.</p></li>
+    </ol>
+  </div>
+</section>
+
+{% if lab %}
+<section class="section" id="lab" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="kicker">Twin Lab · interactive</span><h2>Change the name.<br>Watch who <span class="hl">changes their mind</span>.</h2></div>
+      <p class="muted">Every number here is a real audit result. Pick a candidate, then click a name. The CV stays identical; only the name and pronouns change. Dashed names are placebos from the same group.</p>
+    </div>
+    <div class="lab reveal" id="twin-lab" data-lab='{{ lab|tojson }}'>
+      <div class="lab-left">
+        <div class="window-bar" aria-hidden="true"><span class="box"></span><span id="lab-file">CV.TXT</span><span class="stripes"></span><span class="box"></span></div>
+        <pre class="lab-cv" id="lab-cv" aria-label="CV text" tabindex="0"></pre>
+      </div>
+      <div class="lab-right">
+        <div class="lab-cand">
+          <button class="btn btn-sm" id="lab-prev" aria-label="Previous candidate">←</button>
+          <output id="lab-cand" aria-live="polite">CAND01</output>
+          <button class="btn btn-sm" id="lab-next" aria-label="Next candidate">→</button>
+          <button class="btn btn-sm btn-lime" id="lab-play" aria-pressed="false" style="margin-left:auto">▶ Auto-swap</button>
+        </div>
+        <div class="names-label" id="names-label">Names (identical CV)</div>
+        <div class="names" id="lab-names" role="group" aria-labelledby="names-label"></div>
+        <div class="lab-tools" id="lab-tools" aria-live="polite"></div>
+        <div class="lab-foot">
+          <span class="small muted">Bars show each tool's score; the line marks its shortlist cutoff. <b>Swing</b> = how far the score moves across this candidate's names.</span>
+          <a class="btn btn-sm" href="{{ url_for('results') }}">Full results →</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+{% endif %}
 
 <section class="section" style="padding-top:0">
   <div class="wrap">
     <div class="section-head">
-      <div><span class="kicker">Results</span><h2>One audit, three interfaces</h2></div>
+      <div><span class="kicker">Verdicts</span><h2>One audit. Three interfaces.</h2></div>
       <a class="btn btn-sm" href="{{ url_for('results') }}">All results <span class="arrow" aria-hidden="true">→</span></a>
     </div>
     <div class="grid-3">
       {% for key, t in TOOLS.items() %}{% set r = reports.get(key) %}
-      <a class="card reveal" style="--i:{{ loop.index0 }}" href="{{ url_for('result', name=key) if r else url_for('results') }}">
-        <div style="display:flex;justify-content:space-between;align-items:start;gap:12px">
-          <div><span class="kicker" style="margin-bottom:6px">{{ t.role }}</span><h3 style="margin:0">{{ t.name }}</h3></div>
-          {% if r %}<span class="stamp {{ r.verdict_class }}" data-animate>{{ r.verdict.replace('FAIL: ', '') if r.verdict_class == 'FAIL' else r.verdict }}</span>{% endif %}
+      <a class="window reveal" style="--i:{{ loop.index0 }}" href="{{ url_for('result', name=key) if r else url_for('results') }}">
+        <div class="window-bar" aria-hidden="true"><span class="box"></span><span>{{ t.name|upper }}</span><span class="stripes"></span></div>
+        <div class="window-body">
+          <div style="display:flex;justify-content:space-between;align-items:start;gap:12px">
+            <span class="kicker" style="margin:0">{{ t.role }}</span>
+            {% if r %}<span class="stamp {{ r.verdict_class }}" data-animate>{{ r.verdict.replace('FAIL: ', '') if r.verdict_class == 'FAIL' else r.verdict }}</span>{% endif %}
+          </div>
+          <p class="muted small" style="margin:14px 0 18px">{{ t.ui }}</p>
+          {% if r %}
+          <div class="grid-2" style="gap:12px">
+            <div class="stat"><div class="num"><span data-count="{{ r.flips }}">{{ r.flips }}</span>/{{ r.candidates|length }}</div><div class="lbl">flip on sex or name group</div></div>
+            <div class="stat"><div class="num"><span data-count="{{ r.placebo_flips or 0 }}">{{ r.placebo_flips or 0 }}</span>/{{ r.candidates|length }}</div><div class="lbl">flip on a same-group name</div></div>
+          </div>
+          <p style="margin:18px 0 0"><span class="chip {{ 'chip-verified' if r.verified else 'chip-dry' }} chip-dot">{{ 'Verified by Kane' if r.verified else 'Dry run · not browser-verified' }}</span></p>
+          {% else %}<p class="muted">No audit published yet.</p>{% endif %}
         </div>
-        <p class="muted small" style="margin:12px 0 16px">{{ t.ui }}</p>
-        {% if r %}
-        <div class="grid-2" style="gap:12px">
-          <div class="stat"><div class="num"><span data-count="{{ r.flips }}">{{ r.flips }}</span>/{{ r.candidates|length }}</div><div class="lbl">flip on sex or name group</div></div>
-          <div class="stat"><div class="num"><span data-count="{{ r.placebo_flips or 0 }}">{{ r.placebo_flips or 0 }}</span>/{{ r.candidates|length }}</div><div class="lbl">flip on a same-group name</div></div>
-        </div>
-        <p style="margin:16px 0 0"><span class="chip {{ 'chip-verified' if r.verified else 'chip-dry' }} chip-dot">{{ 'Verified by Kane' if r.verified else 'Dry run · not browser-verified' }}</span></p>
-        {% else %}<p class="muted">No audit published yet.</p>{% endif %}
       </a>
       {% endfor %}
     </div>
@@ -93,15 +143,18 @@
 {% if study %}{% set L = study.by_length.long %}
 <section class="section" style="padding-top:0">
   <div class="wrap">
-    <div class="card" style="background:var(--ink);color:var(--cream);box-shadow:var(--shadow-lg)">
-      <span class="kicker" style="color:#c9bea6">Validation study · 100 candidates × 16 CVs · realistic length</span>
-      <h2 style="color:var(--cream);max-width:22ch">The open-source matcher's decisions depend on the name.</h2>
-      <div class="grid-3" style="margin-top:24px">
-        <div class="figure" style="border-color:var(--tomato)"><div class="num"><span data-count="{{ (L.flip_rate_at_target_cutoff*100)|round(0) }}">{{ (L.flip_rate_at_target_cutoff*100)|round(0)|int }}</span>%</div><div class="small" style="color:#e6dcc6">of candidates get a different decision from a name change alone</div></div>
-        <div class="figure" style="border-color:var(--tomato)"><div class="num">{{ '%+.3f'|format(L.group_effect_C_minus_A.mean) }}</div><div class="small" style="color:#e6dcc6">systematic shift by name group, p {{ '<0.001' if L.group_effect_C_minus_A.p < 0.001 else '= %.3f'|format(L.group_effect_C_minus_A.p) }}</div></div>
-        <div class="figure" style="border-color:#e6dcc6"><div class="num">{{ '%+.3f'|format(L.gender_effect_female_minus_male.mean) }}</div><div class="small" style="color:#e6dcc6">female − male: not significant at realistic CV length</div></div>
+    <div class="window dark" style="box-shadow:8px 8px 0 var(--lime)">
+      <div class="window-bar" aria-hidden="true"><span class="box"></span><span>STUDY_RESULTS.DAT · 100 CANDIDATES × 16 CVS</span><span class="stripes"></span></div>
+      <div class="window-body" style="padding:var(--s-6) var(--s-5)">
+        <span class="kicker on-dark">Validation study · realistic-length CVs</span>
+        <h2 style="color:#fff;max-width:22ch">The open-source matcher's decisions depend on the <span class="hl" style="color:var(--ink)">name</span>.</h2>
+        <div class="grid-3" style="margin-top:28px">
+          <div class="figure"><div class="num" style="color:var(--lime)"><span data-count="{{ (L.flip_rate_at_target_cutoff*100)|round(0) }}">{{ (L.flip_rate_at_target_cutoff*100)|round(0)|int }}</span>%</div><div class="small" style="color:#c9cad1">of candidates get a different decision from a name change alone</div></div>
+          <div class="figure"><div class="num" style="color:#fff">{{ '%+.3f'|format(L.group_effect_C_minus_A.mean) }}</div><div class="small" style="color:#c9cad1">systematic shift by name group, p {{ '< 0.001' if L.group_effect_C_minus_A.p < 0.001 else '= %.3f'|format(L.group_effect_C_minus_A.p) }}</div></div>
+          <div class="figure" style="border-color:#5d5e67"><div class="num" style="color:#fff">{{ '%+.3f'|format(L.gender_effect_female_minus_male.mean) }}</div><div class="small" style="color:#c9cad1">female − male: not significant at realistic CV length</div></div>
+        </div>
+        <p style="margin:28px 0 0"><a class="btn btn-sm btn-lime" href="{{ url_for('method') }}#study">Read the study and its limits →</a></p>
       </div>
-      <p style="margin:24px 0 0"><a href="{{ url_for('method') }}#study" style="color:var(--cream)">Read the study and its limits →</a></p>
     </div>
   </div>
 </section>
@@ -110,19 +163,19 @@
 <section class="section" id="try" style="padding-top:0">
   <div class="wrap">
     <div class="section-head">
-      <div><span class="kicker">Try it yourself</span><h2>Be the recruiter</h2></div>
-      <p class="muted">Upload a sample CV, then upload its twin. Watch which tool changes its mind. Sample CVs are in the <a href="{{ REPO }}/tree/main/data/cvs" rel="noopener">repository</a>.</p>
+      <div><span class="kicker">Try it yourself</span><h2>Be the recruiter.</h2></div>
+      <p class="muted">Upload a sample CV, then its twin. Watch which tool changes its mind. Sample CVs are in the <a href="{{ REPO }}/tree/main/data/cvs" rel="noopener">repository</a>; real-style PDF and Word CVs work too.</p>
     </div>
     <div class="grid-3">
       {% for key, t in TOOLS.items() %}
       <a class="card reveal" style="--i:{{ loop.index0 }}" href="{{ TOOL_URLS[key] }}">
-        <span class="kicker" style="margin-bottom:6px">Demo tool {{ loop.index }}</span>
+        <span class="kicker">Demo tool {{ loop.index }}</span>
         <h3>{{ t.name }} <span aria-hidden="true">↗</span></h3>
         <p class="muted small" style="margin:0">{{ t.ui }}. {{ t.model }}.</p>
       </a>
       {% endfor %}
     </div>
-    <p class="notice small" style="margin-top:24px" role="note"><span aria-hidden="true">⚠</span><span>Please use the sample CVs or invented details, not a real person's CV. Submissions are held in memory only and disappear when the demo restarts. <a href="{{ url_for('legal') }}#privacy">Privacy notice</a>.</span></p>
+    <p class="notice small" style="margin-top:28px" role="note"><span aria-hidden="true">⚠</span><span>Please use the sample CVs or invented details, not a real person's CV. Submissions are held in memory only and disappear when the demo restarts. <a href="{{ url_for('legal') }}#privacy">Privacy notice</a>.</span></p>
   </div>
 </section>
 {% endblock %}

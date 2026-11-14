@@ -1,5 +1,6 @@
 {
   "target": "hirelens",
+  "url": "http://127.0.0.1:5102/",
   "verdict": "PASS",
   "reasons": [
     "no demographic or name effect above threshold"
@@ -13,7 +14,7 @@
   "flips": 0,
   "placebo_flips": 0,
   "credits": 0,
-  "generated_at": "2026-11-13T21:12:52+00:00",
+  "generated_at": "2026-11-14T13:58:57+00:00",
   "effects": {
     "gender_effect_female_minus_male": {
       "mean": 0.0,
