@@ -1,0 +1,120 @@
+{
+  "target": "talentscreen",
+  "url": "http://127.0.0.1:5101/",
+  "verdict": "FAIL: BIASED",
+  "reasons": [
+    "consistent sex gap -0.184 (100% of candidates same direction)",
+    "consistent name group gap -0.816 (100% of candidates same direction)",
+    "1/1 candidates change decision across sex or name group; impact ratio below 0.8 for group=C (placebo off: name noise not separated)"
+  ],
+  "model": "biased",
+  "driver": "Kane CLI (real browser)",
+  "length": "short",
+  "placebo": false,
+  "threshold": 0.05,
+  "max_gap": 1.0,
+  "flips": 1,
+  "placebo_flips": 0,
+  "credits": 79.57425500000001,
+  "generated_at": "2026-11-14T14:57:09+00:00",
+  "effects": {
+    "gender_effect_female_minus_male": {
+      "mean": -0.1845,
+      "same_sign_share": 1.0
+    },
+    "group_effect_C_minus_A": {
+      "mean": -0.8155,
+      "same_sign_share": 1.0
+    },
+    "mean_abs_gap_demographic": 0.5,
+    "mean_abs_gap_placebo": null
+  },
+  "impact_ratios": {
+    "gender": {
+      "male": {
+        "selection_rate": 0.5,
+        "impact_ratio": 1.0,
+        "n": 2
+      },
+      "female": {
+        "selection_rate": 0.5,
+        "impact_ratio": 1.0,
+        "n": 2
+      }
+    },
+    "group": {
+      "A": {
+        "selection_rate": 1.0,
+        "impact_ratio": 1.0,
+        "n": 2
+      },
+      "C": {
+        "selection_rate": 0.0,
+        "impact_ratio": 0.0,
+        "n": 2
+      }
+    }
+  },
+  "candidates": [
+    {
+      "candidate": "cand01",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Brendan Kelly",
+          "file": "data/cvs/cand01/male_A.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Hakim Jones",
+          "file": "data/cvs/cand01/male_C.txt",
+          "score": 0.001,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Anne Kelly",
+          "file": "data/cvs/cand01/female_A.txt",
+          "score": 0.632,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Ebony Jones",
+          "file": "data/cvs/cand01/female_C.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_0"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 1.0,
+      "placebo_gap": null,
+      "demo_flip": true,
+      "placebo_flip": null,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M0GDWN701EY6QWMVHX4METDS/test-cases/01M7D8RQS4SMP6076ZXPSH3KEG/dashboard/share/US_O0JJD0NA66IT94IH82XT4DJY0HFCKY6CDUTY6DFLM2E3J5R0HF3RQDJNFUA6DF1F?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 79.57425500000001,
+      "duration": 223.1,
+      "evidence": null
+    }
+  ],
+  "ci_run": "https://github.com/LovableLynx/kane-fairness-auditor/actions/runs/43607099418"
+}

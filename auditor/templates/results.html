@@ -23,7 +23,7 @@
         <p class="muted small">{{ t.ui }}</p>
         <ul class="small" style="padding-left:18px;margin:0 0 16px">{% for x in r.reasons[:3] %}<li>{{ x }}</li>{% endfor %}</ul>
         <div style="display:flex;flex-wrap:wrap;gap:6px">
-          <span class="chip {{ 'chip-verified' if r.verified else 'chip-dry' }} chip-dot">{{ 'Verified by Kane' if r.verified else 'Dry run' }}</span>
+          <span class="chip {{ 'chip-verified' if r.verified else 'chip-dry' }} chip-dot">{{ 'Verified by Kane' if r.verified else 'Dry run' }}</span>{% if r.kane %} <span class="chip chip-verified chip-dot">Verified by Kane · {{ r.kane.candidates|length }} candidate{{ "s" if r.kane.candidates|length != 1 }} in a real browser</span>{% endif %}
           <span class="chip chip-plain">{{ r.candidates|length }} candidates</span>
           <span class="chip chip-plain">{{ r.length }} CVs</span>
         </div>
@@ -32,7 +32,7 @@
       {% endif %}{% endfor %}
     </div>
     {% if reports.values()|selectattr('verified', 'equalto', false)|list %}
-    <p class="notice small" style="margin-top:28px" role="note"><span aria-hidden="true">ⓘ</span><span><b>Dry run</b> results were produced through each tool's HTTP endpoint for development. Kane-verified results replace them as browser runs complete; they carry a Test Manager evidence link for every candidate.</span></p>
+    <p class="notice small" style="margin-top:28px" role="note"><span aria-hidden="true">ⓘ</span><span><b>Dry run</b> results were produced through each tool's HTTP endpoint for development. Kane browser runs are published alongside them, each with a Test Manager evidence link. TalentScreen's Kane run read exactly the same scores as the dry run.</span></p>
     {% endif %}
     {% endif %}
   </div>

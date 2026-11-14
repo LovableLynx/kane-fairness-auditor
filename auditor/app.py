@@ -37,16 +37,30 @@ app = Flask(__name__)
 harden(app)
 
 
+def _read(p: Path) -> dict | None:
+    try:
+        r = json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    r["verified"] = r.get("driver", "").startswith("Kane")
+    r["verdict_class"] = r.get("verdict", "INCONCLUSIVE").split(":")[0]
+    return r
+
+
 def load_reports() -> dict[str, dict]:
-    out = {}
+    """Main report per tool (twin_audit_<tool>.json), plus any Kane browser run published
+    alongside it (twin_audit_<tool>.kane.json), attached as r["kane"]."""
+    out, kane = {}, {}
     for p in sorted(RESULTS.glob("twin_audit_*.json")):
-        try:
-            r = json.loads(p.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
+        r = _read(p)
+        if not r:
             continue
-        r["verified"] = r.get("driver", "").startswith("Kane")
-        r["verdict_class"] = r.get("verdict", "INCONCLUSIVE").split(":")[0]
-        out[r["target"]] = r
+        (kane if p.name.endswith(".kane.json") else out)[r["target"]] = r
+    for target, k in kane.items():
+        if target in out:
+            out[target]["kane"] = k
+        else:
+            out[target] = k
     return out
 
 

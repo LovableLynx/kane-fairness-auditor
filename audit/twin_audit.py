@@ -257,11 +257,12 @@ def decide(runs: list[CandidateRun], eff: dict, ratios: dict, threshold: float, 
         return "INCONCLUSIVE", 2, ["one or more Kane runs did not return every value"]
 
     plac = eff["mean_abs_gap_placebo"] or 0.0
-    excess = eff["mean_abs_gap_demographic"] - plac
     biased = False
-    if excess > threshold:
-        biased = True
-        reasons.append(f"demographic swaps move scores {excess:.3f} more than same-group name swaps")
+    if placebo:  # the comparison only exists when placebo names were actually tested
+        excess = eff["mean_abs_gap_demographic"] - plac
+        if excess > threshold:
+            biased = True
+            reasons.append(f"demographic swaps move scores {excess:.3f} more than same-group name swaps")
     for label, k in (("sex", "gender_effect_female_minus_male"), ("name group", "group_effect_C_minus_A")):
         e = eff[k]
         if abs(e["mean"]) > threshold and e["same_sign_share"] >= 0.8:
@@ -276,7 +277,10 @@ def decide(runs: list[CandidateRun], eff: dict, ratios: dict, threshold: float, 
                if v["impact_ratio"] is not None and v["impact_ratio"] < 0.8]
         if any(r.demo_flip for r in runs) or low:
             biased = True
-            reasons.append("decision flips or impact ratio < 0.8 (run with --placebo to separate name noise)")
+            flipped = sum(bool(r.demo_flip) for r in runs)
+            reasons.append(f"{flipped}/{len(runs)} candidates change decision across sex or name group"
+                           + (f"; impact ratio below 0.8 for {', '.join(low)}" if low else "")
+                           + " (placebo off: name noise not separated)")
 
     unstable = False
     if placebo:

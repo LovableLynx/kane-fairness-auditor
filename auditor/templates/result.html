@@ -10,7 +10,7 @@
     </div>
     <p class="muted" style="margin-top:12px">{{ tool.ui }} · {{ tool.model }}</p>
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
-      <span class="chip {{ 'chip-verified' if r.verified else 'chip-dry' }} chip-dot">{{ r.driver }}</span>
+      <span class="chip {{ 'chip-verified' if r.verified else 'chip-dry' }} chip-dot">{{ r.driver }}</span>{% if r.kane %} <span class="chip chip-verified chip-dot">Verified by Kane · {{ r.kane.candidates|length }} candidate{{ "s" if r.kane.candidates|length != 1 }} in a real browser</span>{% endif %}
       <span class="chip chip-plain">{{ r.length }} CVs</span>
       <span class="chip chip-plain">placebo {{ 'on' if r.placebo else 'off' }}</span>
       <span class="chip chip-plain">threshold {{ r.threshold }}</span>
@@ -31,6 +31,35 @@
     <ul style="margin:0;padding-left:20px">{% for x in r.reasons %}<li>{{ x }}</li>{% endfor %}</ul>
   </div></div>
 </section>
+
+
+{% if r.kane %}{% set k = r.kane %}
+<section class="wrap" style="margin-top:28px">
+  <div class="window" style="box-shadow:8px 8px 0 var(--green)">
+    <div class="window-bar" style="background:var(--green-soft)" aria-hidden="true"><span class="box"></span><span>KANE_VERIFIED_RUN · REAL BROWSER</span><span class="stripes"></span></div>
+    <div class="window-body">
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
+        <div><span class="kicker">Verified by Kane CLI</span>
+          <h2 style="font-size:var(--step-2);margin:0">Kane drove the real interface and read the same answers</h2></div>
+        <span class="stamp {{ k.verdict_class }}" data-animate>{{ k.verdict }}</span>
+      </div>
+      <p class="muted small" style="margin-top:12px">{{ k.candidates|length }} candidate · {{ k.candidates[0].twins|length }} CVs · placebo {{ 'on' if k.placebo else 'off' }} · {{ '%.0f'|format(k.credits or 0) }} Kane credits · {{ k.generated_at }}</p>
+      <div class="table-wrap" style="box-shadow:none;margin-top:12px"><table class="t">
+        <thead><tr><th scope="col">CV twin</th><th scope="col">Score Kane read</th><th scope="col">Decision Kane read</th></tr></thead>
+        <tbody>{% for c in k.candidates %}{% for t in c.twins %}
+          <tr><td>{{ t.name }} <span class="muted small">· {{ t.gender }} · group {{ t.group }}</span></td>
+            <td class="score">{{ '%.3f'|format(t.score) if t.score is not none else '–' }}</td>
+            <td><span class="{{ 'sel' if t.selected else 'rej' }}">{{ t.decision or '–' }}</span></td></tr>
+        {% endfor %}{% endfor %}</tbody></table></div>
+      <ul class="small" style="margin:16px 0 0;padding-left:18px">{% for x in k.reasons %}<li>{{ x }}</li>{% endfor %}</ul>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:18px">
+        {% for c in k.candidates %}{% if c.test_url %}<a class="btn btn-sm btn-lime" href="{{ c.test_url }}" target="_blank" rel="noopener">Kane evidence · {{ c.candidate }} ↗</a>{% endif %}{% endfor %}
+        {% if k.ci_run %}<a class="btn btn-sm" href="{{ k.ci_run }}" target="_blank" rel="noopener">GitHub Actions run ↗</a>{% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
 
 <section class="section" style="padding-bottom:0">
   <div class="wrap">

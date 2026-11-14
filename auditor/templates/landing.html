@@ -179,7 +179,7 @@
             <div class="stat"><div class="num"><span data-count="{{ r.flips }}">{{ r.flips }}</span>/{{ r.candidates|length }}</div><div class="lbl">flip on sex or name group</div></div>
             <div class="stat"><div class="num"><span data-count="{{ r.placebo_flips or 0 }}">{{ r.placebo_flips or 0 }}</span>/{{ r.candidates|length }}</div><div class="lbl">flip on a same-group name</div></div>
           </div>
-          <p style="margin:18px 0 0"><span class="chip {{ 'chip-verified' if r.verified else 'chip-dry' }} chip-dot">{{ 'Verified by Kane' if r.verified else 'Dry run · not browser-verified' }}</span></p>
+          <p style="margin:18px 0 0"><span class="chip {{ 'chip-verified' if r.verified else 'chip-dry' }} chip-dot">{{ 'Verified by Kane' if r.verified else 'Dry run · not browser-verified' }}</span>{% if r.kane %} <span class="chip chip-verified chip-dot">Verified by Kane · {{ r.kane.candidates|length }} candidate{{ "s" if r.kane.candidates|length != 1 }} in a real browser</span>{% endif %}</p>
           {% else %}<p class="muted">No audit published yet.</p>{% endif %}
         </div>
       </a>
