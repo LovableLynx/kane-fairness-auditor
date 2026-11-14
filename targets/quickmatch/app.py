@@ -13,6 +13,8 @@ from __future__ import annotations
 import itertools
 import json
 import os
+import sys
+import threading
 from pathlib import Path
 
 import numpy as np
@@ -34,33 +36,55 @@ ROLES = {
 }
 
 app = Flask(__name__)
-embedder = TextEmbedding(MODEL_ID)
 _ids = itertools.count(1)
 DRAFTS: dict[int, dict] = {}
+# Model files live inside the project so a host can download them at build time.
+CACHE_DIR = os.environ.get("FASTEMBED_CACHE", str(ROOT / ".fastembed_cache"))
+CUTOFF_FILE = ROOT / "data" / "quickmatch_cutoff.json"
+
+_lock = threading.Lock()
+_embedder: TextEmbedding | None = None
+_jd_vec: dict[str, np.ndarray] = {}
+
+
+def embedder() -> TextEmbedding:
+    """Load the model on first use, so the web server starts fast on small hosts."""
+    global _embedder
+    with _lock:
+        if _embedder is None:
+            _embedder = TextEmbedding(MODEL_ID, cache_dir=CACHE_DIR, threads=1)
+    return _embedder
 
 
 def embed(texts: list[str]) -> np.ndarray:
-    v = np.array(list(embedder.embed(texts)))
+    v = np.array(list(embedder().embed(texts)))
     return v / np.linalg.norm(v, axis=1, keepdims=True)
 
 
-JD_VEC = {k: embed([r["jd"]])[0] for k, r in ROLES.items()}
+def jd_vec(role: str) -> np.ndarray:
+    if role not in _jd_vec:
+        _jd_vec[role] = embed([ROLES[role]["jd"]])[0]
+    return _jd_vec[role]
 
 
 def similarity(cv_text: str, role: str) -> float:
-    return float(embed([cv_text])[0] @ JD_VEC[role])
+    return float(embed([cv_text])[0] @ jd_vec(role))
 
 
-def calibrate() -> float:
+def calibrate(write: bool = False) -> float:
     """Shortlist cutoff = median similarity over an independent calibration pool
-    (data/calibration.json: CVs that are never used in any audit), so about half pass."""
+    (data/calibration.json: CVs that are never used in any audit), so about half pass.
+    The value is cached in data/quickmatch_cutoff.json; `python targets/quickmatch/app.py --calibrate` refreshes it."""
     if os.environ.get("QUICKMATCH_CUTOFF"):
         return float(os.environ["QUICKMATCH_CUTOFF"])
+    if CUTOFF_FILE.exists() and not write:
+        return float(json.loads(CUTOFF_FILE.read_text())["cutoff"])
     pool = ROOT / "data" / "calibration.json"
     if not pool.exists():
         return 0.5
-    sims = embed(json.loads(pool.read_text())) @ JD_VEC["data-analyst"]
-    return float(np.median(sims))
+    cut = float(np.median(embed(json.loads(pool.read_text())) @ jd_vec("data-analyst")))
+    CUTOFF_FILE.write_text(json.dumps({"cutoff": cut, "model": MODEL_ID, "pool": "data/calibration.json"}, indent=1))
+    return cut
 
 
 CUTOFF = calibrate()
@@ -136,4 +160,10 @@ def healthz():
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=int(os.environ.get("PORT", 5103)))
+    if "--calibrate" in sys.argv:
+        print(f"cutoff = {calibrate(write=True):.4f} -> {CUTOFF_FILE}")
+    elif "--download" in sys.argv:
+        embedder()
+        print(f"model cached in {CACHE_DIR}")
+    else:
+        app.run(host="127.0.0.1", port=int(os.environ.get("PORT", 5103)))

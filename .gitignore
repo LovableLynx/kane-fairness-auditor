@@ -4,3 +4,4 @@ __pycache__/
 reports/
 .testmuai/sessions/
 data/study.json
+.fastembed_cache/

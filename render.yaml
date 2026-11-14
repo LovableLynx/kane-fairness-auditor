@@ -3,7 +3,7 @@ services:
     name: kane-fairness-auditor
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt && python targets/quickmatch/app.py --download
     startCommand: gunicorn serve:app --workers 1 --threads 8 --timeout 180 --bind 0.0.0.0:$PORT
     healthCheckPath: /healthz
     envVars:
