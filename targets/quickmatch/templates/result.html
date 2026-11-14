@@ -8,6 +8,6 @@
     Verdict: {{ 'Recommended for interview' if d.recommended else 'Not recommended' }}
   </p>
   <p class="muted" style="font-size:13px">Powered by an open-source language model · cutoff {{ '%.3f'|format(cutoff) }}</p>
-  <form method="get" action="{{ url_for('step_role') }}"><button class="go">Match another candidate</button></form>
+  <a class="go" href="{{ url_for('step_role') }}" style="text-decoration:none">Match another candidate</a>
 </div>
 {% endblock %}

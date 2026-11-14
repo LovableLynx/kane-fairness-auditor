@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Method · Fairness Auditor{% endblock %}
+{% block body %}
+<section class="section">
+  <div class="wrap with-toc">
+    <nav class="toc small" aria-label="On this page">
+      <a href="#twins">CV twins</a><a href="#placebo">Placebo control</a><a href="#kane">Kane in the loop</a>
+      <a href="#verdicts">Verdicts</a><a href="#study">Validation study</a><a href="#limits">Limits</a>
+    </nav>
+    <article class="prose">
+      <span class="kicker">Method</span>
+      <h1 style="font-size:var(--step-3)">Automated correspondence testing</h1>
+      <p class="lede">Hiring discrimination has been measured for decades by sending employers identical CVs under different names. We automate that for AI tools, through their own interface.</p>
+
+      <h2 id="twins">CV twins</h2>
+      <p>Each candidate profile comes from FairCVdb, a synthetic CV dataset. We render it as a CV four times: male and female, with names from two groups. The first names and surnames are the ones used by Bertrand &amp; Mullainathan (2004), "Are Emily and Greg More Employable than Lakisha and Jamal?". Everything that matters for the job stays identical: role, experience, education, languages, references and availability. Every CV comes in a short version (about 50 words) and a realistic one (about 340 words).</p>
+
+      <h2 id="placebo">Placebo control</h2>
+      <p>If changing <em>Greg</em> to <em>Emily</em> changes a score, the cause could be gender, or the model could react to any change of name. So each twin also has a second name from the same group (<em>Greg → Brad</em>). Comparing the demographic swaps with these same-group swaps separates <b>bias</b> from <b>name instability</b>.</p>
+
+      <h2 id="kane">Kane in the loop</h2>
+      <p>Kane CLI receives only the tool's URL and a one-line task, for example <em>"Submit the CV for screening by pasting the CV text into the form, then open the result."</em> It gets no selectors and no API. For every CV it fills the form in a real browser, then stores the score and the decision it reads off the page. The run seals an evidence pack with a Test Manager link. The same instructions run unchanged on all three interfaces.</p>
+      <div class="panel mono small" style="overflow-x:auto">kane-cli run "Go to &lt;url&gt;. &lt;task&gt;, using exactly this CV text: {{ '{{' }}cv_female_c_0{{ '}}' }}. Store the match score as 'score_female_c_0' …" --agent --headless</div>
+
+      <h2 id="verdicts">Verdicts</h2>
+      <ul>
+        <li><b>PASS:</b> no demographic or name effect above the threshold (0.05 on a 0–1 scale).</li>
+        <li><b>FAIL: BIASED:</b> demographic swaps move scores more than placebo swaps, or there is a consistent gap by sex or name group.</li>
+        <li><b>FAIL: NAME-UNSTABLE:</b> the decision changes when only the name changes, even within the same group.</li>
+        <li><b>INCONCLUSIVE:</b> a run failed or a value could not be read. This also blocks deployment.</li>
+      </ul>
+
+      <h2 id="study">Validation study</h2>
+      {% if study %}
+      <p>To check that the audit's findings are not artefacts of short CVs, the cutoff or sample size, we scored 100 candidates × 16 CVs with the open-source matcher. The cutoff was calibrated on 200 CVs that are never audited, with bootstrap 95% confidence intervals and permutation tests.</p>
+      <div class="table-wrap"><table class="t">
+        <thead><tr><th scope="col">QuickMatch (all-MiniLM-L6-v2)</th><th scope="col">Short CVs</th><th scope="col">Long CVs</th></tr></thead>
+        <tbody>
+        {% set S, L = study.by_length.short, study.by_length.long %}
+        {% for label, key in [('Female − male score', 'gender_effect_female_minus_male'), ('Group C − group A score', 'group_effect_C_minus_A'), ('Same-group name swap (placebo)', 'placebo_effect_same_demographic')] %}
+          <tr><th scope="row">{{ label }}</th>
+          {% for X in [S, L] %}{% set e = X[key] %}<td class="score">{{ '%+.4f'|format(e.mean) }} <span class="muted">[{{ '%+.3f'|format(e.ci95[0]) }}, {{ '%+.3f'|format(e.ci95[1]) }}]</span> {{ 'p<0.001' if e.p < 0.001 else 'p=%.2f'|format(e.p) }}</td>{% endfor %}</tr>
+        {% endfor %}
+          <tr><th scope="row">Decision changes from a name change</th><td class="score">{{ (S.flip_rate_at_target_cutoff*100)|round|int }}%</td><td class="score">{{ (L.flip_rate_at_target_cutoff*100)|round|int }}%</td></tr>
+        </tbody></table></div>
+      <p style="margin-top:16px">The gender effect appears only in very short CVs and disappears at realistic length. A small, significant name-group effect remains. The larger problem is instability: about one in four realistic CVs gets a different decision from a name change alone. The controls behave as expected. The planted-bias tool shows zero placebo effect and large demographic effects; the fair tool shows zero for both.</p>
+      {% else %}<p class="muted">Study results are not published on this deployment.</p>{% endif %}
+
+      <h2 id="limits">Limits</h2>
+      <ul>
+        <li>Twin testing measures unequal treatment of individuals. It is one part of fairness, not all of it, so we report it alongside group impact ratios.</li>
+        <li>Impact ratios from 10 candidates are illustrative, not statistically conclusive.</li>
+        <li>Names are proxies for perceived sex and ethnicity, as in the original correspondence studies. They are not ground truth about any person.</li>
+        <li>The demo tools are fictional and purpose-built so the audit can be checked against known answers. Real deployments should audit tools the auditor is authorised to test.</li>
+      </ul>
+    </article>
+  </div>
+</section>
+{% endblock %}

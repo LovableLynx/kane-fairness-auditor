@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Audit results · Fairness Auditor{% endblock %}
+{% block body %}
+<section class="section">
+  <div class="wrap">
+    <span class="kicker reveal">Audit results</span>
+    <h1 class="reveal" style="--i:1;font-size:var(--step-3)">Every tool got the same one-line task</h1>
+    <p class="lede reveal" style="--i:2">Different interfaces, different wording, different scales. The auditor only knew a URL and a sentence like <em>"submit the CV and open the result."</em></p>
+
+    {% if not reports %}
+    <div class="empty" style="margin-top:32px"><h3>No audits published yet</h3>
+      <p class="muted">Run <code class="mono">python audit/gate.py --target talentscreen</code> to publish one.</p></div>
+    {% else %}
+    <div class="grid-3" style="margin-top:40px">
+      {% for key, t in TOOLS.items() %}{% set r = reports.get(key) %}{% if r %}
+      <a class="card reveal" style="--i:{{ loop.index0 }}" href="{{ url_for('result', name=key) }}">
+        <div style="display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:12px">
+          <h2 style="font-size:var(--step-2);margin:0">{{ t.name }}</h2>
+          <span class="stamp {{ r.verdict_class }}" data-animate>{{ r.verdict.replace('FAIL: ', '') if r.verdict_class == 'FAIL' else r.verdict }}</span>
+        </div>
+        <p class="muted small">{{ t.ui }}</p>
+        <ul class="small" style="padding-left:18px;margin:0 0 16px">{% for x in r.reasons[:3] %}<li>{{ x }}</li>{% endfor %}</ul>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span class="chip {{ 'chip-verified' if r.verified else 'chip-dry' }} chip-dot">{{ 'Verified by Kane' if r.verified else 'Dry run' }}</span>
+          <span class="chip chip-plain">{{ r.candidates|length }} candidates</span>
+          <span class="chip chip-plain">{{ r.length }} CVs</span>
+        </div>
+      </a>
+      {% endif %}{% endfor %}
+    </div>
+    {% if reports.values()|selectattr('verified', 'equalto', false)|list %}
+    <p class="notice small" style="margin-top:28px" role="note"><span aria-hidden="true">ⓘ</span><span><b>Dry run</b> results were produced through each tool's HTTP endpoint for development. Kane-verified results replace them as browser runs complete; they carry a Test Manager evidence link for every candidate.</span></p>
+    {% endif %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

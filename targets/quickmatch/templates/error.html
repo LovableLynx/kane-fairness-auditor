@@ -1,0 +1,11 @@
+{% extends "shell.html" %}
+{% set step = 0 %}
+{% block title %}{{ title }} · QuickMatch{% endblock %}
+{% block body %}
+<div class="box" style="text-align:center">
+  <p class="muted" style="margin:0">Error {{ status }}</p>
+  <h1>{{ title }}</h1>
+  <p class="muted">{{ body }}</p>
+  <a class="go" href="{{ url_for('step_role') }}" style="text-decoration:none">Start a new match</a>
+</div>
+{% endblock %}

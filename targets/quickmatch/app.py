@@ -22,6 +22,9 @@ from fastembed import TextEmbedding
 from flask import Flask, abort, redirect, render_template, request, url_for
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+from shared.hardening import BoundedStore, harden  # noqa: E402
+
 MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
 
 ROLES = {
@@ -36,8 +39,9 @@ ROLES = {
 }
 
 app = Flask(__name__)
+harden(app)
 _ids = itertools.count(1)
-DRAFTS: dict[int, dict] = {}
+DRAFTS: BoundedStore = BoundedStore(300)
 # Model files live inside the project so a host can download them at build time.
 CACHE_DIR = os.environ.get("FASTEMBED_CACHE", str(ROOT / ".fastembed_cache"))
 CUTOFF_FILE = ROOT / "data" / "quickmatch_cutoff.json"
@@ -109,7 +113,7 @@ def start():
 def step_cv(did: int):
     d = DRAFTS.get(did) or abort(404)
     if request.method == "POST":
-        d["cv"] = (request.form.get("candidate_cv") or "").strip()
+        d["cv"] = (request.form.get("candidate_cv") or "").strip()[:20000]
         if d["cv"]:
             return redirect(url_for("step_review", did=did))
     return render_template("step_cv.html", d=d, role=ROLES[d["role"]], step=2,
@@ -119,6 +123,8 @@ def step_cv(did: int):
 @app.get("/match/<int:did>/review")
 def step_review(did: int):
     d = DRAFTS.get(did) or abort(404)
+    if "similarity" in d:
+        return redirect(url_for("result", did=did))
     if not d["cv"]:
         return redirect(url_for("step_cv", did=did))
     return render_template("step_review.html", d=d, role=ROLES[d["role"]], step=3)
@@ -127,8 +133,13 @@ def step_review(did: int):
 @app.post("/match/<int:did>/run")
 def run_match(did: int):
     d = DRAFTS.get(did) or abort(404)
+    if "similarity" in d:
+        return redirect(url_for("result", did=did))
+    if not d["cv"]:
+        return redirect(url_for("step_cv", did=did))
     d["similarity"] = similarity(d["cv"], d["role"])
     d["recommended"] = d["similarity"] >= CUTOFF
+    d["cv"] = ""  # data minimisation: the CV text is not kept once it has been scored
     return redirect(url_for("result", did=did))
 
 

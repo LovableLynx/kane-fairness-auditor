@@ -4,3 +4,4 @@ scikit-learn==1.9.0
 joblib==1.5.3
 fastembed==0.9.1
 gunicorn==23.0.0
+pypdf==5.4.0

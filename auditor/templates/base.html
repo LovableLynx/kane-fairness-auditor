@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Fairness Auditor · bias audits for hiring AI{% endblock %}</title>
+<meta name="description" content="Black-box bias audits for AI hiring tools: CV twins with a placebo control, run through each tool's own interface by Kane CLI.">
+<meta name="theme-color" content="#f6f0e1">
+<link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=bricolage-grotesque:400,600,700,800|silkscreen:400|jetbrains-mono:400,500&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='ds.css') }}">
+<script>/* hide reveal targets only while motion.js is expected; give up after 2.5s */document.documentElement.classList.add("motion");setTimeout(function(){if(!window.__motionReady)document.documentElement.classList.remove("motion")},2500);</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="{{ url_for('landing') }}" aria-label="Fairness Auditor home">
+      <span class="brand-mark" aria-hidden="true">FA</span>
+      <span>Fairness Auditor<small>POWERED BY KANE CLI</small></span>
+    </a>
+    <button class="btn btn-sm btn-ghost nav-toggle" aria-expanded="false" aria-controls="nav-links">Menu</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="{{ url_for('results') }}" {% if page == 'results' %}aria-current="page"{% endif %}>Results</a></li>
+      <li><a href="{{ url_for('method') }}" {% if page == 'method' %}aria-current="page"{% endif %}>Method</a></li>
+      <li><a href="{{ url_for('landing') }}#try">Try the tools</a></li>
+      <li><a href="{{ REPO }}" rel="noopener">GitHub ↗</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="main">{% block body %}{% endblock %}</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <p class="footer-big">Hiring AI shouldn't care <em>what your name is.</em></p>
+    <div class="footer-grid">
+      <div>
+        <p style="max-width:42ch;color:#e6dcc6">An open-source research demo: automated correspondence testing for AI hiring tools, run through their own interface by Kane CLI.</p>
+        <a class="btn btn-sm" href="{{ REPO }}" rel="noopener" style="--bg:var(--cream);--fg:var(--ink);box-shadow:3px 3px 0 var(--tomato)">View source ↗</a>
+      </div>
+      <div><h4>Product</h4><ul>
+        <li><a href="{{ url_for('results') }}">Audit results</a></li>
+        <li><a href="{{ url_for('method') }}">Method</a></li>
+        <li><a href="{{ url_for('method') }}#study">Validation study</a></li></ul></div>
+      <div><h4>Demo tools</h4><ul>
+        {% for k, t in TOOLS.items() %}<li><a href="{{ TOOL_URLS[k] }}">{{ t.name }}</a></li>{% endfor %}</ul></div>
+      <div><h4>Legal</h4><ul>
+        <li><a href="{{ url_for('legal') }}#terms">Terms of use</a></li>
+        <li><a href="{{ url_for('legal') }}#privacy">Privacy notice</a></li>
+        <li><a href="{{ url_for('legal') }}#disclaimer">Disclaimer</a></li></ul></div>
+    </div>
+    <div class="footer-note">
+      <span>Synthetic CVs only. The three hiring tools are fictional demos and not affiliated with any company.</span>
+      <span>Built for the TestMu AI Kane CLI Online Hackathon · 2026</span>
+    </div>
+  </div>
+</footer>
+<script src="{{ url_for('static', filename='motion.js') }}" defer></script>
+</body>
+</html>

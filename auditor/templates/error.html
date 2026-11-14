@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · Fairness Auditor{% endblock %}
+{% block body %}
+<section class="section">
+  <div class="narrow">
+    <div class="empty">
+      <span class="kicker">Error {{ status }}</span>
+      <h1 style="font-size:var(--step-3)">{{ title }}</h1>
+      <p class="muted">{{ body }}</p>
+      <a class="btn btn-primary" href="{{ url_for('landing') }}">Back to the start</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

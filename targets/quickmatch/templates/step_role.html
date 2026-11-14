@@ -1,6 +1,6 @@
 {% extends "shell.html" %}
 {% block body %}
-<form class="box" method="post" action="{{ url_for('start') }}">
+<form class="box" method="post" data-busy="" action="{{ url_for('start') }}">
   <h1>Which role are you hiring for?</h1>
   <p class="muted">We'll match candidates against the job description.</p>
   {% for key, r in roles.items() %}
@@ -9,6 +9,6 @@
     <span><b>{{ r.title }}</b><br><span class="muted" style="font-size:13px">{{ r.jd[:140] }}…</span></span>
   </label>
   {% endfor %}
-  <button class="go" type="submit">Continue →</button>
+  <button class="go" type="submit"><span class="lbl">Continue →</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></button>
 </form>
 {% endblock %}

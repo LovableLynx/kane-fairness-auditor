@@ -29,7 +29,7 @@ twin_audit.py               demographic gap vs placebo gap, directional effects,
         ▼
 verdict + exit code         PASS (0) · FAIL: BIASED / NAME-UNSTABLE (1) · INCONCLUSIVE (2)
         │
-gate.py + GitHub Actions    a failing audit blocks the deploy · dashboard/ shows the evidence
+gate.py + GitHub Actions    a failing audit blocks the deploy · auditor/ site shows the evidence
 ```
 
 **Why the placebo matters.** If swapping *Greg* for *Emily* changes a decision, that could be gender bias, or the model might react to any name change. So every candidate also gets a second name from the *same* demographic group (Greg → Brad). Comparing the two separates two different failures:
@@ -88,8 +88,8 @@ python audit/gate.py --target hirelens                   # expect PASS          
 # Audit the public deployment instead of a local copy
 python audit/twin_audit.py --target talentscreen --live --candidates cand01
 
-# Dashboard
-python dashboard/app.py                                  # http://127.0.0.1:5100
+# Auditor site (landing, results, method, legal)
+python auditor/app.py                                    # http://127.0.0.1:5100
 
 # Free dry runs (no browser, no credits): direct HTTP, never used for a real verdict
 python audit/gate.py --target quickmatch --direct --candidates all --length long
@@ -102,8 +102,8 @@ Kane runs headless by default. On Windows, headed Chrome screenshots time out. E
 
 ## Live deployment
 
-All three tools and the dashboard run as one web service (`serve.py`): `/talentscreen/`, `/hirelens/`, `/quickmatch/`, `/dashboard/`.
-`render.yaml` deploys it on Render's free tier straight from this repo. Real Kane audits are written to `results/`, which the hosted dashboard reads.
+The auditor site and all three tools run as one web service (`serve.py`): `/` (auditor), `/talentscreen/`, `/hirelens/`, `/quickmatch/`.
+`render.yaml` deploys it on Render's free tier straight from this repo. Real Kane audits are written to `results/`, which the hosted site reads.
 
 ```bash
 python serve.py        # the same service locally on http://127.0.0.1:8000
@@ -125,8 +125,10 @@ python serve.py        # the same service locally on http://127.0.0.1:8000
 | `audit/twin_audit.py` | Kane-driven twin audit and verdict |
 | `audit/gate.py` | Boot, audit, tear down; exit code = deploy decision |
 | `audit/study.py` | 100-candidate validation study |
-| `dashboard/` | Audit dashboard |
+| `auditor/` | Product site: landing, results, method, legal; design system in `auditor/static/ds.css` |
+| `shared/` | Hardening shared by every app: size limits, bounded stores, security headers, fixed error messages |
 | `.github/workflows/fairness-gate.yml` | CI gate on pull requests |
+| `docs/` | Audit report and demo script |
 | `.testmuai/` | Kane test and evidence from real runs |
 
 Data: [FairCVdb](https://github.com/BiDAlab/FairCVtest) (Peña et al., 2020), synthetic profiles. Built for the TestMu AI Kane CLI Online Hackathon, November 2026.

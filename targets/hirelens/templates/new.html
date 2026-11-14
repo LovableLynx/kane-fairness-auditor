@@ -2,12 +2,17 @@
 {% block title %}Add applicant · HireLens{% endblock %}
 {% block body %}
 <h1>Add applicant</h1>
-{% if error %}<p class="err" role="alert">{{ error }}</p>{% endif %}
-<form class="card" method="post" action="{{ url_for('create_applicant') }}">
+{% if error_message %}<p class="err" role="alert">{{ error_message }}</p>{% endif %}
+<form class="card" method="post" action="{{ url_for('create_applicant') }}" id="applicant-form">
   <label for="full_name">Full name (optional)</label>
-  <input id="full_name" name="full_name" placeholder="Taken from the résumé if blank">
+  <input id="full_name" name="full_name" maxlength="80" autocomplete="off" placeholder="Taken from the résumé if blank">
   <label for="resume">Résumé</label>
-  <textarea id="resume" name="resume" placeholder="Paste résumé text"></textarea>
-  <p style="margin-top:18px"><button class="btn" type="submit">Evaluate applicant</button></p>
+  <textarea id="resume" name="resume" placeholder="Paste résumé text" required></textarea>
+  <p style="margin-top:18px"><button class="btn" type="submit" id="eval-btn"><span class="spin" aria-hidden="true"></span><span class="lbl">Evaluate applicant</span></button></p>
 </form>
+<script>
+  document.getElementById('applicant-form').addEventListener('submit', () => {
+    const b = document.getElementById('eval-btn'); b.setAttribute('aria-busy', 'true'); b.querySelector('.lbl').textContent = 'Evaluating…';
+  });
+</script>
 {% endblock %}

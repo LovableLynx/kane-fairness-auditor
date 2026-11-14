@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}{{ tool.name or r.target }} audit · Fairness Auditor{% endblock %}
+{% block body %}
+<section class="section" style="padding-bottom:var(--s-6)">
+  <div class="wrap">
+    <p><a href="{{ url_for('results') }}">← All results</a></p>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px">
+      <h1 style="font-size:var(--step-3);margin:0">{{ tool.name or r.target }}</h1>
+      <span class="stamp {{ r.verdict_class }}" data-animate style="font-size:.9rem">{{ r.verdict }}</span>
+    </div>
+    <p class="muted" style="margin-top:12px">{{ tool.ui }} · {{ tool.model }}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+      <span class="chip {{ 'chip-verified' if r.verified else 'chip-dry' }} chip-dot">{{ r.driver }}</span>
+      <span class="chip chip-plain">{{ r.length }} CVs</span>
+      <span class="chip chip-plain">placebo {{ 'on' if r.placebo else 'off' }}</span>
+      <span class="chip chip-plain">threshold {{ r.threshold }}</span>
+      {% if r.credits %}<span class="chip chip-plain">{{ '%.0f'|format(r.credits) }} Kane credits</span>{% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="grid-4">
+    <div class="card stat reveal"><div class="num"><span data-count="{{ r.flips }}">{{ r.flips }}</span><span class="muted" style="font-size:.5em">/{{ r.candidates|length }}</span></div><div class="lbl">decisions changed across sex or name group</div></div>
+    <div class="card stat reveal" style="--i:1"><div class="num"><span data-count="{{ r.placebo_flips or 0 }}">{{ r.placebo_flips or 0 }}</span><span class="muted" style="font-size:.5em">/{{ r.candidates|length }}</span></div><div class="lbl">decisions changed with a same-group name (placebo)</div></div>
+    <div class="card stat reveal" style="--i:2"><div class="num">{{ '%+.3f'|format(r.effects.gender_effect_female_minus_male.mean) }}</div><div class="lbl">average female − male score</div></div>
+    <div class="card stat reveal" style="--i:3"><div class="num">{{ '%+.3f'|format(r.effects.group_effect_C_minus_A.mean) }}</div><div class="lbl">average name group C − A score</div></div>
+  </div>
+
+  <div class="card" style="margin-top:24px">
+    <span class="kicker">Why this verdict</span>
+    <ul style="margin:0;padding-left:20px">{% for x in r.reasons %}<li>{{ x }}</li>{% endfor %}</ul>
+  </div>
+</section>
+
+<section class="section" style="padding-bottom:0">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="kicker">CV twins</span><h2 style="font-size:var(--step-2)">Identical qualifications. Only the name differs.</h2></div>
+      <p class="muted small"><span class="sel">✔</span> selected · <span class="rej">✘</span> rejected · shaded rows changed decision</p>
+    </div>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="CV twin results">
+      <table class="t">
+        <thead><tr>
+          <th scope="col" class="sticky">Candidate</th>
+          {% for t in r.candidates[0].twins %}<th scope="col">{{ t.gender }} · group {{ t.group }}{% if t.slot %}<br>placebo{% endif %}</th>{% endfor %}
+          <th scope="col">Demographic gap</th><th scope="col">Placebo gap</th><th scope="col">Evidence</th>
+        </tr></thead>
+        <tbody>
+        {% for c in r.candidates %}
+          <tr class="{{ 'flag' if c.demo_flip or c.placebo_flip }}">
+            <th scope="row" class="sticky">{{ c.candidate }}</th>
+            {% for t in c.twins %}
+              <td><div class="small">{{ t.name }}</div>
+                {% if t.score is not none %}<span class="score">{{ '%.3f'|format(t.score) }}</span>
+                  <span class="{{ 'sel' if t.selected else 'rej' }}" aria-label="{{ 'selected' if t.selected else 'rejected' }}">{{ '✔' if t.selected else '✘' }}</span>
+                {% else %}<span class="muted small">not read</span>{% endif %}</td>
+            {% endfor %}
+            <td class="score">{{ '%.3f'|format(c.demo_gap) if c.demo_gap is not none else '–' }}{% if c.demo_flip %} <span class="rej small">flip</span>{% endif %}</td>
+            <td class="score">{{ '%.3f'|format(c.placebo_gap) if c.placebo_gap is not none else '–' }}{% if c.placebo_flip %} <span class="rej small">flip</span>{% endif %}</td>
+            <td>{% if c.test_url %}<a href="{{ c.test_url }}" rel="noopener" target="_blank">Kane run ↗</a>{% else %}<span class="muted small">{{ 'dry run' if not r.verified else c.status }}</span>{% endif %}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="kicker">Group view</span><h2 style="font-size:var(--step-2)">NYC LL144-style impact ratios</h2></div>
+      <p class="muted small">Selection rate of each category ÷ the highest rate. The line marks 0.8, the four-fifths rule of thumb. Illustrative only at this sample size.</p>
+    </div>
+    <div class="grid-2">
+      {% for dim, rows in r.impact_ratios.items() %}
+      <div class="card reveal" style="--i:{{ loop.index0 }}">
+        <h3>{{ 'Sex' if dim == 'gender' else 'Race / ethnicity (name group)' }}</h3>
+        {% for g, v in rows|dictsort %}
+        <div style="margin-top:14px">
+          <div style="display:flex;justify-content:space-between" class="small"><b>{{ g }}</b><span class="score">rate {{ '%.2f'|format(v.selection_rate) }} · ratio {{ v.impact_ratio }}</span></div>
+          <div class="meter {{ 'low' if v.impact_ratio is not none and v.impact_ratio < 0.8 }}" data-animate role="img" aria-label="impact ratio {{ v.impact_ratio }}"><i style="width:{{ ((v.impact_ratio or 0) * 100)|round(1) }}%"></i></div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+    <p class="muted small" style="margin-top:20px">Twin flips can reveal discrimination that aggregate ratios hide: on the biased tool, the ratio for sex can read 1.0 while every woman scores below her identical male twin.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="panel small">
+    <span class="kicker">Provenance</span>
+    <dl style="display:grid;grid-template-columns:max-content 1fr;gap:6px 18px;margin:0">
+      <dt class="muted">Target URL</dt><dd class="mono" style="margin:0;word-break:break-all">{{ r.url or '—' }}</dd>
+      <dt class="muted">Model reported</dt><dd class="mono" style="margin:0">{{ r.model }}</dd>
+      <dt class="muted">Generated</dt><dd class="mono" style="margin:0">{{ r.generated_at }}</dd>
+      <dt class="muted">Driver</dt><dd style="margin:0">{{ r.driver }}</dd>
+    </dl>
+  </div>
+</section>
+{% endblock %}

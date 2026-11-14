@@ -194,37 +194,132 @@ def _section(text: str, name: str) -> str:
     return m.group(1).strip() if m else ""
 
 
+ROLE_SYNONYMS = {  # occupation code -> phrases that identify it in a free-form CV
+    0: ["project manager", "programme manager", "program manager", "delivery manager", "scrum master"],
+    1: ["accountant", "bookkeeper", "finance officer", "accounts officer"],
+    2: ["marketing specialist", "marketing manager", "marketing executive", "brand manager", "content strategist"],
+    3: ["sous chef", "head chef", "chef", "cook"],
+    4: ["retail associate", "sales associate", "shop assistant", "cashier", "store assistant"],
+    5: ["photographer", "videographer"],
+    6: ["software engineer", "software developer", "web developer", "backend developer", "frontend developer",
+        "full stack developer", "full-stack developer", "programmer", "devops engineer"],
+    7: ["data analyst", "business analyst", "data scientist", "bi analyst", "analytics analyst"],
+    8: ["teacher", "lecturer", "tutor", "instructor"],
+    9: ["registered nurse", "nurse", "midwife"],
+}
+EDU_KEYWORDS = [  # checked from highest level down
+    (1.0, r"\b(ph\.?d|doctorate|doctor of)\b"),
+    (0.8, r"\b(master'?s|msc|m\.sc|mba|ma|meng|mphil)\b"),
+    (0.6, r"\b(bachelor'?s|bsc|b\.sc|ba|beng|b\.eng|undergraduate degree|honours degree)\b"),
+    (0.4, r"\b(associate degree|diploma|hnd|ond|foundation degree)\b"),
+    (0.2, r"\b(high school|secondary school|waec|gcse|a-levels?)\b"),
+]
+LANG_LEVEL_WORDS = [
+    (1.0, r"native|mother tongue|fluent|bilingual|c2|c1"),
+    (0.8, r"professional|advanced|proficient|b2"),
+    (0.6, r"intermediate|conversational|b1"),
+    (0.4, r"basic|elementary|a2"),
+    (0.2, r"beginner|a1"),
+]
+
+
+def _find_role(text: str) -> int | None:
+    low = text.lower()
+    hits = [(low.find(p), code) for code, phrases in ROLE_SYNONYMS.items() for p in phrases if p in low]
+    return min(hits)[1] if hits else None
+
+
+def _years_freeform(text: str) -> int | None:
+    stated = [int(n) for n in re.findall(r"(\d{1,2})\+?\s*(?:years|yrs)\b", text, re.I) if int(n) <= 45]
+    if stated:
+        return max(stated)
+    total = 0
+    for a, b in re.findall(r"((?:19|20)\d{2})\s*(?:-|–|—|to)\s*((?:19|20)\d{2}|present|current|now)", text, re.I):
+        end = 2026 if not b[:2].isdigit() else int(b)
+        total += max(0, end - int(a))
+    return min(total, 45) if total else None
+
+
 def parse(text: str) -> dict:
-    """Extract job-relevant fields. Raises ValueError if the CV can't be read."""
+    """Extract job-relevant fields from a CV.
+
+    Uses the section layout of our generated CVs when present and falls back to keyword
+    heuristics for free-form CVs. Anything estimated is listed in `notes`.
+    Raises ValueError (with a recruiter-friendly message) if no supported role is found."""
+    notes: list[str] = []
     title = _section(text, "CURRENT ROLE").splitlines()[0].strip() if _section(text, "CURRENT ROLE") else ""
     occ = next((c for c, (t, _) in OCCUPATIONS.items() if t.lower() == title.lower()), None)
     if occ is None:
-        raise ValueError(f"unrecognised role: {title!r}")
+        occ = _find_role(title) if title else None
+    if occ is None:
+        occ = _find_role(text)
+        if occ is not None:
+            notes.append("role")
+    if occ is None:
+        raise ValueError("we couldn't find a supported job title. Supported roles: "
+                         + ", ".join(t for t, _ in OCCUPATIONS.values()))
+
     m = re.search(r"(\d+)\s+years?", _section(text, "EXPERIENCE"))
-    years = int(m.group(1)) if m else 0
+    if m:
+        years = int(m.group(1))
+    else:
+        years = _years_freeform(text)
+        notes.append("experience")
+        years = years or 0
+
     edu_txt = _section(text, "EDUCATION").lower()
-    edu = next((v for v, t in EDUCATION.items() if t.lower() in edu_txt), 0.2)
+    edu = next((v for v, t in EDUCATION.items() if t.lower() in edu_txt), None)
+    if edu is None:
+        edu = next((v for v, pat in EDU_KEYWORDS if re.search(pat, text, re.I)), 0.2)
+        notes.append("education")
+
     avail_m = re.search(r"available to start ([^.]+)\.", text, re.I)
-    avail = next((v for v, t in AVAILABILITY.items() if avail_m and t == avail_m.group(1).strip().lower()), 0.2)
+    avail = next((v for v, t in AVAILABILITY.items() if avail_m and t == avail_m.group(1).strip().lower()), None)
+    if avail is None:
+        if re.search(r"\bimmediate(ly)?\b", text, re.I):
+            avail = 1.0
+        elif m2 := re.search(r"(\d+)\s*(week|month)s?'?\s*notice", text, re.I):
+            n, unit = int(m2.group(1)), m2.group(2).lower()
+            avail = 0.8 if unit == "week" and n <= 2 else 0.6 if (unit == "week" or n <= 1) else 0.4 if n <= 2 else 0.2
+        else:
+            avail = 0.6
+        notes.append("availability")
+
     langs = []
     lang_txt = _section(text, "LANGUAGES")
     for name in LANGUAGES:
         lm = re.search(rf"{name}\s*:\s*(A1|A2|B1|B2|C1|C2)", lang_txt, re.I)
-        lvl = lm.group(1).upper() if lm else None
-        if lvl == "C1":
-            lvl = "C2"
-        langs.append(next((v for v, t in LEVELS.items() if t == lvl), 0.0))
-    rec = 1.0 if "recommendation" in _section(text, "REFERENCES").lower() else 0.0
+        if lm:
+            lvl = "C2" if lm.group(1).upper() == "C1" else lm.group(1).upper()
+            langs.append(next((v for v, t in LEVELS.items() if t == lvl), 0.0))
+            continue
+        if lang_txt and not re.search(name, text, re.I):
+            langs.append(0.0)
+            continue
+        near = re.search(rf"{name}[^\n]{{0,30}}", text, re.I)
+        if near:
+            langs.append(next((v for v, pat in LANG_LEVEL_WORDS if re.search(pat, near.group(0), re.I)), 0.6))
+        else:
+            langs.append(0.8 if name == "English" else 0.0)  # a CV written in English implies working English
+        if not lang_txt:
+            notes.append(f"language:{name}")
+
+    refs = _section(text, "REFERENCES").lower()
+    rec = 1.0 if ("recommendation" in refs if refs else
+                  re.search(r"letter of recommendation|recommendation letter", text, re.I)) else 0.0
+    if not refs:
+        notes.append("recommendation")
     return {
         "occupation": float(occ), "suitability": OCCUPATIONS[occ][1], "education": edu,
         "experience": min(years, 10) / 10, "recommendation": rec, "availability": avail,
         "languages": langs, "title": OCCUPATIONS[occ][0], "years": years,
+        "notes": sorted({n.split(":")[0] for n in notes}),
     }
 
 
 def infer_identity(text: str) -> tuple[str, str]:
     """What a careless vendor does: guess gender and group from name and pronouns."""
-    first_line = text.strip().splitlines()[0].split()
+    first_line = (text.strip().splitlines() or ["?"])[0].split() or ["?"]
     first, last = first_line[0], first_line[-1]
     gender, group = None, None
     if first in N.FIRST_TO:

@@ -1,11 +1,11 @@
 {% extends "shell.html" %}
 {% block body %}
-<form class="box" method="post">
+<form class="box" method="post" data-busy="">
   <h1>Who's the candidate?</h1>
   <p class="muted">Role: {{ role.title }}. Paste their CV below.</p>
-  {% if error %}<p style="color:var(--berry)">Please paste a CV to continue.</p>{% endif %}
+  {% if error %}<p style="color:var(--berry)" role="alert">Please paste a CV to continue.</p>{% endif %}
   <label for="candidate_cv" class="muted" style="font-size:13px">Candidate's CV</label>
   <textarea id="candidate_cv" name="candidate_cv">{{ d.cv }}</textarea>
-  <button class="go" type="submit">Continue →</button>
+  <button class="go" type="submit"><span class="lbl">Continue →</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></button>
 </form>
 {% endblock %}

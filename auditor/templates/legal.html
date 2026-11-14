@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Terms, privacy and disclaimer · Fairness Auditor{% endblock %}
+{% block body %}
+<section class="section">
+  <div class="wrap with-toc">
+    <nav class="toc small" aria-label="On this page">
+      <a href="#terms">Terms of use</a><a href="#privacy">Privacy notice</a><a href="#disclaimer">Disclaimer</a><a href="#contact">Contact</a>
+    </nav>
+    <article class="prose">
+      <span class="kicker">Legal</span>
+      <h1 style="font-size:var(--step-3)">Terms, privacy and disclaimer</h1>
+      <p class="muted small">Last updated 14 November 2026. Written in plain language. This is a research demonstration, not a commercial service.</p>
+
+      <h2 id="terms">Terms of use</h2>
+      <ul>
+        <li>This site is an open-source research demonstration built for a hackathon. It is provided "as is", without warranties of any kind, and may change or go offline at any time.</li>
+        <li>The three hiring tools (TalentScreen, HireLens, QuickMatch) are <b>fictional demos</b>. One contains deliberately planted bias for testing purposes. They must not be used to evaluate real candidates or make real hiring decisions.</li>
+        <li>Use the provided sample CVs or invented details. Do not submit real people's CVs or any sensitive personal information.</li>
+        <li>Do not attempt to disrupt the service, for example by automated flooding. Requests are size-limited and stored data is capped.</li>
+        <li>The code is published on GitHub. Third-party data and models keep their own licences: FairCVdb (Peña et al., 2020) and sentence-transformers/all-MiniLM-L6-v2 (Apache-2.0).</li>
+      </ul>
+
+      <h2 id="privacy">Privacy notice</h2>
+      <p>We designed the demo to collect as little as possible. This notice follows the transparency principles of the GDPR, UK GDPR and the Nigeria Data Protection Act 2023 (NDPA).</p>
+      <h3>What is processed</h3>
+      <ul>
+        <li><b>CV text you submit</b> to a demo tool: it is read to produce a score. TalentScreen and HireLens keep the extracted fields and the name for the "recent decisions" list. QuickMatch keeps the CV text only until the match runs, then deletes it.</li>
+        <li><b>Technical data</b> your browser sends with every request (such as IP address and user agent) may appear in our hosting provider's short-lived server logs.</li>
+      </ul>
+      <h3>How long</h3>
+      <p>Submissions live <b>in memory only</b>, are never written to disk or a database, are capped at the most recent few hundred entries, and disappear whenever the service restarts. On the free hosting tier that happens after about 15 minutes without visitors.</p>
+      <h3>Why, and what we don't do</h3>
+      <ul>
+        <li>Purpose: demonstrating how AI hiring tools can be audited for bias. Legal basis: legitimate interest in research and education, and you choose what to submit.</li>
+        <li>No accounts, no cookies for tracking, no analytics, no advertising, no selling or sharing of data. Fonts load from Bunny Fonts, a privacy-focused font CDN that states it does not track visitors.</li>
+        <li><b>Sensitive inference warning:</b> TalentScreen deliberately guesses sex and ethnicity from names to demonstrate a harmful practice. Inferring ethnicity is processing of special-category data under GDPR Art. 9 and sensitive personal data under the NDPA. This is exactly why you should only submit the sample CVs.</li>
+      </ul>
+      <h3>Your rights</h3>
+      <p>Because nothing is stored persistently or linked to you, there is usually nothing for us to retrieve or erase. If you are concerned about something you submitted, contact us (below) and we will restart the service, which deletes all submissions.</p>
+
+      <h2 id="disclaimer">Disclaimer</h2>
+      <ul>
+        <li><b>Not legal advice.</b> References to NYC Local Law 144, the EU AI Act, the four-fifths rule, GDPR or the NDPA are for context only. The "LL144-style" impact ratios shown here are not an independent bias audit within the meaning of that law.</li>
+        <li><b>Fictional tools.</b> TalentScreen, HireLens and QuickMatch are invented for this demo and are not affiliated with any company or product of a similar name. Findings about them say nothing about any real vendor.</li>
+        <li><b>The open-source model.</b> Findings about all-MiniLM-L6-v2 describe its behaviour in this specific setup (CV-to-job-description similarity with a calibrated cutoff). They are not a general claim about the model or its authors.</li>
+        <li><b>Names as proxies.</b> Name groups come from a published correspondence study and stand in for <em>perceived</em> sex and ethnicity. They make no claim about any individual's identity.</li>
+      </ul>
+
+      <h2 id="contact">Contact</h2>
+      <p>Open an issue on the <a href="{{ REPO }}/issues" rel="noopener">GitHub repository</a>.</p>
+    </article>
+  </div>
+</section>
+{% endblock %}

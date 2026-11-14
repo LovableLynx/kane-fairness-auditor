@@ -19,23 +19,40 @@ from flask import Flask, abort, redirect, render_template, request, url_for
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from cvkit import cv  # noqa: E402
+from cvkit.extract import SUPPORTED, UnsupportedFile, to_text  # noqa: E402
+from shared.hardening import BoundedStore, harden  # noqa: E402
 
 MODEL_NAME = os.environ.get("TARGET_MODEL", "biased")
 MODEL = joblib.load(ROOT / "models" / f"{MODEL_NAME}.pkl")
 THRESHOLD = 0.5
 JOB = {"title": "Data Analyst", "team": "Insights", "location": "Remote"}
+ERRORS = {
+    "empty": "Add a CV first: drop a file or paste the text.",
+    "filetype": "That file type isn't supported. Upload a .txt, .pdf or .docx CV.",
+    "unreadable": "We couldn't read that file. Try saving it as PDF or plain text, or paste the text instead.",
+    "norole": "We couldn't find a supported job title in that CV. Supported roles: "
+              + ", ".join(t for t, _ in cv.OCCUPATIONS.values()) + ".",
+}
+FIELD_LABELS = {"role": "Role", "experience": "Experience", "education": "Education",
+                "language": "Languages", "recommendation": "Recommendation", "availability": "Availability"}
 
 app = Flask(__name__)
 app.jinja_env.globals["zip"] = zip
+harden(app, ERRORS)
 _ids = itertools.count(1001)
-DECISIONS: dict[int, dict] = {}
+DECISIONS: BoundedStore = BoundedStore(300)
+
+
+@app.context_processor
+def job_context():
+    return {"job": JOB}
 
 
 def screen(text: str, source: str) -> dict:
     parsed = cv.parse(text)
     gender, group = cv.infer_identity(text)
     score = float(MODEL.predict_proba([cv.features(parsed, gender, group)])[0, 1])
-    name = text.strip().splitlines()[0].strip()
+    name = text.strip().splitlines()[0].strip()[:80]
     strengths = []
     if parsed["years"] >= 6:
         strengths.append(f"{parsed['years']} years' experience")
@@ -48,7 +65,7 @@ def screen(text: str, source: str) -> dict:
     d = {
         "id": next(_ids), "name": name, "score": score, "shortlisted": score >= THRESHOLD,
         "parsed": parsed, "strengths": strengths, "source": source,
-        "at": datetime.now().strftime("%H:%M:%S"),
+        "at": datetime.now().strftime("%H:%M"),
     }
     DECISIONS[d["id"]] = d
     return d
@@ -57,7 +74,7 @@ def screen(text: str, source: str) -> dict:
 @app.get("/")
 def home():
     recent = sorted(DECISIONS.values(), key=lambda d: d["id"], reverse=True)[:8]
-    return render_template("home.html", job=JOB, recent=recent, error=request.args.get("error"))
+    return render_template("home.html", job=JOB, recent=recent, accept=",".join(SUPPORTED))
 
 
 @app.post("/screen")
@@ -66,22 +83,23 @@ def screen_cv():
     source = "pasted"
     f = request.files.get("cv_file")
     if f and f.filename:
-        if not f.filename.lower().endswith(".txt"):
-            return redirect(url_for("home", error="Please upload a .txt CV for now."))
-        text, source = f.read().decode("utf-8", errors="replace"), f"uploaded {f.filename}"
-    if not text:
-        return redirect(url_for("home", error="Add a CV first."))
+        try:
+            text, source = to_text(f.filename, f.read()), f"uploaded {Path(f.filename).name[:60]}"
+        except UnsupportedFile as e:
+            return redirect(url_for("home", error="filetype" if "upload a" in str(e) else "unreadable"))
+    if not text.strip():
+        return redirect(url_for("home", error="empty"))
     try:
         d = screen(text, source)
-    except (ValueError, IndexError) as e:
-        return redirect(url_for("home", error=f"Couldn't read that CV ({e})."))
+    except (ValueError, IndexError):
+        return redirect(url_for("home", error="norole"))
     return redirect(url_for("result", did=d["id"]))
 
 
 @app.get("/result/<int:did>")
 def result(did: int):
     d = DECISIONS.get(did) or abort(404)
-    return render_template("result.html", d=d, job=JOB, cv=cv)
+    return render_template("result.html", d=d, job=JOB, cv=cv, labels=FIELD_LABELS)
 
 
 @app.get("/favicon.ico")
