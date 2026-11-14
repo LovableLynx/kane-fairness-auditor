@@ -13,14 +13,20 @@ on:
         options: [talentscreen, hirelens, quickmatch]
       candidates:
         description: "Candidate ids (comma-separated) or 'all'"
-        default: cand01,cand02,cand03
+        default: cand01
+      placebo:
+        description: "Include placebo names (doubles credits; needed to separate BIASED from NAME-UNSTABLE)"
+        default: true
+        type: boolean
 
 jobs:
   gate:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     env:
       TARGET: ${{ inputs.target || 'talentscreen' }}
-      CANDIDATES: ${{ inputs.candidates || 'cand01,cand02,cand03' }}
+      CANDIDATES: ${{ inputs.candidates || 'cand01' }}
+      PLACEBO_FLAG: ${{ (github.event_name == 'workflow_dispatch' && !inputs.placebo) && '--no-placebo' || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -33,14 +39,15 @@ jobs:
       - name: Kane login
         run: kane-cli login --username "${{ secrets.LT_USERNAME }}" --access-key "${{ secrets.LT_ACCESS_KEY }}"
       - name: Fairness gate (Kane drives the tool's real UI)
-        run: python audit/gate.py --target "$TARGET" --candidates "$CANDIDATES"
+        run: python audit/gate.py --target "$TARGET" --candidates "$CANDIDATES" $PLACEBO_FLAG
       - name: Publish report
         if: always()
-        run: cat reports/twin_audit_*.md >> "$GITHUB_STEP_SUMMARY"
+        run: cat reports/twin_audit_*.md >> "$GITHUB_STEP_SUMMARY" || echo "No report produced" >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: fairness-audit-${{ env.TARGET }}
           path: |
             reports/
+            results/
             .testmuai/

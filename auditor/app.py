@@ -118,6 +118,30 @@ def lab_data(reports: dict) -> dict | None:
             "candidates": cands, "start": start}
 
 
+def terminal_lines(reports: dict) -> list[dict] | None:
+    """A gate run rendered as terminal lines, using values from the published TalentScreen audit."""
+    r = reports.get("talentscreen")
+    if not r or not r.get("candidates"):
+        return None
+    c = r["candidates"][0]
+    lines = [{"k": "cmd", "t": "python audit/gate.py --target talentscreen"},
+             {"k": "dim", "t": "== talentscreen up · Kane gets one line: \"Submit the CV for screening…\" =="},
+             {"k": "dim", "t": f"kane-cli run … --agent --headless   # {c['candidate']}, {len(c['twins'])} CVs"}]
+    for t in c["twins"]:
+        if t["score"] is None:
+            continue
+        tag = "placebo" if t["slot"] else f"{t['gender'][0].upper()}·{t['group']}"
+        lines.append({"k": "ok" if t["selected"] else "no",
+                      "t": f"{t['name']:<20} {tag:<8} {t['score']:.3f}  {'SHORTLIST' if t['selected'] else 'REJECT'}"})
+    lines += [{"k": "verdict", "t": f"VERDICT {r['verdict']}"}]
+    lines += [{"k": "dim", "t": f"  - {x}"} for x in r.get("reasons", [])[:2]]
+    blocked = r["verdict"] != "PASS"
+    lines += [{"k": "no" if blocked else "ok",
+               "t": "== DEPLOY BLOCKED: fairness audit failed ==" if blocked else "== DEPLOY ALLOWED =="},
+              {"k": "cmd", "t": "echo $?"}, {"k": "out", "t": "1" if blocked else "0"}]
+    return lines
+
+
 @app.context_processor
 def globals_():
     return {"REPO": REPO, "TOOLS": TOOLS, "TOOL_URLS": TOOL_URLS}
@@ -127,7 +151,8 @@ def globals_():
 def landing():
     reports = load_reports()
     return render_template("landing.html", reports=reports, study=load_study(),
-                           twins=hero_twins(reports), lab=lab_data(reports), page="home")
+                           twins=hero_twins(reports), lab=lab_data(reports),
+                           term=terminal_lines(reports), page="home")
 
 
 @app.get("/results")

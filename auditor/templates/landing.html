@@ -49,6 +49,16 @@
   </div>
 </div>
 
+
+<section class="statstrip" aria-label="Key numbers">
+  <div class="wrap statstrip-grid">
+    <div class="stat reveal" style="--i:0"><div class="num">1,600</div><div class="lbl">CVs scored in the validation study</div></div>
+    <div class="stat reveal" style="--i:1"><div class="num">3</div><div class="lbl">different interfaces, one unchanged audit</div></div>
+    <div class="stat reveal" style="--i:2"><div class="num">0</div><div class="lbl">selectors, APIs or model access needed</div></div>
+    <div class="stat reveal" style="--i:3"><div class="num">{% if study %}<span data-count="{{ (study.by_length.long.flip_rate_at_target_cutoff*100)|round(0) }}">{{ (study.by_length.long.flip_rate_at_target_cutoff*100)|round(0)|int }}</span>%{% else %}–{% endif %}</div><div class="lbl">of realistic CVs flip on a name change (open-source model)</div></div>
+  </div>
+</section>
+
 <section class="section" id="problem">
   <div class="wrap">
     <div class="section-head">
@@ -77,6 +87,44 @@
     </ol>
   </div>
 </section>
+
+
+{% if term %}
+<section class="section" id="kane" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <div><span class="kicker">Kane in the loop</span><h2>The agent doesn't grade<br>its own <span class="hl">hiring decisions</span>.</h2></div>
+      <p class="muted">An independent check runs on every release. Kane CLI drives the real interface and stores what it sees; the gate turns that into an exit code your pipeline already understands.</p>
+    </div>
+    <div class="kane-grid">
+      <figure class="window dark term-window" style="margin:0">
+        <div class="window-bar" aria-hidden="true"><span class="box"></span><span>TERMINAL · FAIRNESS GATE</span><span class="stripes"></span><span class="box"></span></div>
+        <pre class="term" id="term" aria-label="Example fairness gate run"><code>{% for l in term %}<span class="tl {{ l.k }}">{{ l.t }}</span>{% endfor %}</code></pre>
+        <figcaption class="term-cap">Illustrative run · values from the published TalentScreen audit</figcaption>
+      </figure>
+      <div class="evidence">
+        <div class="window">
+          <div class="window-bar" aria-hidden="true"><span class="box"></span><span>EVIDENCE.PACK</span><span class="stripes"></span></div>
+          <ul class="ev-list">
+            <li><b>Sealed Kane evidence</b><span>every step, screenshot and stored value, per run</span></li>
+            <li><b>Test Manager link</b><span>replayable, shareable proof for each candidate</span></li>
+            <li><b>Verdict + reasons</b><span>BIASED vs NAME-UNSTABLE, with the numbers behind it</span></li>
+            <li><b>Exit code</b><span>0 allow · 1 block · 2 inconclusive (also blocks)</span></li>
+          </ul>
+        </div>
+        <div class="copy-chip">
+          <code>python audit/gate.py --target talentscreen</code>
+          <button class="btn btn-sm btn-lime" type="button" data-copy="python audit/gate.py --target talentscreen">Copy</button>
+        </div>
+        <div class="works">
+          <span class="kicker" style="margin:0">Works with</span>
+          <span class="chip">Kane CLI</span><span class="chip">GitHub Actions</span><span class="chip">Claude Code</span><span class="chip">Any CI</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
 
 {% if lab %}
 <section class="section" id="lab" style="padding-top:0">

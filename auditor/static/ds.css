@@ -275,6 +275,47 @@ table.t { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 
 @media (max-width: 960px) { .pipeline { grid-template-columns: 1fr 1fr; } .pipe:nth-child(2)::after { display: none; } }
 @media (max-width: 560px) { .pipeline { grid-template-columns: 1fr; } .pipe::after { display: none; } }
 
+/* stats strip */
+.statstrip { border-bottom: var(--bw) solid var(--ink); background: var(--paper); }
+.statstrip-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+.statstrip .stat { padding: var(--s-6) var(--s-5); border-left: var(--bw) solid var(--ink); }
+.statstrip .stat:last-child { border-right: var(--bw) solid var(--ink); }
+.statstrip .stat:nth-child(4) .num { background: var(--lime); display: inline-block; padding: 0 .1em; }
+@media (max-width: 860px) {
+  .statstrip-grid { grid-template-columns: 1fr 1fr; }
+  .statstrip .stat { border-bottom: var(--bw) solid var(--ink); padding: var(--s-5) var(--s-4); }
+  .statstrip .stat:nth-child(2n) { border-right: var(--bw) solid var(--ink); }
+  .statstrip .stat:nth-last-child(-n+2) { border-bottom: 0; }
+}
+
+/* Kane terminal + evidence */
+.kane-grid { display: grid; grid-template-columns: 1.35fr .65fr; gap: var(--s-6); align-items: start; }
+@media (max-width: 960px) { .kane-grid { grid-template-columns: 1fr; } }
+.kane-grid > * { min-width: 0; }
+.term-window { box-shadow: 8px 8px 0 var(--blue); }
+.term { margin: 0; padding: var(--s-5); font: 400 .8rem/1.75 var(--font-mono); color: #d9dae0; overflow-x: auto; min-height: 420px; }
+.term .tl { display: block; white-space: pre; }
+.term .cmd::before { content: "$ "; color: var(--lime); }
+.term .cmd { color: #fff; }
+.term .dim { color: #8b8d99; }
+.term .ok { color: #7ee2a8; } .term .ok::before { content: "✓ "; }
+.term .no { color: #ff8f84; } .term .no::before { content: "✗ "; }
+.term .verdict { color: var(--ink); background: var(--lime); display: inline-block; padding: 0 6px; margin-top: 6px; }
+.term .out { color: #fff; }
+.motion .term.typing .tl { visibility: hidden; }
+.motion .term.typing .tl.shown { visibility: visible; animation: termin 160ms steps(3) both; }
+@keyframes termin { from { opacity: 0; } }
+.term-cap { padding: 0 var(--s-5) var(--s-4); font: 400 .6rem/1.4 var(--font-pixel); color: #8b8d99; letter-spacing: .04em; }
+.evidence { display: grid; gap: var(--s-5); }
+.ev-list { list-style: none; margin: 0; padding: var(--s-4) var(--s-5) var(--s-5); display: grid; gap: var(--s-4); }
+.ev-list li { display: grid; gap: 2px; padding-left: 22px; position: relative; }
+.ev-list li::before { content: ""; position: absolute; left: 0; top: 5px; width: 11px; height: 11px; background: var(--lime); border: 1.5px solid var(--ink); }
+.ev-list span { color: var(--ink-2); font-size: var(--step--1); }
+.copy-chip { display: flex; align-items: center; gap: var(--s-3); border: var(--bw) solid var(--ink); background: var(--ink); color: #fff; padding: 8px 8px 8px 14px; box-shadow: var(--shadow); }
+.copy-chip code { flex: 1; font-size: .78rem; overflow-x: auto; white-space: nowrap; }
+.copy-chip .btn { flex: none; box-shadow: none; border-color: var(--lime); }
+.works { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
 /* ---------- 6. Twin Lab ---------- */
 .lab { display: grid; grid-template-columns: .85fr 1.15fr; border: var(--bw) solid var(--ink); box-shadow: var(--shadow-lg); background: var(--paper); }
 @media (max-width: 900px) { .lab { grid-template-columns: 1fr; } }

@@ -137,6 +137,27 @@
     }
   }
 
+  // ---- terminal: print lines one by one when scrolled into view
+  const term = $("#term");
+  if (term && !reduce && "IntersectionObserver" in window) {
+    const lines = [...term.querySelectorAll(".tl")];
+    term.classList.add("typing");
+    const io3 = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      io3.disconnect();
+      let n = 0;
+      const step = () => {
+        if (n >= lines.length) return;
+        const l = lines[n++];
+        l.classList.add("shown");
+        const pause = l.classList.contains("cmd") ? 520 : l.classList.contains("verdict") ? 700 : 170;
+        setTimeout(step, pause);
+      };
+      step();
+    }), { threshold: 0.35 });
+    io3.observe(term);
+  }
+
   // ---- copy buttons
   document.querySelectorAll("[data-copy]").forEach((btn) => btn.addEventListener("click", async () => {
     try { await navigator.clipboard.writeText(btn.dataset.copy); const o = btn.textContent; btn.textContent = "Copied ✓"; setTimeout(() => (btn.textContent = o), 1400); } catch (_) { /* clipboard blocked */ }
