@@ -346,6 +346,7 @@ def main() -> int:
                     help="skip placebo names (halves Kane credits, but cannot separate name noise from bias)")
     ap.add_argument("--threshold", type=float, default=0.05)
     ap.add_argument("--direct", action="store_true", help="dev dry run through the target's direct adapter")
+    ap.add_argument("--live", action="store_true", help="audit the public deployment (live_url) instead of localhost")
     ap.add_argument("--headed", action="store_true", help="show the browser (headless default)")
     ap.add_argument("--parallel", type=int, default=1)
     ap.add_argument("--timeout", type=int, default=1500)
@@ -353,6 +354,8 @@ def main() -> int:
     args = ap.parse_args()
 
     target = json.loads((ROOT / "audit" / "targets.json").read_text(encoding="utf-8"))[args.target]
+    if args.live:
+        target["url"] = target["live_url"]
     manifest = {c["candidate"]: c for c in json.loads(MANIFEST.read_text())}
     if args.candidates == "all":
         args.candidates = ",".join(manifest)
@@ -385,7 +388,7 @@ def main() -> int:
     eff = effects(done)
     ratios = impact_ratios(done)
     verdict, code, reasons = decide(done, eff, ratios, args.threshold, args.placebo)
-    meta = {"target": args.target, "verdict": verdict, "reasons": reasons, "model": model, "driver": driver,
+    meta = {"target": args.target, "url": target["url"], "verdict": verdict, "reasons": reasons, "model": model, "driver": driver,
             "length": args.length, "placebo": args.placebo, "threshold": args.threshold,
             "max_gap": max((r.demo_gap for r in done if r.demo_gap is not None), default=0.0),
             "flips": sum(bool(r.demo_flip) for r in done),

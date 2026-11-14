@@ -1,5 +1,7 @@
 # Kane Fairness Auditor
 
+**Live demo:** https://kane-fairness-auditor.onrender.com (free tier; the first visit after idle takes about a minute to wake up)
+
 **Bias audits for AI hiring tools, run through the tool's own interface by Kane CLI.**
 
 > Fairness toolkits need the model. Employers only get a login screen.
@@ -82,6 +84,9 @@ npm install -g @testmuai/kane-cli && kane-cli login
 # Gate a tool: boots it, runs the Kane audit through its UI, exits 0/1/2
 python audit/gate.py --target talentscreen               # expect FAIL: BIASED  → deploy blocked
 python audit/gate.py --target hirelens                   # expect PASS          → deploy allowed
+
+# Audit the public deployment instead of a local copy
+python audit/twin_audit.py --target talentscreen --live --candidates cand01
 
 # Dashboard
 python dashboard/app.py                                  # http://127.0.0.1:5100

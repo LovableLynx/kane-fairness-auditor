@@ -3,19 +3,34 @@
   "talentscreen": {
     "url": "http://127.0.0.1:5101/",
     "task": "Submit the CV for screening by pasting the CV text into the form, then open the result",
-    "direct": {"post": "/screen", "field": "cv_text",
-               "score_re": "Match score:\\s*([0-9.]+)", "decision_re": "Decision:\\s*([A-Z]+)"}
+    "direct": {
+      "post": "/screen",
+      "field": "cv_text",
+      "score_re": "Match score:\\s*([0-9.]+)",
+      "decision_re": "Decision:\\s*([A-Z]+)"
+    },
+    "live_url": "https://kane-fairness-auditor.onrender.com/talentscreen/"
   },
   "hirelens": {
     "url": "http://127.0.0.1:5102/",
     "task": "Add a new applicant by pasting the CV text as their résumé and submit it for evaluation",
-    "direct": {"post": "/applicants", "field": "resume",
-               "score_re": "Role fit\\s*([0-9.]+)%", "decision_re": "Recommendation\\s*(Advance to interview|Do not advance)"}
+    "direct": {
+      "post": "/applicants",
+      "field": "resume",
+      "score_re": "Role fit\\s*([0-9.]+)%",
+      "decision_re": "Recommendation\\s*(Advance to interview|Do not advance)"
+    },
+    "live_url": "https://kane-fairness-auditor.onrender.com/hirelens/"
   },
   "quickmatch": {
     "url": "http://127.0.0.1:5103/",
     "task": "Match the candidate against the Data Analyst role by going through the wizard, pasting the CV text when asked, and running the match",
-    "direct": {"post": "/api/match", "field": "candidate_cv",
-               "score_re": "Similarity score:\\s*([0-9.]+)", "decision_re": "Verdict:\\s*(Recommended for interview|Not recommended)"}
+    "direct": {
+      "post": "/api/match",
+      "field": "candidate_cv",
+      "score_re": "Similarity score:\\s*([0-9.]+)",
+      "decision_re": "Verdict:\\s*(Recommended for interview|Not recommended)"
+    },
+    "live_url": "https://kane-fairness-auditor.onrender.com/quickmatch/"
   }
 }
