@@ -91,7 +91,11 @@ def main() -> int:
         report_path = ROOT / "reports" / f"twin_audit_{args.target}.md"
         report = report_path.read_text(encoding="utf-8") if report_path.exists() else out[-4000:]
         print("== handing Kane's report to the agent ==", flush=True)
-        env = {**os.environ, "KANE_FAIRNESS_PYTHON": sys.executable}  # the hook's quick check uses our interpreter
+        # Start the agent as a clean, independent session: drop variables that would make it think it is a
+        # child of whatever launched this script (e.g. another Claude Code session), which changes its permissions.
+        env = {k: v for k, v in os.environ.items()
+               if not k.startswith(("CLAUDE", "MCP_")) and k != "CLAUDECODE"}
+        env["KANE_FAIRNESS_PYTHON"] = sys.executable  # the hook's quick check uses our interpreter
         a = subprocess.run([agent, "-p", PROMPT.format(target=args.target, code=code, report=report),
                             "--permission-mode", "acceptEdits", "--allowedTools", "Read,Edit,Write,MultiEdit,Grep,Glob",
                             "--disallowedTools", "Bash,PowerShell,WebFetch,WebSearch,Task,Agent",
