@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python loop/hook_gate.py",
+            "timeout": 600
+          }
+        ]
+      }
+    ]
+  }
+}
