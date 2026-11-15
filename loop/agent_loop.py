@@ -49,6 +49,7 @@ def run_gate(target: str, gate_args: list[str], dry: bool) -> tuple[int, str]:
 
 
 def main() -> int:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--target", default="talentscreen")
     ap.add_argument("--gate-args", default="--candidates cand01,cand02,cand03")
