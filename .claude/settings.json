@@ -1,4 +1,20 @@
 {
+  "permissions": {
+    "allow": [
+      "Edit(targets/**)",
+      "Write(targets/**)",
+      "MultiEdit(targets/**)",
+      "Bash(python audit/gate.py:*)"
+    ],
+    "deny": [
+      "Edit(audit/**)", "Write(audit/**)",
+      "Edit(data/**)", "Write(data/**)",
+      "Edit(results/**)", "Write(results/**)",
+      "Edit(cvkit/names.py)", "Write(cvkit/names.py)",
+      "Edit(loop/**)", "Write(loop/**)",
+      "Edit(.claude/**)", "Write(.claude/**)"
+    ]
+  },
   "hooks": {
     "PostToolUse": [
       {
