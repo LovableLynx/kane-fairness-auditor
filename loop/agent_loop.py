@@ -26,7 +26,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-PROMPT = """You are fixing the hiring tool in targets/{target}/ so that it passes an independent fairness audit.
+PROMPT = """TASK: edit the code in targets/{target}/ now, using the Edit tool, so the hiring tool stops discriminating.
+You have no shell in this step and do not need one: this loop re-runs the Kane gate automatically after you reply.
+
+You are fixing the hiring tool in targets/{target}/ so that it passes an independent fairness audit.
 The audit was run by Kane CLI through the tool's real web interface using CV twins (identical CVs that
 differ only in name and pronouns, plus same-group placebo names). It returned exit code {code} (blocked).
 
@@ -91,6 +94,7 @@ def main() -> int:
         env = {**os.environ, "KANE_FAIRNESS_PYTHON": sys.executable}  # the hook's quick check uses our interpreter
         a = subprocess.run([agent, "-p", PROMPT.format(target=args.target, code=code, report=report),
                             "--permission-mode", "acceptEdits", "--allowedTools", "Read,Edit,Write,MultiEdit,Grep,Glob",
+                            "--disallowedTools", "Bash,PowerShell,WebFetch,WebSearch,Task,Agent",
                             "--output-format", "json"],
                            cwd=ROOT, env=env, capture_output=True, text=True, encoding="utf-8", errors="replace")
         try:
