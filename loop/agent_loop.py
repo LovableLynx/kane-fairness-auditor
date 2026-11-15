@@ -15,6 +15,7 @@ Run it on a branch: it edits targets/<target>/ for real.
 from __future__ import annotations
 
 import argparse
+import os
 import datetime as dt
 import shlex
 import shutil
@@ -81,9 +82,10 @@ def main() -> int:
         report_path = ROOT / "reports" / f"twin_audit_{args.target}.md"
         report = report_path.read_text(encoding="utf-8") if report_path.exists() else out[-4000:]
         print("== handing Kane's report to the agent ==", flush=True)
+        env = {**os.environ, "KANE_FAIRNESS_PYTHON": sys.executable}  # the hook's quick check uses our interpreter
         a = subprocess.run([agent, "-p", PROMPT.format(target=args.target, code=code, report=report),
                             "--permission-mode", "acceptEdits", "--allowedTools", "Read,Edit,Grep,Glob"],
-                           cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
+                           cwd=ROOT, env=env, capture_output=True, text=True, encoding="utf-8", errors="replace")
         reply = (a.stdout or a.stderr).strip()
         print(reply, flush=True)
         log += [f"- Agent: {reply[:1500]}", ""]

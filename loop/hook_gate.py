@@ -19,6 +19,18 @@ ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ("talentscreen", "hirelens", "quickmatch")
 
 
+def project_python() -> str:
+    """The hook itself needs only the standard library, but the gate needs the project's packages.
+    Prefer $KANE_FAIRNESS_PYTHON, then the repo's .venv, then whatever runs this hook."""
+    import os
+    if os.environ.get("KANE_FAIRNESS_PYTHON"):
+        return os.environ["KANE_FAIRNESS_PYTHON"]
+    for cand in (ROOT / ".venv" / "Scripts" / "python.exe", ROOT / ".venv" / "bin" / "python"):
+        if cand.exists():
+            return str(cand)
+    return sys.executable
+
+
 def main() -> int:
     try:
         payload = json.load(sys.stdin)
@@ -30,7 +42,7 @@ def main() -> int:
         return 0  # not a hiring tool: nothing to check
     target = m.group(1)
     proc = subprocess.run(
-        [sys.executable, str(ROOT / "audit" / "gate.py"), "--target", target, "--direct",
+        [project_python(), str(ROOT / "audit" / "gate.py"), "--target", target, "--direct",
          "--candidates", "cand01,cand02,cand03", "--out", str(ROOT / "reports" / "hook")],
         cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600)
     lines = [l for l in proc.stdout.splitlines() if l.startswith(("VERDICT", "  - ", "=="))]
