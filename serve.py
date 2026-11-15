@@ -36,10 +36,16 @@ def legacy_dashboard(environ, start_response):
     return redirect("/results", code=301)(environ, start_response)
 
 
+TOOLS = {
+    "talentscreen": load("talentscreen_app", "targets/talentscreen/app.py"),
+    "hirelens": load("hirelens_app", "targets/hirelens/app.py"),
+    "quickmatch": load("quickmatch_app", "targets/quickmatch/app.py"),
+}
+# Live checks from the website call the tools in-process instead of over the network.
+sys.modules["live"].TARGET_APPS.update(TOOLS)
+
 app = DispatcherMiddleware(auditor, {
-    "/talentscreen": load("talentscreen_app", "targets/talentscreen/app.py"),
-    "/hirelens": load("hirelens_app", "targets/hirelens/app.py"),
-    "/quickmatch": load("quickmatch_app", "targets/quickmatch/app.py"),
+    **{f"/{k}": v for k, v in TOOLS.items()},
     "/dashboard": legacy_dashboard,
 })
 

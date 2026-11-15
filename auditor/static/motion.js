@@ -158,6 +158,46 @@
     io3.observe(term);
   }
 
+  // ---- live audit runner (results pages)
+  const liveBtn = $("#live-btn");
+  if (liveBtn) {
+    const term = $("#live-term"), code = $("#live-term code"), bar = $("#live-bar"), prog = $("#live-progress"), msg = $("#live-msg");
+    const line = (l) => { const s = el("span", "tl " + l.k); s.textContent = l.t; code.appendChild(s); term.scrollTop = term.scrollHeight; };
+    liveBtn.addEventListener("click", async () => {
+      liveBtn.setAttribute("aria-busy", "true"); liveBtn.disabled = true; msg.textContent = "Starting…";
+      code.innerHTML = ""; term.hidden = false; prog.hidden = false; bar.style.width = "0";
+      try {
+        const r = await fetch("/api/live-check", {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ target: liveBtn.dataset.target }) });
+        const j = await r.json();
+        if (!r.ok) throw new Error(j.error || "Could not start");
+        msg.textContent = "Submitting CV twins to the live tool…";
+        let since = 0;
+        const poll = async () => {
+          const s = await (await fetch("/api/live-check/" + j.id + "?since=" + since)).json();
+          s.lines.forEach(line); since = s.next;
+          bar.style.width = Math.round(100 * s.done / Math.max(1, s.total)) + "%";
+          if (s.status === "running") return setTimeout(poll, 600);
+          liveBtn.removeAttribute("aria-busy"); liveBtn.disabled = false; liveBtn.textContent = "↻ Run again";
+          msg.textContent = s.status === "finished" ? "Done: " + s.verdict + " (exit " + s.code + "). Same verdict logic as the Kane gate." : "The check stopped with an error.";
+        };
+        poll();
+      } catch (e) {
+        msg.textContent = e.message; liveBtn.removeAttribute("aria-busy"); liveBtn.disabled = false;
+      }
+    });
+    const kf = $("#kane-form");
+    if (kf) kf.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      const r = await fetch("/api/kane-run", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ target: liveBtn.dataset.target, key: $("#kane-key").value }) });
+      const j = await r.json();
+      msg.innerHTML = "";
+      msg.append(document.createTextNode(j.message + " "));
+      if (j.url) { const a = el("a"); a.href = j.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = "Watch it on GitHub ↗"; msg.append(a); }
+    });
+  }
+
   // ---- copy buttons
   document.querySelectorAll("[data-copy]").forEach((btn) => btn.addEventListener("click", async () => {
     try { await navigator.clipboard.writeText(btn.dataset.copy); const o = btn.textContent; btn.textContent = "Copied ✓"; setTimeout(() => (btn.textContent = o), 1400); } catch (_) { /* clipboard blocked */ }

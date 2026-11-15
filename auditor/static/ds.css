@@ -316,6 +316,15 @@ table.t { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 
 .copy-chip .btn { flex: none; box-shadow: none; border-color: var(--lime); }
 .works { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 
+
+/* live audit runner */
+.live-progress { height: 10px; border: 1.5px solid var(--ink); background: var(--paper-2); margin-top: 18px; overflow: hidden; }
+.live-progress > i { display: block; height: 100%; width: 0; background: var(--lime); transition: width 300ms var(--ease); }
+.live-term { background: var(--ink); color: #d9dae0; margin-top: 12px; min-height: 0; max-height: 420px; overflow: auto; border: var(--bw) solid var(--ink); }
+.byok { margin-top: 22px; padding-top: 18px; border-top: 1.5px dashed var(--hair); }
+.byok .copy-chip code { white-space: normal; word-break: break-all; }
+#live-btn[aria-busy="true"] { cursor: progress; opacity: .85; }
+
 /* ---------- 6. Twin Lab ---------- */
 .lab { display: grid; grid-template-columns: .85fr 1.15fr; border: var(--bw) solid var(--ink); box-shadow: var(--shadow-lg); background: var(--paper); }
 @media (max-width: 900px) { .lab { grid-template-columns: 1fr; } }

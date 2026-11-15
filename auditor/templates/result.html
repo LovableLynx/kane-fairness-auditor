@@ -10,7 +10,43 @@
     </div>
     <p class="muted" style="margin-top:12px">{{ tool.ui }} · {{ tool.model }}</p>
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
-      <span class="chip {{ 'chip-verified' if r.verified else 'chip-dry' }} chip-dot">{{ r.driver }}</span>{% if r.kane %} <span class="chip chip-verified chip-dot">Verified by Kane · {{ r.kane.candidates|length }} candidate{{ "s" if r.kane.candidates|length != 1 }} in a real browser</span>{% endif %}
+      <span class="chip {{ 'chip-verified' if r.verified else 'chip-dry' }} chip-dot">{{ r.driver }}</span>
+<section class="wrap" style="margin-top:28px" id="run">
+  <div class="window" style="box-shadow:8px 8px 0 var(--blue)">
+    <div class="window-bar" aria-hidden="true"><span class="box"></span><span>RUN_AUDIT.EXE</span><span class="stripes"></span></div>
+    <div class="window-body">
+      <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between">
+        <div><span class="kicker">Try it now</span>
+          <h2 style="font-size:var(--step-2);margin:0">Run the audit on {{ tool.name or r.target }}, live</h2>
+          <p class="muted small" style="margin:8px 0 0;max-width:62ch">Submits 24 CV twins (3 candidates, including placebo names) to the live tool and works out the verdict in front of you. Free quick check over HTTP; the authoritative audit is Kane CLI driving a real browser.</p></div>
+        <button class="btn btn-primary" id="live-btn" data-target="{{ r.target }}" type="button">▶ Run live check</button>
+      </div>
+      <div class="live-progress" id="live-progress" hidden><i id="live-bar"></i></div>
+      <pre class="term live-term" id="live-term" aria-live="polite" hidden><code></code></pre>
+      <p class="small" id="live-msg" role="status" style="margin:12px 0 0"></p>
+      <div class="byok">
+        <span class="kicker" style="margin:0 0 8px">Bring your own Kane account</span>
+        <p class="small muted" style="margin:0 0 10px">Run the authoritative audit with Kane CLI in a real browser, on your own TestMu AI credits. Your key never leaves your machine.</p>
+        <div class="copy-chip"><code>git clone {{ REPO }} &amp;&amp; cd kane-fairness-auditor &amp;&amp; pip install -r requirements.txt &amp;&amp; kane-cli login &amp;&amp; python audit/gate.py --target {{ r.target }} --candidates cand01</code>
+          <button class="btn btn-sm btn-lime" type="button" data-copy="git clone {{ REPO }} && cd kane-fairness-auditor && pip install -r requirements.txt && kane-cli login && python audit/gate.py --target {{ r.target }} --candidates cand01">Copy</button></div>
+      </div>
+      <details class="owner" style="margin-top:14px">
+        <summary class="small muted">Owner: run with Kane CLI in a real browser (uses Kane credits)</summary>
+        {% if kane_enabled %}
+        <form id="kane-form" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px">
+          <label class="small" for="kane-key">Passcode</label>
+          <input class="input" id="kane-key" type="password" autocomplete="off" style="max-width:220px;padding:9px 12px">
+          <button class="btn btn-sm" type="submit">Start Kane run</button>
+        </form>
+        {% else %}
+        <p class="small muted" style="margin:10px 0 0">Not enabled on this deployment. The owner can switch it on by setting <code>GITHUB_TOKEN</code> and <code>AUDIT_ADMIN_KEY</code> on the server.</p>
+        {% endif %}
+      </details>
+    </div>
+  </div>
+</section>
+
+{% if r.kane %} <span class="chip chip-verified chip-dot">Verified by Kane · {{ r.kane.candidates|length }} candidate{{ "s" if r.kane.candidates|length != 1 }} in a real browser</span>{% endif %}
       <span class="chip chip-plain">{{ r.length }} CVs</span>
       <span class="chip chip-plain">placebo {{ 'on' if r.placebo else 'off' }}</span>
       <span class="chip chip-plain">threshold {{ r.threshold }}</span>

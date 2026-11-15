@@ -10,11 +10,14 @@ import os
 import sys
 from pathlib import Path
 
-from flask import Flask, abort, redirect, render_template, url_for
+from flask import Flask, abort, jsonify, redirect, render_template, request, url_for
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from shared.hardening import harden  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import live  # noqa: E402
 
 RESULTS = Path(os.environ.get("AUDIT_REPORTS", ROOT / "results"))
 REPO = "https://github.com/LovableLynx/kane-fairness-auditor"
@@ -178,7 +181,8 @@ def results():
 def result(name: str):
     r = load_reports().get(name) or abort(404)
     bar_max = 0.5 if name == "quickmatch" else 1.0  # similarity scores sit on a smaller range
-    return render_template("result.html", r=r, tool=TOOLS.get(name, {}), bar_max=bar_max, page="results")
+    return render_template("result.html", r=r, tool=TOOLS.get(name, {}), bar_max=bar_max,
+                           kane_enabled=live.kane_enabled(), page="results")
 
 
 @app.get("/target/<name>")
@@ -194,6 +198,31 @@ def method():
 @app.get("/legal")
 def legal():
     return render_template("legal.html", page="legal")
+
+
+@app.post("/api/live-check")
+def api_live_check():
+    target = (request.get_json(silent=True) or {}).get("target", "")
+    job, err = live.start_live_check(target)
+    if err:
+        return jsonify({"error": err}), 429 if "wait" in err else 400
+    return jsonify({"id": job["id"], "target": job["target"]})
+
+
+@app.get("/api/live-check/<job_id>")
+def api_live_status(job_id: str):
+    job = live.get_job(job_id) or abort(404)
+    since = request.args.get("since", default=0, type=int)
+    return jsonify({**{k: job[k] for k in ("id", "target", "status", "done", "total", "verdict", "code")},
+                    "lines": job["lines"][since:], "next": len(job["lines"])})
+
+
+@app.post("/api/kane-run")
+def api_kane_run():
+    data = request.get_json(silent=True) or {}
+    ok, msg = live.trigger_kane_run(str(data.get("target", "")), str(data.get("key", "")))
+    return jsonify({"ok": ok, "message": msg if not ok else "Kane audit started on GitHub Actions.",
+                    "url": msg if ok else None}), 200 if ok else 403
 
 
 @app.get("/favicon.ico")
