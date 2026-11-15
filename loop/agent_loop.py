@@ -15,6 +15,7 @@ Run it on a branch: it edits targets/<target>/ for real.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import datetime as dt
 import shlex
@@ -36,9 +37,12 @@ Kane's audit report:
 
 Find the cause in targets/{target}/ (for example, the tool inferring sex or ethnicity from the name and
 feeding it to the model, or using a model trained on biased labels; models/fair.pkl drops protected
-attributes). Apply the fix now by editing the files yourself: you have permission to edit, so do not just
-describe it. Use the smallest sensible change. Do not edit anything under audit/, data/ or cvkit/names.py,
-and never weaken the audit. After editing, reply with one short paragraph: the cause and the fix you applied."""
+attributes). Apply the fix now by editing the files yourself with the Edit tool: you have permission to edit,
+so do not just describe it. Do NOT run any commands or the gate yourself: you have no shell in this step, and
+this loop re-runs the Kane gate for you as soon as you finish. A project hook may also print a quick dry-run
+verdict after each edit; use it as a hint. Use the smallest sensible change. Do not edit anything under
+audit/, data/ or cvkit/names.py, and never weaken the audit. After editing, reply with one short paragraph:
+the cause and the fix you applied."""
 
 
 def run_gate(target: str, gate_args: list[str], dry: bool) -> tuple[int, str]:
@@ -86,11 +90,23 @@ def main() -> int:
         print("== handing Kane's report to the agent ==", flush=True)
         env = {**os.environ, "KANE_FAIRNESS_PYTHON": sys.executable}  # the hook's quick check uses our interpreter
         a = subprocess.run([agent, "-p", PROMPT.format(target=args.target, code=code, report=report),
-                            "--permission-mode", "acceptEdits", "--allowedTools", "Read,Edit,Grep,Glob"],
+                            "--permission-mode", "acceptEdits", "--allowedTools", "Read,Edit,Write,MultiEdit,Grep,Glob",
+                            "--output-format", "json"],
                            cwd=ROOT, env=env, capture_output=True, text=True, encoding="utf-8", errors="replace")
-        reply = (a.stdout or a.stderr).strip()
+        try:
+            res = json.loads(a.stdout)
+            reply = str(res.get("result", "")).strip()
+            denied = [d.get("tool_name") for d in (res.get("permission_denials") or [])]
+        except json.JSONDecodeError:
+            reply, denied = (a.stdout or a.stderr).strip(), []
+        changed = subprocess.run(["git", "diff", "--stat", "--", f"targets/{args.target}"], cwd=ROOT,
+                                 capture_output=True, text=True).stdout.strip()
         print(reply, flush=True)
-        log += [f"- Agent: {reply[:1500]}", ""]
+        print(f"-- files changed by the agent:\n{changed or '(none)'}", flush=True)
+        if denied:
+            print(f"-- tools denied to the agent: {', '.join(denied)}", flush=True)
+        log += [f"- Agent: {reply[:1500]}", f"- Files changed: {changed or '(none)'}",
+                *( [f"- Tools denied: {', '.join(denied)}"] if denied else [] ), ""]
     else:
         log.append(f"Still failing after {args.max_rounds} rounds.")
         print(f"== still failing after {args.max_rounds} rounds ==")
