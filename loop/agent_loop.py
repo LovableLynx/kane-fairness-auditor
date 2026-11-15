@@ -71,6 +71,9 @@ def main() -> int:
         print(f"Claude Code CLI '{args.agent}' not found on PATH", file=sys.stderr)
         return 2
     gate_args = shlex.split(args.gate_args)
+    # A fresh run must not inherit an earlier run's story: the agent reads reports/, so an old loop log
+    # (e.g. one that says an edit failed) would mislead it. Start clean.
+    (ROOT / "reports" / f"loop_{args.target}.md").unlink(missing_ok=True)
     log = [f"# Closed loop · {args.target} · {dt.datetime.now().isoformat(timespec='seconds')}",
            f"Gate: {'dry run (--direct)' if args.dry else 'Kane CLI, real browser'} · args `{args.gate_args}`", ""]
 
