@@ -79,7 +79,7 @@
           <h2 style="font-size:var(--step-2);margin:0">Kane drove the real interface and read the same answers</h2></div>
         <span class="stamp {{ k.verdict_class }}" data-animate>{{ k.verdict }}</span>
       </div>
-      <p class="muted small" style="margin-top:12px">{{ k.candidates|length }} candidate · {{ k.candidates[0].twins|length }} CVs · placebo {{ 'on' if k.placebo else 'off' }} · {{ '%.0f'|format(k.credits or 0) }} Kane credits · {{ k.generated_at }}</p>
+      <p class="muted small" style="margin-top:12px">{% if k.label %}<span class="chip chip-plain">{{ k.label }}</span> · {% endif %}{{ k.candidates|length }} candidate · {{ k.candidates[0].twins|length }} CVs · placebo {{ 'on' if k.placebo else 'off' }} · {{ '%.0f'|format(k.credits or 0) }} Kane credits · {{ k.generated_at }}</p>
       <div class="table-wrap" style="box-shadow:none;margin-top:12px"><table class="t">
         <thead><tr><th scope="col">CV twin</th><th scope="col">Score Kane read</th><th scope="col">Decision Kane read</th></tr></thead>
         <tbody>{% for c in k.candidates %}{% for t in c.twins %}

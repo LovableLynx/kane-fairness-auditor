@@ -70,6 +70,14 @@ To check that these findings are not artefacts of short CVs, cutoff choice or sa
 
 **Reading:** the gender effect only appears on very short CVs and disappears at realistic length. A small but significant name-group effect remains on long CVs. The larger problem is instability: on realistic CVs, about 1 in 4 candidates' outcomes depend on the name alone. The controls behave as expected. TalentScreen shows zero placebo effect and large demographic effects; HireLens shows zero for both.
 
+### What Kane has verified so far (real browser)
+
+| Run | Scope | Result | Evidence |
+|---|---|---|---|
+| TalentScreen, GitHub Actions | 1 candidate, 4 demographic twins, **no placebo names** | **FAIL: BIASED**, deploy blocked, 80 credits | [CI run](https://github.com/LovableLynx/kane-fairness-auditor/actions/runs/43607099418) · Test Manager link on the [results page](https://kane-fairness-auditor.onrender.com/results/talentscreen) |
+
+Kane read exactly the scores the dry run predicted (1.000 / 0.001 / 0.632 / 0.000). The tables above are dry runs through each tool's HTTP endpoint, labelled as such on the site. Two Kane runs are queued for when credits allow, in this order: **QuickMatch** (the model we did not build, where Kane would confirm a finding we did not plant), then the TalentScreen **after-fix** run to close the loop with Kane's own verdict.
+
 ### A finding about the legal metric
 
 On TalentScreen, the LL144-style **impact ratio for sex is 1.0**, which looks perfectly fair, while every woman scored far below her identical male twin. Aggregate selection ratios can hide individual-level discrimination that twin testing exposes. We report both.
@@ -97,6 +105,25 @@ python audit/study.py --target quickmatch                # needs the tool runnin
 ```
 
 Regenerating data needs FairCVdb: `python -m cvkit.build path/to/FairCVdb.npy`.
+
+## Closed loop: Kane's verdict feeds the coding agent
+
+Kane is the referee; the agent never grades its own work. Three ways to run the loop:
+
+```bash
+# 1. Automatic (judges): gate -> Claude Code reads Kane's report and returns a patch -> the loop applies it -> gate again.
+#    The agent needs no write permission; every patch is recorded verbatim in reports/loop_<target>.md.
+python loop/agent_loop.py --target talentscreen --dry --max-rounds 2      # free rehearsal
+python loop/agent_loop.py --target talentscreen --gate-args "--candidates cand01 --no-placebo"   # real Kane
+
+# 2. Interactive: inside Claude Code in this repo
+/fairness-fix talentscreen
+
+# 3. Always-on: .claude/settings.json installs a PostToolUse hook. Whenever the agent edits a hiring tool,
+#    a quick fairness check runs and its verdict is fed straight back to the agent (exit 2 = shown to the model).
+```
+
+Guardrails (`.claude/settings.json`): the agent may edit `targets/**` and run the gate; `audit/`, `data/`, `results/`, `cvkit/names.py` and the loop itself are deny-listed, so a fix can never be "change the audit". Run the loop on a branch: it edits `targets/<target>/` for real.
 
 Kane runs headless by default. On Windows, headed Chrome screenshots time out. Each candidate is one Kane run with 8 CV submissions.
 
@@ -127,6 +154,9 @@ python serve.py        # the same service locally on http://127.0.0.1:8000
 | `audit/study.py` | 100-candidate validation study |
 | `auditor/` | Product site: landing, Twin Lab, results, method, legal; "Blueprint 95" design system in `auditor/static/ds.css`, self-hosted OFL fonts |
 | `shared/` | Hardening shared by every app: size limits, bounded stores, security headers, fixed error messages |
+| `loop/` | Closed loop: `agent_loop.py` (patch-based, for judges) and `hook_gate.py` (Claude Code hook) |
+| `.claude/` | `/fairness-fix` command, hook wiring and permission guardrails |
+| `tests/` | CV parser tests (`python -m unittest tests.test_cv_parser`) and a Kane smoke test |
 | `.github/workflows/fairness-gate.yml` | CI gate on pull requests |
 | `docs/` | Audit report and demo script |
 | `.testmuai/` | Kane test and evidence from real runs |
