@@ -1,23 +1,25 @@
-"""Closed loop: Kane audits -> the coding agent reads the evidence and fixes -> Kane audits again.
+"""Closed loop: Kane audits -> the coding agent reads the evidence and proposes a fix -> the loop applies it -> Kane audits again.
 
     python loop/agent_loop.py --target talentscreen --gate-args "--candidates cand01 --no-placebo"
     python loop/agent_loop.py --target talentscreen --dry      # free rehearsal: gate in --direct mode
 
 Each round:
   1. runs the fairness gate (Kane CLI drives the tool's real UI unless --dry);
-  2. if blocked, hands Kane's audit report to Claude Code (`claude -p`, edits only, no shell)
-     with instructions to fix the tool but never the audit;
-  3. repeats until the gate passes or --max-rounds is reached.
-A transcript is written to reports/loop_<target>.md.
+  2. if blocked, hands Kane's audit report plus the tool's source to Claude Code (`claude -p`, read-only)
+     and asks for a unified diff that fixes the tool;
+  3. applies the diff with `git apply` (only paths under targets/<target>/ are accepted);
+  4. repeats until the gate passes or --max-rounds is reached.
 
-Run it on a branch: it edits targets/<target>/ for real.
+The agent never needs write permission: it returns a patch, the loop applies it, and every patch is
+recorded verbatim in reports/loop_<target>.md. Run it on a branch: it edits targets/<target>/ for real.
 """
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 import os
-import datetime as dt
+import re
 import shlex
 import shutil
 import subprocess
@@ -26,26 +28,30 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-PROMPT = """TASK: edit the code in targets/{target}/ now, using the Edit tool, so the hiring tool stops discriminating.
-You have no shell in this step and do not need one: this loop re-runs the Kane gate automatically after you reply.
-
-You are fixing the hiring tool in targets/{target}/ so that it passes an independent fairness audit.
-The audit was run by Kane CLI through the tool's real web interface using CV twins (identical CVs that
-differ only in name and pronouns, plus same-group placebo names). It returned exit code {code} (blocked).
+PROMPT = """You are the coding agent in an audit loop. An independent fairness audit, run by Kane CLI through the
+hiring tool's real web interface, has BLOCKED the tool in targets/{target}/ (exit code {code}). The audit used
+CV twins: identical CVs that differ only in name and pronouns, plus same-group placebo names.
 
 Kane's audit report:
 ---
 {report}
 ---
 
-Find the cause in targets/{target}/ (for example, the tool inferring sex or ethnicity from the name and
-feeding it to the model, or using a model trained on biased labels; models/fair.pkl drops protected
-attributes). Apply the fix now by editing the files yourself with the Edit tool: you have permission to edit,
-so do not just describe it. Do NOT run any commands or the gate yourself: you have no shell in this step, and
-this loop re-runs the Kane gate for you as soon as you finish. A project hook may also print a quick dry-run
-verdict after each edit; use it as a hint. Use the smallest sensible change. Do not edit anything under
-audit/, data/ or cvkit/names.py, and never weaken the audit. After editing, reply with one short paragraph:
-the cause and the fix you applied."""
+Source of the tool, targets/{target}/app.py:
+---
+{source}
+---
+
+Context: models/fair.pkl was trained on blind labels with the protected columns dropped; models/biased.pkl was
+trained on labels carrying gender and ethnicity penalties. cv.features(parsed, gender, group) puts gender and
+group into columns 0-1. The sibling tool targets/hirelens/app.py scores fairly by never inferring demographics
+and passing constant placeholders ("male", "B") to the fair model.
+
+Your job: reply with ONE unified diff (git format, paths relative to the repo root, e.g.
+`--- a/targets/{target}/app.py` / `+++ b/targets/{target}/app.py`) that fixes the discrimination with the
+smallest sensible change. Only files under targets/{target}/ may be touched. Never change anything under
+audit/, data/ or cvkit/. Put the diff inside a single ```diff fenced block, preceded by one short paragraph
+naming the cause. Do not run tools; everything you need is above."""
 
 
 def run_gate(target: str, gate_args: list[str], dry: bool) -> tuple[int, str]:
@@ -54,6 +60,48 @@ def run_gate(target: str, gate_args: list[str], dry: bool) -> tuple[int, str]:
         cmd.append("--direct")
     p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
     return p.returncode, p.stdout + p.stderr
+
+
+def extract_diff(reply: str) -> str | None:
+    m = re.search(r"```diff\s*\n(.*?)```", reply, re.S)
+    if not m:
+        m = re.search(r"(^--- a/.*)", reply, re.S | re.M)
+        if not m:
+            return None
+    diff = m.group(1).rstrip() + "\n"
+    return diff if diff.lstrip().startswith(("---", "diff --git")) else None
+
+
+def diff_paths(diff: str) -> list[str]:
+    return re.findall(r"^\+\+\+ b/(\S+)", diff, re.M)
+
+
+def apply_patch(target: str, diff: str) -> tuple[bool, str]:
+    paths = diff_paths(diff)
+    bad = [p for p in paths if not p.replace("\\", "/").startswith(f"targets/{target}/")]
+    if not paths:
+        return False, "patch names no files"
+    if bad:
+        return False, f"patch touches files outside targets/{target}/: {bad}"
+    patch_file = ROOT / "reports" / f"loop_{target}.patch"
+    patch_file.parent.mkdir(exist_ok=True)
+    patch_file.write_text(diff, encoding="utf-8", newline="\n")
+    for extra in ([], ["--ignore-whitespace"], ["--3way"]):
+        p = subprocess.run(["git", "apply", *extra, str(patch_file)], cwd=ROOT, capture_output=True, text=True)
+        if p.returncode == 0:
+            return True, ", ".join(paths)
+    return False, (p.stderr or p.stdout).strip()[-600:]
+
+
+def ask_agent(agent: str, prompt: str) -> str:
+    env = {k: v for k, v in os.environ.items() if not k.startswith(("CLAUDE", "MCP_")) and k != "CLAUDECODE"}
+    a = subprocess.run([agent, "-p", prompt, "--output-format", "json",
+                        "--disallowedTools", "Bash,PowerShell,Edit,Write,MultiEdit,NotebookEdit,WebFetch,WebSearch,Task,Agent"],
+                       cwd=ROOT, env=env, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    try:
+        return str(json.loads(a.stdout).get("result", "")).strip()
+    except json.JSONDecodeError:
+        return (a.stdout or a.stderr).strip()
 
 
 def main() -> int:
@@ -71,12 +119,10 @@ def main() -> int:
         print(f"Claude Code CLI '{args.agent}' not found on PATH", file=sys.stderr)
         return 2
     gate_args = shlex.split(args.gate_args)
-    # A fresh run must not inherit an earlier run's story: the agent reads reports/, so an old loop log
-    # (e.g. one that says an edit failed) would mislead it. Start clean.
     (ROOT / "reports" / f"loop_{args.target}.md").unlink(missing_ok=True)
     log = [f"# Closed loop · {args.target} · {dt.datetime.now().isoformat(timespec='seconds')}",
            f"Gate: {'dry run (--direct)' if args.dry else 'Kane CLI, real browser'} · args `{args.gate_args}`", ""]
-
+    code = 1
     for rnd in range(1, args.max_rounds + 1):
         print(f"== round {rnd}: running the fairness gate ==", flush=True)
         code, out = run_gate(args.target, gate_args, args.dry)
@@ -93,31 +139,19 @@ def main() -> int:
             break
         report_path = ROOT / "reports" / f"twin_audit_{args.target}.md"
         report = report_path.read_text(encoding="utf-8") if report_path.exists() else out[-4000:]
+        source = (ROOT / "targets" / args.target / "app.py").read_text(encoding="utf-8")
         print("== handing Kane's report to the agent ==", flush=True)
-        # Start the agent as a clean, independent session: drop variables that would make it think it is a
-        # child of whatever launched this script (e.g. another Claude Code session), which changes its permissions.
-        env = {k: v for k, v in os.environ.items()
-               if not k.startswith(("CLAUDE", "MCP_")) and k != "CLAUDECODE"}
-        env["KANE_FAIRNESS_PYTHON"] = sys.executable  # the hook's quick check uses our interpreter
-        a = subprocess.run([agent, "-p", PROMPT.format(target=args.target, code=code, report=report),
-                            "--permission-mode", "acceptEdits", "--allowedTools", "Read,Edit,Write,MultiEdit,Grep,Glob",
-                            "--disallowedTools", "Bash,PowerShell,WebFetch,WebSearch,Task,Agent",
-                            "--output-format", "json"],
-                           cwd=ROOT, env=env, capture_output=True, text=True, encoding="utf-8", errors="replace")
-        try:
-            res = json.loads(a.stdout)
-            reply = str(res.get("result", "")).strip()
-            denied = [d.get("tool_name") for d in (res.get("permission_denials") or [])]
-        except json.JSONDecodeError:
-            reply, denied = (a.stdout or a.stderr).strip(), []
-        changed = subprocess.run(["git", "diff", "--stat", "--", f"targets/{args.target}"], cwd=ROOT,
-                                 capture_output=True, text=True).stdout.strip()
-        print(reply, flush=True)
-        print(f"-- files changed by the agent:\n{changed or '(none)'}", flush=True)
-        if denied:
-            print(f"-- tools denied to the agent: {', '.join(denied)}", flush=True)
-        log += [f"- Agent: {reply[:1500]}", f"- Files changed: {changed or '(none)'}",
-                *( [f"- Tools denied: {', '.join(denied)}"] if denied else [] ), ""]
+        reply = ask_agent(agent, PROMPT.format(target=args.target, code=code, report=report, source=source))
+        summary = reply.split("```")[0].strip()
+        print(summary[:600], flush=True)
+        diff = extract_diff(reply)
+        if not diff:
+            print("-- agent returned no patch", flush=True)
+            log += [f"- Agent: {summary[:1200]}", "- No patch returned.", ""]
+            continue
+        ok, info = apply_patch(args.target, diff)
+        print(f"-- patch {'applied to ' + info if ok else 'rejected: ' + info}", flush=True)
+        log += [f"- Agent: {summary[:1200]}", f"- Patch {'applied' if ok else 'REJECTED'}: {info}", "", "```diff", diff.rstrip(), "```", ""]
     else:
         log.append(f"Still failing after {args.max_rounds} rounds.")
         print(f"== still failing after {args.max_rounds} rounds ==")
