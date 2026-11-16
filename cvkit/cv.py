@@ -194,23 +194,76 @@ def _section(text: str, name: str) -> str:
     return m.group(1).strip() if m else ""
 
 
-ROLE_SYNONYMS = {  # occupation code -> phrases that identify it in a free-form CV
-    0: ["project manager", "programme manager", "program manager", "delivery manager", "scrum master"],
-    1: ["accountant", "bookkeeper", "finance officer", "accounts officer"],
-    2: ["marketing specialist", "marketing manager", "marketing executive", "brand manager", "content strategist"],
-    3: ["sous chef", "head chef", "chef", "cook"],
-    4: ["retail associate", "sales associate", "shop assistant", "cashier", "store assistant"],
-    5: ["photographer", "videographer"],
-    6: ["software engineer", "software developer", "web developer", "backend developer", "frontend developer",
-        "full stack developer", "full-stack developer", "programmer", "devops engineer"],
-    7: ["data analyst", "business analyst", "data scientist", "bi analyst", "analytics analyst"],
-    8: ["teacher", "lecturer", "tutor", "instructor"],
-    9: ["registered nurse", "nurse", "midwife"],
+# The screening models were trained on FairCVdb's 10 occupation codes, each standing for a job
+# family with a fixed suitability for the advertised role. Real CVs use hundreds of titles, so each
+# title maps to the closest family. More specific phrases win over generic ones at the same position.
+FAMILIES = {
+    7: "Data & research", 6: "Engineering & technology", 0: "Management & operations",
+    1: "Finance & legal", 2: "Marketing, sales & people", 8: "Education & social care",
+    9: "Health & care", 3: "Hospitality & food", 4: "Retail, service & trades", 5: "Creative & media",
 }
+ROLE_SYNONYMS = {  # occupation code -> job titles that belong to its family
+    7: ["data analyst", "business analyst", "data scientist", "bi analyst", "bi developer", "analytics analyst",
+        "analytics engineer", "data engineer", "insights analyst", "research analyst", "research scientist",
+        "research assistant", "research associate", "research fellow", "researcher", "scientist", "statistician",
+        "biostatistician", "epidemiologist", "economist", "actuary", "quantitative analyst", "quant",
+        "bioinformatician", "machine learning engineer", "ml engineer", "ai engineer", "ai researcher",
+        "lab scientist", "laboratory scientist", "postdoctoral", "postdoc", "phd researcher", "phd candidate",
+        "ux researcher", "market researcher", "policy analyst", "operations analyst", "analyst"],
+    6: ["software engineer", "software developer", "web developer", "backend developer", "back-end developer",
+        "frontend developer", "front-end developer", "full stack developer", "full-stack developer",
+        "mobile developer", "android developer", "ios developer", "game developer", "programmer", "devops engineer",
+        "site reliability engineer", "cloud engineer", "solutions architect", "software architect",
+        "qa engineer", "test engineer", "software tester", "tester", "security engineer", "cybersecurity analyst",
+        "security analyst", "network engineer", "systems administrator", "system administrator", "it support",
+        "it technician", "database administrator", "embedded engineer", "electrical engineer", "mechanical engineer",
+        "civil engineer", "chemical engineer", "biomedical engineer", "petroleum engineer", "process engineer",
+        "structural engineer", "engineer", "developer"],
+    0: ["project manager", "programme manager", "program manager", "delivery manager", "product manager",
+        "product owner", "scrum master", "operations manager", "general manager", "office manager",
+        "management consultant", "consultant", "project coordinator", "programme coordinator", "coordinator",
+        "executive assistant", "administrative assistant", "administrator", "team lead", "team leader",
+        "supervisor", "director", "head of", "chief executive", "ceo", "coo", "founder", "co-founder",
+        "entrepreneur", "business owner", "manager"],
+    1: ["accountant", "bookkeeper", "finance officer", "accounts officer", "financial analyst", "finance manager",
+        "auditor", "tax advisor", "tax consultant", "payroll", "banker", "investment analyst", "credit analyst",
+        "loan officer", "treasury", "controller", "lawyer", "solicitor", "barrister", "attorney", "paralegal",
+        "legal counsel", "legal officer", "compliance officer", "compliance analyst", "procurement officer",
+        "procurement", "underwriter", "insurance"],
+    2: ["marketing specialist", "marketing manager", "marketing executive", "marketing officer", "digital marketer",
+        "brand manager", "content strategist", "seo specialist", "social media manager", "social media",
+        "communications officer", "communications manager", "public relations", "pr officer", "copywriter",
+        "content writer", "sales manager", "sales representative", "sales executive", "account manager",
+        "account executive", "business development", "customer success", "recruiter", "talent acquisition",
+        "hr manager", "hr officer", "human resources", "people partner", "marketing", "sales"],
+    8: ["teacher", "lecturer", "professor", "tutor", "instructor", "trainer", "educator", "teaching assistant",
+        "headteacher", "principal", "early years", "social worker", "counsellor", "counselor", "youth worker",
+        "librarian", "community worker", "case worker", "support worker"],
+    9: ["registered nurse", "nurse", "midwife", "doctor", "physician", "surgeon", "general practitioner",
+        "medical officer", "pharmacist", "pharmacy technician", "dentist", "dental nurse", "physiotherapist",
+        "occupational therapist", "therapist", "psychologist", "radiographer", "paramedic", "optometrist",
+        "dietitian", "nutritionist", "caregiver", "care assistant", "healthcare assistant", "health care assistant",
+        "medical laboratory", "clinical", "veterinarian", "vet"],
+    3: ["sous chef", "head chef", "chef", "cook", "baker", "pastry", "barista", "bartender", "waiter", "waitress",
+        "server", "kitchen", "catering", "hospitality", "hotel", "housekeeper", "event planner", "restaurant"],
+    4: ["retail associate", "sales associate", "shop assistant", "store assistant", "store manager", "cashier",
+        "customer service", "call centre", "call center", "receptionist", "warehouse", "forklift", "driver",
+        "delivery", "courier", "logistics", "dispatcher", "cleaner", "security guard", "electrician", "plumber",
+        "mechanic", "carpenter", "welder", "technician", "construction", "builder", "factory", "machine operator",
+        "farmer", "gardener", "retail"],
+    5: ["photographer", "videographer", "graphic designer", "ux designer", "ui designer", "product designer",
+        "web designer", "designer", "illustrator", "animator", "artist", "art director", "creative director",
+        "journalist", "editor", "writer", "author", "musician", "actor", "producer", "film", "video editor",
+        "content creator", "fashion", "architect"],
+}
+_ROLE_PATTERNS = sorted(((p, code) for code, ps in ROLE_SYNONYMS.items() for p in ps), key=lambda x: -len(x[0]))
+GENERAL_FAMILY = 0  # unrecognised titles are scored as a general professional profile
+
 EDU_KEYWORDS = [  # checked from highest level down
-    (1.0, r"\b(ph\.?d|doctorate|doctor of)\b"),
-    (0.8, r"\b(master'?s|msc|m\.sc|mba|ma|meng|mphil)\b"),
-    (0.6, r"\b(bachelor'?s|bsc|b\.sc|ba|beng|b\.eng|undergraduate degree|honours degree)\b"),
+    (1.0, r"\b(ph\.?d|d\.?phil|doctorate|doctor of|pharm\.?d|md|mbbs|mbchb|dds|dvm)\b"),
+    (0.8, r"\b(master'?s|msc|m\.sc|mba|ma|meng|mphil|llm|mpharm|mpa|mph|mres|pgdip|postgraduate)\b"),
+    (0.6, r"\b(bachelor'?s|bsc|b\.sc|ba|beng|b\.eng|btech|b\.tech|bpharm|b\.pharm|llb|b\.ed|bds|bsn|bcom|bba|"
+          r"undergraduate degree|honours degree|first degree)\b"),
     (0.4, r"\b(associate degree|diploma|hnd|ond|foundation degree)\b"),
     (0.2, r"\b(high school|secondary school|waec|gcse|a-levels?)\b"),
 ]
@@ -223,21 +276,63 @@ LANG_LEVEL_WORDS = [
 ]
 
 
-def _find_role(text: str) -> int | None:
+def _find_role(text: str) -> tuple[int, str] | None:
+    """Earliest job title in the text (ties: the longest, most specific phrase). Returns (code, title)."""
     low = text.lower()
-    hits = [(low.find(p), code) for code, phrases in ROLE_SYNONYMS.items() for p in phrases if p in low]
-    return min(hits)[1] if hits else None
+    best = None
+    for phrase, code in _ROLE_PATTERNS:
+        m = re.search(r"(?<![a-z])" + re.escape(phrase) + r"(?![a-z])", low)
+        if m and (best is None or m.start() < best[0] or (m.start() == best[0] and len(phrase) > len(best[2]))):
+            best = (m.start(), code, phrase)
+    return (best[1], best[2]) if best else None
+
+
+# A line is about education only if it names a qualification. Institution names alone (University of X)
+# are not enough: researchers, lecturers and staff list universities and schools as their employer.
+_EDU_LINE = re.compile(r"(?i)\b(degree|bachelor'?s?|master'?s?|diploma|certificate in|ph\.?d|d\.?phil|bsc|b\.sc|msc|m\.sc|"
+                       r"mba|ba|ma|beng|meng|btech|llb|llm|bpharm|mbbs|b\.ed|hnd|ond|graduated|studied|student|"
+                       r"undergraduate|postgraduate|a-levels?|gcse|waec|high school)\b")
+_AGE = re.compile(r"(?i)\b\d{1,2}\s*(?:years|yrs)\s*(?:old|of age)\b")
 
 
 def _years_freeform(text: str) -> int | None:
-    stated = [int(n) for n in re.findall(r"(\d{1,2})\+?\s*(?:years|yrs)\b", text, re.I) if int(n) <= 45]
+    """Years of work experience from a free-form CV.
+
+    1. An explicit statement ("7 years of experience") wins; ages ("25 years old") are ignored.
+    2. Otherwise add up job date ranges ("2019 - present"), skipping lines about education and
+       merging overlapping periods so concurrent jobs are not double-counted."""
+    body = _AGE.sub(" ", text)
+    stated = [int(n) for n in re.findall(r"(\d{1,2})\+?\s*(?:years|yrs)\b", body, re.I) if 0 < int(n) <= 45]
     if stated:
         return max(stated)
-    total = 0
-    for a, b in re.findall(r"((?:19|20)\d{2})\s*(?:-|–|—|to)\s*((?:19|20)\d{2}|present|current|now)", text, re.I):
-        end = 2026 if not b[:2].isdigit() else int(b)
-        total += max(0, end - int(a))
+    spans = []
+    for line in text.splitlines():
+        if _EDU_LINE.search(line):
+            continue
+        for a, b in re.findall(r"((?:19|20)\d{2})\s*(?:-|–|—|to)\s*((?:19|20)\d{2}|present|current|now|date)", line, re.I):
+            end = 2026 if not b[:2].isdigit() else int(b)
+            if end >= int(a):
+                spans.append((int(a), end))
+    if not spans:
+        return None
+    spans.sort()
+    total, (cur_a, cur_b) = 0, spans[0]
+    for a, b in spans[1:]:
+        if a <= cur_b:
+            cur_b = max(cur_b, b)
+        else:
+            total += cur_b - cur_a
+            cur_a, cur_b = a, b
+    total += cur_b - cur_a
     return min(total, 45) if total else None
+
+
+def _body_without_name(text: str) -> str:
+    """Drop the first non-empty line (usually the candidate's name) and email/phone lines, so surnames
+    such as Baker, Cook, Farmer or Driver are never mistaken for job titles."""
+    lines = text.strip().splitlines()
+    rest = lines[1:] if lines else []
+    return "\n".join(l for l in rest if "@" not in l and not re.fullmatch(r"[\s+()\d-]{7,}", l))
 
 
 def parse(text: str) -> dict:
@@ -245,19 +340,25 @@ def parse(text: str) -> dict:
 
     Uses the section layout of our generated CVs when present and falls back to keyword
     heuristics for free-form CVs. Anything estimated is listed in `notes`.
-    Raises ValueError (with a recruiter-friendly message) if no supported role is found."""
+    Any job title is accepted: it is mapped to the closest of the models' 10 job families, and an
+    unrecognised title is scored as a general profile. Raises ValueError only if the text has no
+    job title, experience or education at all (i.e. it isn't a CV)."""
     notes: list[str] = []
     title = _section(text, "CURRENT ROLE").splitlines()[0].strip() if _section(text, "CURRENT ROLE") else ""
     occ = next((c for c, (t, _) in OCCUPATIONS.items() if t.lower() == title.lower()), None)
+    shown = OCCUPATIONS[occ][0] if occ is not None else None
+    if occ is None and title:
+        hit = _find_role(title)
+        if hit:
+            occ, shown = hit[0], title[:60]
     if occ is None:
-        occ = _find_role(title) if title else None
-    if occ is None:
-        occ = _find_role(text)
-        if occ is not None:
+        hit = _find_role(_body_without_name(text))
+        if hit:
+            occ, shown = hit[0], hit[1].title()
             notes.append("role")
     if occ is None:
-        raise ValueError("we couldn't find a supported job title. Supported roles: "
-                         + ", ".join(t for t, _ in OCCUPATIONS.values()))
+        occ, shown = GENERAL_FAMILY, "Unrecognised job title"
+        notes.append("role")
 
     m = re.search(r"(\d+)\s+years?", _section(text, "EXPERIENCE"))
     if m:
@@ -304,6 +405,10 @@ def parse(text: str) -> dict:
         if not lang_txt:
             notes.append(f"language:{name}")
 
+    if "role" in notes and shown == "Unrecognised job title" and years == 0 and edu == 0.2 \
+            and "experience" in notes and not re.search(r"(?i)experience|education|skills|employment|work history", text):
+        raise ValueError("this doesn't look like a CV: no job title, experience or education found")
+
     refs = _section(text, "REFERENCES").lower()
     rec = 1.0 if ("recommendation" in refs if refs else
                   re.search(r"letter of recommendation|recommendation letter", text, re.I)) else 0.0
@@ -312,7 +417,7 @@ def parse(text: str) -> dict:
     return {
         "occupation": float(occ), "suitability": OCCUPATIONS[occ][1], "education": edu,
         "experience": min(years, 10) / 10, "recommendation": rec, "availability": avail,
-        "languages": langs, "title": OCCUPATIONS[occ][0], "years": years,
+        "languages": langs, "title": shown, "family": FAMILIES[occ], "years": years,
         "notes": sorted({n.split(":")[0] for n in notes}),
     }
 

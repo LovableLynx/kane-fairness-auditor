@@ -52,8 +52,9 @@
   </section>
   <section class="card" style="animation-delay:.06s">
     <h2 style="font-size:16px;margin:0 0 6px">Evaluated profile</h2>
+    {% set notes = a.parsed.notes or [] %}{% if notes %}<p class="muted" role="note" style="font-size:12.5px;background:#fff8e6;border:1px solid #f3dca3;border-radius:8px;padding:9px 11px">ⓘ Read from a free-form CV: fields marked "estimated" were inferred, so please check them. Scores come from a demo model trained on synthetic data and are not a real assessment of this person.</p>{% endif %}
     <table>
-      <tr><th scope="row">Current role</th><td>{{ a.parsed.title }}</td></tr>
+      <tr><th scope="row">Current role</th><td>{{ a.parsed.title }}{% if a.parsed.family %} <span class="muted" style="font-size:12.5px">· {{ a.parsed.family }}</span>{% endif %}</td></tr>
       <tr><th scope="row">Experience</th><td>{{ a.parsed.years }} years</td></tr>
       <tr><th scope="row">Education</th><td>{{ cv.EDUCATION[a.parsed.education] }}</td></tr>
       <tr><th scope="row">Recommendation letter</th><td>{{ 'Yes' if a.parsed.recommendation else 'No' }}</td></tr>

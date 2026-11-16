@@ -28,8 +28,7 @@ MODEL = joblib.load(ROOT / "models" / f"{MODEL_NAME}.pkl")
 
 ERRORS = {
     "empty": "A résumé is required. Paste the candidate's résumé text.",
-    "norole": "We couldn't find a supported job title in this résumé. Supported roles: "
-              + ", ".join(t for t, _ in cv.OCCUPATIONS.values()) + ".",
+    "norole": "That doesn't look like a CV: we couldn't find a job title, experience or education. Paste the full CV text or try a sample.",
 }
 
 app = Flask(__name__)

@@ -32,8 +32,7 @@ ERRORS = {
     "empty": "Add a CV first: drop a file or paste the text.",
     "filetype": "That file type isn't supported. Upload a .txt, .pdf or .docx CV.",
     "unreadable": "We couldn't read that file. Try saving it as PDF or plain text, or paste the text instead.",
-    "norole": "We couldn't find a supported job title in that CV. Supported roles: "
-              + ", ".join(t for t, _ in cv.OCCUPATIONS.values()) + ".",
+    "norole": "That doesn't look like a CV: we couldn't find a job title, experience or education. Paste the full CV text or try a sample.",
 }
 FIELD_LABELS = {"role": "Role", "experience": "Experience", "education": "Education",
                 "language": "Languages", "recommendation": "Recommendation", "availability": "Availability"}
