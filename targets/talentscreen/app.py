@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import itertools
 import os
+import time
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -21,6 +22,7 @@ sys.path.insert(0, str(ROOT))
 from cvkit import cv  # noqa: E402
 from cvkit.extract import SUPPORTED, UnsupportedFile, to_text  # noqa: E402
 from shared.hardening import BoundedStore, harden  # noqa: E402
+from shared.samples import samples  # noqa: E402
 
 MODEL_NAME = os.environ.get("TARGET_MODEL", "biased")
 MODEL = joblib.load(ROOT / "models" / f"{MODEL_NAME}.pkl")
@@ -49,6 +51,7 @@ def job_context():
 
 
 def screen(text: str, source: str) -> dict:
+    t0 = time.perf_counter()
     parsed = cv.parse(text)
     gender, group = cv.infer_identity(text)
     score = float(MODEL.predict_proba([cv.features(parsed, gender, group)])[0, 1])
@@ -65,7 +68,8 @@ def screen(text: str, source: str) -> dict:
     d = {
         "id": next(_ids), "name": name, "score": score, "shortlisted": score >= THRESHOLD,
         "parsed": parsed, "strengths": strengths, "source": source,
-        "at": datetime.now().strftime("%H:%M"),
+        "at": datetime.now().strftime("%H:%M"), "ms": round((time.perf_counter() - t0) * 1000),
+        "initials": "".join(w[0] for w in name.split()[:2]).upper() or "?",
     }
     DECISIONS[d["id"]] = d
     return d
@@ -74,7 +78,12 @@ def screen(text: str, source: str) -> dict:
 @app.get("/")
 def home():
     recent = sorted(DECISIONS.values(), key=lambda d: d["id"], reverse=True)[:8]
-    return render_template("home.html", job=JOB, recent=recent, accept=",".join(SUPPORTED))
+    allv = list(DECISIONS.values())
+    stats = {"count": len(allv),
+             "short_rate": round(100 * sum(d["shortlisted"] for d in allv) / len(allv)) if allv else None,
+             "avg_ms": round(sum(d.get("ms", 0) for d in allv) / len(allv)) if allv else None}
+    return render_template("home.html", job=JOB, recent=recent, stats=stats, samples=samples(),
+                           accept=",".join(SUPPORTED))
 
 
 @app.post("/screen")

@@ -1,23 +1,55 @@
 {% extends "layout.html" %}
+{% block head %}
+<style>
+  .head { display:flex; flex-wrap:wrap; align-items:end; justify-content:space-between; gap:14px; margin-bottom:20px; }
+  .stats { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin-bottom:22px; }
+  .stat { background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 18px; box-shadow:var(--shadow); animation: rise .45s var(--ease) both; }
+  .stat b { font-size:26px; font-weight:700; letter-spacing:-.02em; display:block; }
+  .stat span { color:var(--muted); font-size:13px; }
+  .stat .bar { height:5px; border-radius:5px; background:#eef2f7; margin-top:10px; overflow:hidden; } .stat .bar i { display:block; height:100%; background:var(--brand); border-radius:5px; }
+  .board { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media (max-width:760px) { .board, .stats { grid-template-columns:1fr; } }
+  .col { background:#eaeef4; border-radius:12px; padding:12px; min-height:200px; }
+  .col h2 { display:flex; align-items:center; justify-content:space-between; font:600 13px system-ui; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:4px 6px 12px; }
+  .col h2 .n { background:#fff; border-radius:999px; padding:2px 9px; font-size:12px; color:var(--fg); }
+  .col.go h2::before { content:""; width:9px; height:9px; border-radius:50%; background:var(--good); margin-right:8px; }
+  .col.stop h2::before { content:""; width:9px; height:9px; border-radius:50%; background:var(--warn); margin-right:8px; }
+  .col h2 span:first-child { display:flex; align-items:center; }
+  .app { display:block; background:#fff; border:1px solid var(--line); border-radius:10px; padding:13px 14px; margin-bottom:10px; text-decoration:none; color:var(--fg);
+         box-shadow:0 1px 2px #14202f0f; transition: transform .18s var(--ease), box-shadow .2s, border-color .2s; animation: rise .4s var(--ease) both; }
+  .app:hover { transform:translateY(-2px); box-shadow:var(--shadow); border-color:#c9d6ea; }
+  .app .top { display:flex; align-items:center; gap:10px; } .app .nm { font-weight:600; } .app .rl { color:var(--muted); font-size:12.5px; }
+  .fitrow { display:flex; align-items:center; gap:10px; margin-top:12px; font-size:12.5px; color:var(--muted); }
+  .fitbar { flex:1; height:6px; border-radius:6px; background:#eef2f7; overflow:hidden; } .fitbar i { display:block; height:100%; border-radius:6px; }
+  .col.go .fitbar i { background:var(--good); } .col.stop .fitbar i { background:#d9772f; }
+  .emptycol { text-align:center; color:var(--muted); font-size:13px; padding:28px 10px; border:2px dashed #cfd8e4; border-radius:10px; }
+</style>
+{% endblock %}
 {% block body %}
-<h1>Applicant pipeline</h1>
-<p><a class="btn" href="{{ url_for('new_applicant') }}">+ Add applicant</a></p>
-<div class="card">
-  {% if applicants %}
-  <div class="table-wrap"><table>
-    <thead><tr><th scope="col">Applicant</th><th scope="col">Role</th><th scope="col">Fit</th><th scope="col">Recommendation</th></tr></thead>
-    <tbody>
-    {% for a in applicants %}
-    <tr>
-      <td><a href="{{ url_for('applicant', aid=a.id) }}">{{ a.name }}</a></td>
-      <td>{{ a.role }}</td><td>{{ a.fit }}%</td>
-      <td><span class="pill {{ 'go' if a.advance else 'stop' }}">{{ 'Advance to interview' if a.advance else 'Do not advance' }}</span></td>
-    </tr>
+<div class="head">
+  <div><h1>Applicant pipeline</h1><p class="muted" style="margin:0">Every applicant is evaluated for role fit by the HireLens model.</p></div>
+  <a class="btn" href="{{ url_for('new_applicant') }}">＋ Add applicant</a>
+</div>
+<div class="stats">
+  <div class="stat"><b>{{ stats.total }}</b><span>Applicants</span></div>
+  <div class="stat" style="animation-delay:.05s"><b>{{ stats.advanced }}</b><span>Advanced to interview</span>
+    <div class="bar"><i style="width:{{ (100 * stats.advanced / stats.total)|round if stats.total else 0 }}%"></i></div></div>
+  <div class="stat" style="animation-delay:.1s"><b>{{ stats.avg_fit if stats.avg_fit is not none else '–' }}{% if stats.avg_fit is not none %}%{% endif %}</b><span>Average role fit</span></div>
+</div>
+<div class="board">
+  {% for go in [true, false] %}
+  {% set col = applicants|selectattr('advance', 'equalto', go)|list %}
+  <section class="col {{ 'go' if go else 'stop' }}" aria-label="{{ 'Advance to interview' if go else 'Do not advance' }}">
+    <h2><span>{{ 'Advance to interview' if go else 'Do not advance' }}</span><span class="n">{{ col|length }}</span></h2>
+    {% for a in col %}
+    <a class="app" href="{{ url_for('applicant', aid=a.id) }}" style="animation-delay:{{ loop.index0 * 0.04 }}s">
+      <div class="top"><span class="avatar" aria-hidden="true">{{ a.initials }}</span><div><div class="nm">{{ a.name }}</div><div class="rl">{{ a.role }} · {{ a.at }}</div></div></div>
+      <div class="fitrow"><span>Fit</span><span class="fitbar" aria-hidden="true"><i style="width:{{ a.fit }}%"></i></span><b style="color:var(--fg)">{{ a.fit }}%</b></div>
+    </a>
+    {% else %}
+    <div class="emptycol">No applicants here yet.{% if go %}<br><a href="{{ url_for('new_applicant') }}">Add the first applicant</a>{% endif %}</div>
     {% endfor %}
-    </tbody>
-  </table></div>
-  {% else %}
-  <p class="muted" style="margin:0">No applicants yet. <a href="{{ url_for('new_applicant') }}">Add the first one</a> to see their role fit.</p>
-  {% endif %}
+  </section>
+  {% endfor %}
 </div>
 {% endblock %}

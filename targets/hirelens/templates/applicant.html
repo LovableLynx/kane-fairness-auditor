@@ -1,25 +1,72 @@
 {% extends "layout.html" %}
 {% block title %}{{ a.name }} · HireLens{% endblock %}
+{% block crumb %}{{ a.name }}{% endblock %}
+{% block head %}
+<style>
+  .prof { display:flex; align-items:center; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .prof .avatar { width:58px; height:58px; font-size:20px; }
+  .grid { display:grid; grid-template-columns:1fr 1.2fr; gap:20px; }
+  @media (max-width:900px) { .grid { grid-template-columns:1fr; } }
+  .donutwrap { display:flex; align-items:center; gap:26px; flex-wrap:wrap; }
+  .donut { width:150px; height:150px; position:relative; flex:none; }
+  .donut svg { width:100%; height:100%; transform:rotate(-90deg); }
+  .donut .val { transition: stroke-dashoffset 1.2s var(--ease); }
+  .fitlbl { font-size:12px; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); font-weight:600; }
+  #fit { font-size:48px; font-weight:700; letter-spacing:-.03em; line-height:1.05; }
+  .rec { margin-top:18px; border-radius:10px; padding:14px 16px; display:flex; align-items:center; gap:12px; }
+  .rec.go { background:var(--good-soft); border:1px solid #b6e3cd; } .rec.stop { background:var(--warn-soft); border:1px solid #f4cdb3; }
+  .rec .ic { width:34px; height:34px; border-radius:50%; display:grid; place-items:center; color:#fff; font-weight:700; flex:none; }
+  .rec.go .ic { background:var(--good); } .rec.stop .ic { background:var(--warn); }
+  .reclbl { font-size:12px; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); font-weight:600; }
+  #recommendation { font-size:18px; font-weight:700; }
+  .rec.go #recommendation { color:var(--good); } .rec.stop #recommendation { color:var(--warn); }
+  table { width:100%; border-collapse:collapse; } th, td { text-align:left; padding:11px 6px; border-bottom:1px solid var(--line); font-size:14px; }
+  th { color:var(--muted); font-weight:600; width:42%; }
+  .timeline { list-style:none; padding:0; margin:0; position:relative; }
+  .timeline::before { content:""; position:absolute; left:7px; top:6px; bottom:6px; width:2px; background:var(--line); }
+  .timeline li { position:relative; padding:0 0 16px 28px; font-size:13.5px; }
+  .timeline li::before { content:""; position:absolute; left:0; top:4px; width:16px; height:16px; border-radius:50%; background:#fff; border:3px solid var(--brand); }
+  .timeline li span { display:block; color:var(--muted); font-size:12.5px; }
+</style>
+{% endblock %}
 {% block body %}
-<h1>{{ a.name }}</h1>
-<div class="card" style="display:flex;gap:40px;flex-wrap:wrap;align-items:center">
-  <div>
-    <div class="muted">Role fit</div>
-    <div style="font-size:46px" id="fit">{{ a.fit }}%</div>
-  </div>
-  <div>
-    <div class="muted">Recommendation</div>
-    <div id="recommendation" style="font:600 20px system-ui;color:{{ 'var(--good)' if a.advance else 'var(--warn)' }}">
-      {{ 'Advance to interview' if a.advance else 'Do not advance' }}
+<div class="prof">
+  <span class="avatar" aria-hidden="true" style="background:linear-gradient(135deg,#1463e6,#5b7fb3)">{{ a.initials }}</span>
+  <div><h1>{{ a.name }}</h1><div class="muted">Applied for {{ job.title }} · {{ a.role }} · {{ a.at }}</div></div>
+  <a class="btn secondary" href="{{ url_for('pipeline') }}" style="margin-left:auto">← Back to pipeline</a>
+</div>
+<div class="grid">
+  <section class="card">
+    <div class="donutwrap">
+      <div class="donut" aria-hidden="true">
+        <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="48" fill="none" stroke="#eef2f7" stroke-width="14"/>
+          <circle class="val" id="ring" cx="60" cy="60" r="48" fill="none" stroke="{{ '#0b7a53' if a.advance else '#d9772f' }}" stroke-width="14" stroke-linecap="round"
+            stroke-dasharray="301.6" stroke-dashoffset="301.6" data-fit="{{ a.fit }}"/></svg>
+      </div>
+      <div><div class="fitlbl">Role fit</div><div id="fit">{{ a.fit }}%</div><div class="muted" style="font-size:13px">for {{ job.title }}</div></div>
     </div>
-  </div>
+    <div class="rec {{ 'go' if a.advance else 'stop' }}">
+      <span class="ic" aria-hidden="true">{{ '✓' if a.advance else '–' }}</span>
+      <div><div class="reclbl">Recommendation</div><div id="recommendation">{{ 'Advance to interview' if a.advance else 'Do not advance' }}</div></div>
+    </div>
+  </section>
+  <section class="card" style="animation-delay:.06s">
+    <h2 style="font-size:16px;margin:0 0 6px">Evaluated profile</h2>
+    <table>
+      <tr><th scope="row">Current role</th><td>{{ a.parsed.title }}</td></tr>
+      <tr><th scope="row">Experience</th><td>{{ a.parsed.years }} years</td></tr>
+      <tr><th scope="row">Education</th><td>{{ cv.EDUCATION[a.parsed.education] }}</td></tr>
+      <tr><th scope="row">Recommendation letter</th><td>{{ 'Yes' if a.parsed.recommendation else 'No' }}</td></tr>
+    </table>
+    <h2 style="font-size:16px;margin:20px 0 12px">Activity</h2>
+    <ul class="timeline">
+      <li>Résumé received<span>{{ a.at }}</span></li>
+      <li>Profile parsed and evaluated by the fair-scoring model<span>Names and demographics are not used</span></li>
+      <li>Recommendation issued<span>{{ 'Advance to interview' if a.advance else 'Do not advance' }}</span></li>
+    </ul>
+  </section>
 </div>
-<div class="card">
-  <table>
-    <tr><th>Current role</th><td>{{ a.parsed.title }}</td></tr>
-    <tr><th>Experience</th><td>{{ a.parsed.years }} years</td></tr>
-    <tr><th>Education</th><td>{{ cv.EDUCATION[a.parsed.education] }}</td></tr>
-  </table>
-</div>
-<p><a href="{{ url_for('pipeline') }}">Back to pipeline</a></p>
+<script>
+  (() => { const r = document.getElementById('ring'); requestAnimationFrame(() => { r.style.strokeDashoffset = (301.6 * (1 - r.dataset.fit / 100)).toFixed(1); }); })();
+</script>
 {% endblock %}

@@ -325,6 +325,48 @@ table.t { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 
 .byok .copy-chip code { white-space: normal; word-break: break-all; }
 #live-btn[aria-busy="true"] { cursor: progress; opacity: .85; }
 
+
+/* "Try it yourself" product tiles with mini previews in each tool's own style */
+.toolcard { padding: 0; overflow: hidden; display: flex !important; flex-direction: column; }
+.toolcard-body { padding: var(--s-5); }
+.toolcard h3 { display: flex; align-items: center; gap: 8px; }
+.toolcard .go-arrow { transition: transform var(--t) var(--spring); }
+.toolcard:hover .go-arrow { transform: translate(3px, -3px) rotate(8deg); }
+.toolcard .open { display: inline-block; margin-top: 14px; font-weight: 700; font-size: .9rem; border-bottom: 2px solid var(--lime); }
+.mock { height: 170px; border-bottom: var(--bw) solid var(--ink); position: relative; overflow: hidden; transition: transform .5s var(--ease); }
+.toolcard:hover .mock > * { transform: translateY(-3px); }
+.mock > * { transition: transform .4s var(--spring); }
+/* TalentScreen: dark AI */
+.mock-talentscreen { background: radial-gradient(200px 120px at 20% 0%, #6d4aff66, transparent), radial-gradient(200px 120px at 90% 10%, #2be4b44d, transparent), #0b0b12; color: #f1f1f7; }
+.mock-talentscreen .m-top { display: flex; align-items: center; gap: 8px; padding: 12px 14px; font: 700 10px system-ui; }
+.mock-talentscreen .m-logo { width: 14px; height: 14px; border-radius: 4px; background: conic-gradient(#6d4aff, #2be4b4, #ff5fa2, #6d4aff); }
+.mock-talentscreen .m-top span { flex: 1; height: 6px; border-radius: 4px; background: #ffffff14; }
+.mock-talentscreen .m-top b { color: #2be4b4; font-weight: 700; }
+.mock-talentscreen .m-body { display: flex; gap: 16px; align-items: center; padding: 4px 16px; }
+.mock-talentscreen .m-ring { width: 84px; height: 84px; border-radius: 50%; background: conic-gradient(#6d4aff 0 63%, #ffffff14 63% 100%); display: grid; place-items: center; flex: none; }
+.mock-talentscreen .m-ring span { width: 64px; height: 64px; border-radius: 50%; background: #0b0b12; display: grid; place-items: center; font: 800 22px system-ui; }
+.mock-talentscreen .m-rows { flex: 1; display: grid; gap: 7px; }
+.mock-talentscreen .m-rows i { display: block; height: 8px; border-radius: 5px; background: #ffffff18; } .mock-talentscreen .m-rows i:nth-child(2) { width: 70%; } .mock-talentscreen .m-rows i:nth-child(3) { width: 85%; }
+.mock-talentscreen .m-rows em { font: 800 9px system-ui; letter-spacing: .08em; color: #37e6b4; border: 1px solid #37e6b466; border-radius: 99px; padding: 3px 8px; justify-self: start; font-style: normal; }
+/* HireLens: enterprise ATS */
+.mock-hirelens { background: #f3f5f9; display: flex; }
+.mock-hirelens .m-side { width: 52px; background: linear-gradient(180deg, #0f2a4a, #0b2140); padding: 14px 10px; display: grid; align-content: start; gap: 8px; }
+.mock-hirelens .m-side i { display: block; height: 7px; border-radius: 4px; background: #ffffff33; } .mock-hirelens .m-side i:first-child { background: #fff; width: 70%; }
+.mock-hirelens .m-main { flex: 1; padding: 14px; }
+.mock-hirelens .m-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; height: 100%; }
+.mock-hirelens .m-cols > div { background: #e5eaf1; border-radius: 8px; padding: 8px; display: grid; align-content: start; gap: 6px; }
+.mock-hirelens .m-cols b { font: 700 8px system-ui; letter-spacing: .06em; color: #5a6778; }
+.mock-hirelens .m-cols i { display: block; height: 34px; border-radius: 6px; background: #fff; box-shadow: 0 1px 2px #14202f22; position: relative; }
+.mock-hirelens .m-cols i::after { content: ""; position: absolute; left: 8px; right: 30%; bottom: 8px; height: 4px; border-radius: 3px; background: #0b7a53; }
+.mock-hirelens .m-cols > div:last-child i::after { background: #d9772f; right: 55%; }
+/* QuickMatch: playful consumer */
+.mock-quickmatch { background: radial-gradient(160px 120px at 0% 0%, #ffc38f, transparent), radial-gradient(160px 120px at 100% 100%, #ffd6e0, transparent), #fff7ec; padding: 14px 18px; }
+.mock-quickmatch .m-steps { height: 7px; border-radius: 99px; background: #f6e6cf; overflow: hidden; } .mock-quickmatch .m-steps i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #ff8a1f, #ff6f91); }
+.mock-quickmatch .m-card { margin: 12px auto 0; width: 70%; background: #fffdf9; border: 2px solid #f0dfc8; border-radius: 16px; text-align: center; padding: 10px; }
+.mock-quickmatch .m-gauge { width: 70px; height: 35px; margin: 0 auto; border-radius: 70px 70px 0 0; background: conic-gradient(from 270deg at 50% 100%, #ff6f91, #ff8a1f 25%, #1f7a40 50%, transparent 50%); -webkit-mask: radial-gradient(circle at 50% 100%, transparent 22px, #000 23px); mask: radial-gradient(circle at 50% 100%, transparent 22px, #000 23px); }
+.mock-quickmatch strong { display: block; font: 900 18px "Trebuchet MS", sans-serif; color: #2a1d12; }
+.mock-quickmatch em { display: inline-block; font: 800 9px "Trebuchet MS", sans-serif; color: #1f7a40; background: #dff5e6; padding: 3px 9px; border-radius: 99px; font-style: normal; }
+
 /* ---------- 6. Twin Lab ---------- */
 .lab { display: grid; grid-template-columns: .85fr 1.15fr; border: var(--bw) solid var(--ink); box-shadow: var(--shadow-lg); background: var(--paper); }
 @media (max-width: 900px) { .lab { grid-template-columns: 1fr; } }

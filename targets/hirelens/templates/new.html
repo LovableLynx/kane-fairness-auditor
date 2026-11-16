@@ -1,18 +1,48 @@
 {% extends "layout.html" %}
 {% block title %}Add applicant · HireLens{% endblock %}
+{% block crumb %}Add applicant{% endblock %}
+{% block head %}
+<style>
+  .two { display:grid; grid-template-columns:1.5fr .9fr; gap:20px; align-items:start; }
+  @media (max-width:900px) { .two { grid-template-columns:1fr; } }
+  .tips h3 { font-size:15px; margin:0 0 8px; } .tips ul { padding-left:18px; margin:0; color:var(--muted); font-size:13.5px; } .tips li { margin-bottom:6px; }
+  .sample { display:block; width:100%; text-align:left; margin-top:8px; }
+  .steps { display:flex; gap:8px; margin:0 0 18px; flex-wrap:wrap; } .steps span { font-size:12.5px; padding:4px 10px; border-radius:999px; background:#eef3fb; color:#3d5a80; }
+  .steps span.on { background:var(--brand); color:#fff; }
+</style>
+{% endblock %}
 {% block body %}
 <h1>Add applicant</h1>
+<p class="muted" style="margin:0 0 18px">Paste the résumé and HireLens evaluates role fit for {{ job.title }}.</p>
+<div class="steps" aria-hidden="true"><span class="on">1 · Résumé</span><span>2 · Evaluation</span><span>3 · Recommendation</span></div>
 {% if error_message %}<p class="err" role="alert">{{ error_message }}</p>{% endif %}
-<form class="card" method="post" action="{{ url_for('create_applicant') }}" id="applicant-form">
-  <label for="full_name">Full name (optional)</label>
-  <input id="full_name" name="full_name" maxlength="80" autocomplete="off" placeholder="Taken from the résumé if blank">
-  <label for="resume">Résumé</label>
-  <textarea id="resume" name="resume" placeholder="Paste résumé text" required></textarea>
-  <p style="margin-top:18px"><button class="btn" type="submit" id="eval-btn"><span class="spin" aria-hidden="true"></span><span class="lbl">Evaluate applicant</span></button></p>
-</form>
+<div class="two">
+  <form class="card" method="post" action="{{ url_for('create_applicant') }}" id="applicant-form">
+    <label for="full_name" style="margin-top:0">Full name (optional)</label>
+    <input id="full_name" name="full_name" maxlength="80" autocomplete="off" placeholder="Taken from the résumé if blank">
+    <label for="resume">Résumé</label>
+    <textarea id="resume" name="resume" placeholder="Paste résumé text" required></textarea>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+      <button class="btn" type="submit" id="eval-btn"><span class="spin" aria-hidden="true"></span><span class="lbl">Evaluate applicant</span></button>
+      <a class="btn secondary" href="{{ url_for('pipeline') }}">Cancel</a>
+    </div>
+  </form>
+  <aside class="card tips" style="animation-delay:.06s">
+    <h3>How evaluation works</h3>
+    <ul><li>Reads role, experience, education, languages and references.</li><li>Scores fit with a model that does not use names or demographics.</li><li>Recommends whether to advance to interview.</li></ul>
+    {% if samples %}
+    <h3 style="margin-top:18px">Try a sample résumé</h3>
+    {% for s in samples %}<button type="button" class="btn secondary sample" data-sample="{{ loop.index0 }}">{{ s.label }} · {{ s.name }}</button>{% endfor %}
+    <script type="application/json" id="sample-data">{{ samples|tojson }}</script>
+    {% endif %}
+  </aside>
+</div>
 <script>
-  document.getElementById('applicant-form').addEventListener('submit', () => {
-    const b = document.getElementById('eval-btn'); b.setAttribute('aria-busy', 'true'); b.querySelector('.lbl').textContent = 'Evaluating…';
-  });
+  (() => {
+    const f = document.getElementById('applicant-form'), b = document.getElementById('eval-btn'), ta = document.getElementById('resume');
+    f.addEventListener('submit', () => { b.setAttribute('aria-busy', 'true'); b.querySelector('.lbl').textContent = 'Evaluating…'; });
+    const sd = document.getElementById('sample-data');
+    if (sd) { const S = JSON.parse(sd.textContent); document.querySelectorAll('[data-sample]').forEach(x => x.addEventListener('click', () => { ta.value = S[+x.dataset.sample].text; ta.focus(); })); }
+  })();
 </script>
 {% endblock %}

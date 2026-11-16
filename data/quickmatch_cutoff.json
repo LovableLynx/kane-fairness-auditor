@@ -1,6 +1,15 @@
 {
- "cutoff": 0.215,
+ "cutoff": 0.21498170495033264,
+ "cutoffs": {
+  "data-analyst": 0.21498170495033264,
+  "software-engineer": 0.22526255249977112,
+  "project-manager": 0.2228134274482727,
+  "accountant": 0.2517906129360199,
+  "marketing-specialist": 0.24660596251487732,
+  "nurse": 0.21630460023880005,
+  "teacher": 0.25099247694015503
+ },
  "model": "sentence-transformers/all-MiniLM-L6-v2",
  "pool": "data/calibration.json",
- "method": "median similarity of the calibration pool"
+ "method": "median similarity of the calibration pool, per role"
 }

@@ -1,13 +1,50 @@
 {% extends "shell.html" %}
+{% block head %}
+<style>
+  .res { text-align:center; position:relative; overflow:hidden; }
+  .meter { width:230px; height:130px; margin:16px auto 0; position:relative; }
+  .meter svg { width:100%; height:100%; }
+  .meter .arc { transition: stroke-dashoffset 1.3s var(--spring); }
+  .meter .needle { transform-origin:115px 115px; transition: transform 1.3s var(--spring); }
+  #similarity { font-size:56px; font-weight:900; margin:0; letter-spacing:-.03em; line-height:1; }
+  .simlbl { font-size:14px; color:var(--muted); margin:14px 0 4px; }
+  #verdict { display:inline-block; margin-top:14px; font-size:19px; font-weight:800; padding:10px 22px; border-radius:999px; animation: pop .6s var(--spring) .8s both; }
+  #verdict.ok { background:var(--leaf-soft); color:var(--leaf); } #verdict.no { background:var(--berry-soft); color:var(--berry); }
+  .confetti { position:absolute; inset:0; pointer-events:none; }
+  .confetti i { position:absolute; top:-12px; width:9px; height:14px; border-radius:2px; opacity:0; animation: fall 1.9s ease-in forwards; }
+  @keyframes fall { 0% { opacity:1; transform: translateY(0) rotate(0); } 100% { opacity:0; transform: translateY(520px) rotate(540deg); } }
+</style>
+{% endblock %}
 {% block body %}
-<div class="box" style="text-align:center">
-  <p class="muted" style="margin:0">{{ role.title }}</p>
-  <p style="font-size:15px;margin:14px 0 0" class="muted">Similarity score</p>
-  <p id="similarity" style="font-size:54px;font-weight:900;margin:0">{{ '%.3f'|format(d.similarity) }}</p>
-  <p id="verdict" style="font-size:20px;font-weight:700;color:{{ 'var(--leaf)' if d.recommended else 'var(--berry)' }}">
-    Verdict: {{ 'Recommended for interview' if d.recommended else 'Not recommended' }}
-  </p>
-  <p class="muted" style="font-size:13px">Powered by an open-source language model · cutoff {{ '%.3f'|format(cutoff) }}</p>
-  <a class="go" href="{{ url_for('step_role') }}" style="text-decoration:none">Match another candidate</a>
+<div class="box res">
+  {% if d.recommended %}<div class="confetti" aria-hidden="true" id="confetti"></div>{% endif %}
+  <p class="muted" style="margin:0">{{ role.title }} · match result</p>
+  <div class="meter" aria-hidden="true">
+    <svg viewBox="0 0 230 130">
+      <defs><linearGradient id="mg" x1="0" x2="1"><stop offset="0" stop-color="#ff6f91"/><stop offset=".5" stop-color="#ff8a1f"/><stop offset="1" stop-color="#1f7a40"/></linearGradient></defs>
+      <path d="M 20 115 A 95 95 0 0 1 210 115" fill="none" stroke="#f6e6cf" stroke-width="18" stroke-linecap="round"/>
+      <path class="arc" id="arc" d="M 20 115 A 95 95 0 0 1 210 115" fill="none" stroke="url(#mg)" stroke-width="18" stroke-linecap="round" stroke-dasharray="298.5" stroke-dashoffset="298.5"
+            data-v="{{ [d.similarity / 0.5, 1]|min if d.similarity > 0 else 0 }}"/>
+      <g class="needle" id="needle"><line x1="115" y1="115" x2="115" y2="38" stroke="#2a1d12" stroke-width="4" stroke-linecap="round"/><circle cx="115" cy="115" r="9" fill="#2a1d12"/></g>
+    </svg>
+  </div>
+  <p class="simlbl">Similarity score</p>
+  <p id="similarity">{{ '%.3f'|format(d.similarity) }}</p>
+  <p id="verdict" class="{{ 'ok' if d.recommended else 'no' }}">Verdict: {{ 'Recommended for interview' if d.recommended else 'Not recommended' }}</p>
+  <p class="muted" style="font-size:13px;margin-top:16px">Cutoff {{ '%.3f'|format(cutoff) }} · scored by an open-source language model</p>
+  <a class="go" href="{{ url_for('step_role') }}">Match another candidate</a>
 </div>
+<script>
+  (() => {
+    const arc = document.getElementById('arc'), needle = document.getElementById('needle'), v = parseFloat(arc.dataset.v) || 0;
+    requestAnimationFrame(() => { arc.style.strokeDashoffset = (298.5 * (1 - v)).toFixed(1); needle.style.transform = `rotate(${-90 + 180 * v}deg)`; });
+    needle.style.transform = 'rotate(-90deg)';
+    const c = document.getElementById('confetti');
+    if (c && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const colors = ['#ff8a1f', '#ff6f91', '#1f7a40', '#ffd23f', '#6d4aff'];
+      for (let i = 0; i < 46; i++) { const p = document.createElement('i'); p.style.left = Math.random() * 100 + '%';
+        p.style.background = colors[i % colors.length]; p.style.animationDelay = (0.6 + Math.random() * 0.7) + 's'; c.appendChild(p); }
+    }
+  })();
+</script>
 {% endblock %}

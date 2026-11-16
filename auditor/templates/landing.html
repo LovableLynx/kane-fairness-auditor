@@ -216,10 +216,26 @@
     </div>
     <div class="grid-3">
       {% for key, t in TOOLS.items() %}
-      <a class="card reveal" style="--i:{{ loop.index0 }}" href="{{ TOOL_URLS[key] }}">
-        <span class="kicker">Demo tool {{ loop.index }}</span>
-        <h3>{{ t.name }} <span aria-hidden="true">↗</span></h3>
-        <p class="muted small" style="margin:0">{{ t.ui }}. {{ t.model }}.</p>
+      <a class="card toolcard reveal" style="--i:{{ loop.index0 }}" href="{{ TOOL_URLS[key] }}">
+        <div class="mock mock-{{ key }}" aria-hidden="true">
+          {% if key == 'talentscreen' %}
+            <div class="m-top"><i class="m-logo"></i><span></span><b>AI live</b></div>
+            <div class="m-body"><div class="m-ring"><span>63</span></div>
+              <div class="m-rows"><i></i><i></i><i></i><em>SHORTLIST</em></div></div>
+          {% elif key == 'hirelens' %}
+            <div class="m-side"><i></i><i></i><i></i></div>
+            <div class="m-main"><div class="m-cols"><div><b>ADVANCE</b><i></i><i></i></div><div><b>DO NOT</b><i></i></div></div></div>
+          {% else %}
+            <div class="m-steps"><i></i></div>
+            <div class="m-card"><div class="m-gauge"></div><strong>0.297</strong><em>Recommended</em></div>
+          {% endif %}
+        </div>
+        <div class="toolcard-body">
+          <span class="kicker">Demo tool {{ loop.index }} · {{ t.role }}</span>
+          <h3>{{ t.name }} <span class="go-arrow" aria-hidden="true">↗</span></h3>
+          <p class="muted small" style="margin:0">{{ t.ui }}. {{ t.model }}.</p>
+          <span class="open">Open {{ t.name }} →</span>
+        </div>
       </a>
       {% endfor %}
     </div>

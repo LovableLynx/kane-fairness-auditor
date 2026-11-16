@@ -20,6 +20,8 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from cvkit import cv  # noqa: E402
 from shared.hardening import BoundedStore, harden  # noqa: E402
+from shared.samples import samples  # noqa: E402
+from datetime import datetime  # noqa: E402
 
 MODEL_NAME = os.environ.get("TARGET_MODEL", "fair")
 MODEL = joblib.load(ROOT / "models" / f"{MODEL_NAME}.pkl")
@@ -36,14 +38,25 @@ _ids = itertools.count(1)
 APPLICANTS: BoundedStore = BoundedStore(300)
 
 
+JOB = {"title": "Data Analyst", "team": "Insights", "location": "Remote", "req": "DA-2026"}
+
+
+@app.context_processor
+def job_context():
+    return {"job": JOB}
+
+
 @app.get("/")
 def pipeline():
-    return render_template("pipeline.html", applicants=sorted(APPLICANTS.values(), key=lambda a: -a["id"]))
+    apps = sorted(APPLICANTS.values(), key=lambda a: -a["id"])
+    stats = {"total": len(apps), "advanced": sum(a["advance"] for a in apps),
+             "avg_fit": round(sum(a["fit"] for a in apps) / len(apps)) if apps else None}
+    return render_template("pipeline.html", applicants=apps, stats=stats)
 
 
 @app.get("/applicants/new")
 def new_applicant():
-    return render_template("new.html")
+    return render_template("new.html", samples=samples())
 
 
 @app.post("/applicants")
@@ -60,7 +73,8 @@ def create_applicant():
     # Fair pipeline: demographics are not inferred; placeholders are dropped by the model anyway.
     fit = float(MODEL.predict_proba([cv.features(parsed, "male", "B")])[0, 1])
     a = {"id": next(_ids), "name": name, "role": parsed["title"], "fit": round(fit * 100),
-         "advance": fit >= 0.5, "parsed": parsed}
+         "advance": fit >= 0.5, "parsed": parsed, "at": datetime.now().strftime("%d %b, %H:%M"),
+         "initials": "".join(w[0] for w in name.split()[:2]).upper() or "?"}
     APPLICANTS[a["id"]] = a
     return redirect(url_for("applicant", aid=a["id"]))
 

@@ -1,14 +1,31 @@
 {% extends "shell.html" %}
+{% block head %}
+<style>
+  .roles { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:6px; }
+  @media (max-width:560px) { .roles { grid-template-columns:1fr; } }
+  .role { padding:14px; align-items:flex-start; }
+  .role input { position:absolute; opacity:0; }
+  .role .emoji { width:48px; height:48px; font-size:24px; }
+  .role b { font-size:16px; display:block; } .role small { color:var(--muted); font-size:12.5px; }
+  .role:has(input:focus-visible) { outline:3px solid var(--sun); outline-offset:3px; }
+  .role { position:relative; } .role:has(input:checked)::after { content:"✓"; position:absolute; top:10px; right:12px; width:22px; height:22px; border-radius:50%;
+          background:var(--sun-hi); color:#fff; font-size:13px; font-weight:900; display:grid; place-items:center; }
+</style>
+{% endblock %}
 {% block body %}
 <form class="box" method="post" data-busy="" action="{{ url_for('start') }}">
-  <h1>Which role are you hiring for?</h1>
-  <p class="muted">We'll match candidates against the job description.</p>
+  <h1>Which role are you hiring for? 👋</h1>
+  <p class="muted" style="margin:0 0 14px">Pick a role and we'll match candidates against its job description in seconds.</p>
+  <fieldset style="border:0;padding:0;margin:0"><legend class="muted" style="font-size:13px;font-weight:700;margin-bottom:6px">Open roles</legend>
+  <div class="roles">
   {% for key, r in roles.items() %}
-  <label class="role">
-    <input type="radio" name="role" value="{{ key }}" {{ 'checked' if loop.first }}>
-    <span><b>{{ r.title }}</b><br><span class="muted" style="font-size:13px">{{ r.jd[:140] }}…</span></span>
-  </label>
+    <label class="role">
+      <input type="radio" name="role" value="{{ key }}" {{ 'checked' if loop.first }}>
+      <span class="emoji" aria-hidden="true">{{ r.emoji }}</span>
+      <span><b>{{ r.title }}</b><small>{{ r.team }} · {{ r.jd.split('. ')[1][:70] }}…</small></span>
+    </label>
   {% endfor %}
+  </div></fieldset>
   <button class="go" type="submit"><span class="lbl">Continue →</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></button>
 </form>
 {% endblock %}

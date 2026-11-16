@@ -24,18 +24,46 @@ from flask import Flask, abort, redirect, render_template, request, url_for
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from shared.hardening import BoundedStore, harden  # noqa: E402
+from shared.samples import samples  # noqa: E402
 
 MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
 
-ROLES = {
-    "data-analyst": {
-        "title": "Data Analyst",
+def _jd(title: str, body: str) -> str:
+    return (f"{title}. {body} Strong communication skills and the ability to work across teams are important. "
+            "Additional languages are a plus. A recommendation from a previous employer is welcome.")
+
+
+ROLES = {  # the first role is the default; the fairness audit uses "data-analyst"
+    "data-analyst": {"title": "Data Analyst", "emoji": "📊", "team": "Insights",
         "jd": ("Data Analyst. We are hiring a data analyst to turn business data into insight. "
                "You will build reports and dashboards, analyse trends, and present findings to stakeholders. "
                "Requirements: a degree in a quantitative field, several years of professional experience in "
                "analytics or a related role, strong communication skills, and the ability to work across teams. "
-               "Additional languages are a plus. A recommendation from a previous employer is welcome."),
-    },
+               "Additional languages are a plus. A recommendation from a previous employer is welcome.")},
+    "software-engineer": {"title": "Software Engineer", "emoji": "💻", "team": "Platform",
+        "jd": _jd("Software Engineer", "We are hiring a software engineer to build and maintain reliable web services. "
+                  "You will write well-tested Python and SQL, review code and improve our delivery pipeline. "
+                  "Requirements: a degree in computer science or a related field and several years of professional engineering experience.")},
+    "project-manager": {"title": "Project Manager", "emoji": "🗂️", "team": "Delivery",
+        "jd": _jd("Project Manager", "We are hiring a project manager to lead cross-functional delivery of business projects. "
+                  "You will plan work, manage risks and budgets, and run stakeholder reviews. "
+                  "Requirements: a degree and several years of project management experience.")},
+    "accountant": {"title": "Accountant", "emoji": "🧾", "team": "Finance",
+        "jd": _jd("Accountant", "We are hiring an accountant to prepare management accounts and support audits. "
+                  "You will reconcile ledgers, close the books each month and improve finance processes. "
+                  "Requirements: a degree in accounting or finance and several years of professional experience.")},
+    "marketing-specialist": {"title": "Marketing Specialist", "emoji": "📣", "team": "Growth",
+        "jd": _jd("Marketing Specialist", "We are hiring a marketing specialist to plan and run multi-channel campaigns. "
+                  "You will analyse campaign performance, manage content and run experiments. "
+                  "Requirements: a degree and several years of marketing experience.")},
+    "nurse": {"title": "Registered Nurse", "emoji": "🩺", "team": "Patient care",
+        "jd": _jd("Registered Nurse", "We are hiring a nurse to deliver safe, compassionate patient care on a busy ward. "
+                  "You will keep accurate clinical records, support audits and mentor students. "
+                  "Requirements: a nursing qualification and several years of clinical experience.")},
+    "teacher": {"title": "Teacher", "emoji": "📚", "team": "Education",
+        "jd": _jd("Teacher", "We are hiring a teacher to plan and deliver engaging lessons and track student progress. "
+                  "You will use assessment data, lead curriculum work and communicate with parents. "
+                  "Requirements: a degree, a teaching qualification and several years of classroom experience.")},
 }
 
 app = Flask(__name__)
@@ -75,23 +103,30 @@ def similarity(cv_text: str, role: str) -> float:
     return float(embed([cv_text])[0] @ jd_vec(role))
 
 
-def calibrate(write: bool = False) -> float:
-    """Shortlist cutoff = median similarity over an independent calibration pool
-    (data/calibration.json: CVs that are never used in any audit), so about half pass.
-    The value is cached in data/quickmatch_cutoff.json; `python targets/quickmatch/app.py --calibrate` refreshes it."""
+def calibrate(write: bool = False) -> dict[str, float]:
+    """Shortlist cutoff per role = median similarity of an independent calibration pool
+    (data/calibration.json: CVs never used in any audit) against that role's job description,
+    so about half of the pool passes for every role. Cached in data/quickmatch_cutoff.json;
+    `python targets/quickmatch/app.py --calibrate` refreshes it."""
     if os.environ.get("QUICKMATCH_CUTOFF"):
-        return float(os.environ["QUICKMATCH_CUTOFF"])
+        return {k: float(os.environ["QUICKMATCH_CUTOFF"]) for k in ROLES}
     if CUTOFF_FILE.exists() and not write:
-        return float(json.loads(CUTOFF_FILE.read_text())["cutoff"])
+        data = json.loads(CUTOFF_FILE.read_text())
+        cuts = data.get("cutoffs") or {"data-analyst": data["cutoff"]}
+        return {k: float(cuts.get(k, cuts.get("data-analyst", 0.5))) for k in ROLES}
     pool = ROOT / "data" / "calibration.json"
     if not pool.exists():
-        return 0.5
-    cut = float(np.median(embed(json.loads(pool.read_text())) @ jd_vec("data-analyst")))
-    CUTOFF_FILE.write_text(json.dumps({"cutoff": cut, "model": MODEL_ID, "pool": "data/calibration.json"}, indent=1))
-    return cut
+        return {k: 0.5 for k in ROLES}
+    vecs = embed(json.loads(pool.read_text()))
+    cuts = {k: float(np.median(vecs @ jd_vec(k))) for k in ROLES}
+    CUTOFF_FILE.write_text(json.dumps({"cutoff": cuts["data-analyst"], "cutoffs": cuts, "model": MODEL_ID,
+                                       "pool": "data/calibration.json",
+                                       "method": "median similarity of the calibration pool, per role"}, indent=1))
+    return cuts
 
 
-CUTOFF = calibrate()
+CUTOFFS = calibrate()
+CUTOFF = CUTOFFS["data-analyst"]  # used by the audit's dev endpoint
 
 
 @app.get("/")
@@ -116,7 +151,7 @@ def step_cv(did: int):
         d["cv"] = (request.form.get("candidate_cv") or "").strip()[:20000]
         if d["cv"]:
             return redirect(url_for("step_review", did=did))
-    return render_template("step_cv.html", d=d, role=ROLES[d["role"]], step=2,
+    return render_template("step_cv.html", d=d, role=ROLES[d["role"]], step=2, samples=samples(),
                            error=request.method == "POST")
 
 
@@ -138,7 +173,7 @@ def run_match(did: int):
     if not d["cv"]:
         return redirect(url_for("step_cv", did=did))
     d["similarity"] = similarity(d["cv"], d["role"])
-    d["recommended"] = d["similarity"] >= CUTOFF
+    d["recommended"] = d["similarity"] >= CUTOFFS[d["role"]]
     d["cv"] = ""  # data minimisation: the CV text is not kept once it has been scored
     return redirect(url_for("result", did=did))
 
@@ -148,7 +183,7 @@ def result(did: int):
     d = DRAFTS.get(did) or abort(404)
     if "similarity" not in d:
         return redirect(url_for("step_review", did=did))
-    return render_template("result.html", d=d, role=ROLES[d["role"]], cutoff=CUTOFF, step=4)
+    return render_template("result.html", d=d, role=ROLES[d["role"]], cutoff=CUTOFFS[d["role"]], step=4)
 
 
 @app.post("/api/match")
@@ -172,7 +207,7 @@ def healthz():
 
 if __name__ == "__main__":
     if "--calibrate" in sys.argv:
-        print(f"cutoff = {calibrate(write=True):.4f} -> {CUTOFF_FILE}")
+        print(f"cutoffs = {calibrate(write=True)} -> {CUTOFF_FILE}")
     elif "--download" in sys.argv:
         embedder()
         print(f"model cached in {CACHE_DIR}")

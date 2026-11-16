@@ -1,11 +1,18 @@
 {% extends "shell.html" %}
 {% block body %}
 <form class="box" method="post" data-busy="">
-  <h1>Who's the candidate?</h1>
-  <p class="muted">Role: {{ role.title }}. Paste their CV below.</p>
-  {% if error %}<p style="color:var(--berry)" role="alert">Please paste a CV to continue.</p>{% endif %}
-  <label for="candidate_cv" class="muted" style="font-size:13px">Candidate's CV</label>
+  <h1>Who's the candidate? 🧑‍💼</h1>
+  <p class="muted" style="margin:0 0 14px">Role: <b>{{ role.title }}</b>. Paste their CV below.</p>
+  {% if error %}<p style="color:var(--berry);font-weight:700" role="alert">Please paste a CV to continue.</p>{% endif %}
+  <label for="candidate_cv" class="muted" style="font-size:13px;font-weight:700">Candidate's CV</label>
   <textarea id="candidate_cv" name="candidate_cv">{{ d.cv }}</textarea>
+  {% if samples %}
+  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px"><span class="muted" style="font-size:13px">No CV handy? Try</span>
+    {% for s in samples %}<button type="button" class="chip" data-sample="{{ loop.index0 }}">{{ s.name }}{% if 'Long' in s.label %} (long){% endif %}</button>{% endfor %}</div>
+  <script type="application/json" id="sample-data">{{ samples|tojson }}</script>
+  <script>(() => { const S = JSON.parse(document.getElementById('sample-data').textContent), ta = document.getElementById('candidate_cv');
+    document.querySelectorAll('[data-sample]').forEach(b => b.addEventListener('click', () => { ta.value = S[+b.dataset.sample].text; ta.focus(); })); })();</script>
+  {% endif %}
   <button class="go" type="submit"><span class="lbl">Continue →</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></button>
 </form>
 {% endblock %}
