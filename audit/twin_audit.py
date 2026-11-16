@@ -125,7 +125,7 @@ def run_kane(target: dict, run: CandidateRun, kane: str, headed: bool, timeout: 
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as vf:
         json.dump(variables, vf)
     cmd = [kane, "run", build_objective(target["url"], target["task"], run.twins), "--agent",
-           "--variables-file", vf.name, "--timeout", str(timeout), "--max-steps", str(20 * len(run.twins))]
+           "--url", target["url"], "--variables-file", vf.name, "--timeout", str(timeout), "--max-steps", str(20 * len(run.twins))]
     if not headed:
         cmd.append("--headless")
     try:
@@ -352,7 +352,8 @@ def main() -> int:
     ap.add_argument("--direct", action="store_true", help="dev dry run through the target's direct adapter")
     ap.add_argument("--live", action="store_true", help="audit the public deployment (live_url) instead of localhost")
     ap.add_argument("--headed", action="store_true", help="show the browser (headless default)")
-    ap.add_argument("--parallel", type=int, default=1)
+    ap.add_argument("--parallel", type=int, default=1,
+                    help="Kane runs at once; keep 1 on one machine (each Kane Chrome uses CDP port 9222)")
     ap.add_argument("--timeout", type=int, default=1500)
     ap.add_argument("--out", default=str(ROOT / "reports"))
     args = ap.parse_args()
