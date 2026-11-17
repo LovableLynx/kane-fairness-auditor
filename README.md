@@ -130,7 +130,11 @@ Kane runs headless by default. On Windows, headed Chrome screenshots time out. E
 ## Live deployment
 
 The auditor site and all three tools run as one web service (`serve.py`): `/` (auditor), `/talentscreen/`, `/hirelens/`, `/quickmatch/`.
-`render.yaml` deploys it on Render's free tier straight from this repo. Real Kane audits are written to `results/`, which the hosted site reads.
+`render.yaml` deploys it on Render's free tier straight from this repo. Kane runs are published to `results/<target>.kane.json` with `audit/publish_kane.py`, which the hosted site reads next to the dry runs.
+
+**Run Kane from the website.** Each results page has a *Run with Kane* button: pick a candidate and the site triggers the GitHub Actions gate, where Kane CLI submits that candidate's 8 CVs through the tool's real UI on the project's TestMu credits. One run at a time, capped per day (counted on GitHub, `KANE_DAILY_CAP`, default 8). Needs `GITHUB_TOKEN` on the server: a fine-grained token for this repo with *Actions: read and write*.
+
+**Test CVs.** `samples/test-cvs/` (and the results page) has realistic fictional CVs as PDF, Word and text, including one data-analyst CV under four names, for trying the tools by hand. Regenerate with `python -m cvkit.make_test_cvs`.
 
 ```bash
 python serve.py        # the same service locally on http://127.0.0.1:8000

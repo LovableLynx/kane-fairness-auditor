@@ -24,24 +24,25 @@
       <div class="live-progress" id="live-progress" hidden><i id="live-bar"></i></div>
       <pre class="term live-term" id="live-term" aria-live="polite" hidden><code></code></pre>
       <p class="small" id="live-msg" role="status" style="margin:12px 0 0"></p>
-      <div class="byok">
-        <span class="kicker" style="margin:0 0 8px">Bring your own Kane account</span>
-        <p class="small muted" style="margin:0 0 10px">Run the authoritative audit with Kane CLI in a real browser, on your own TestMu AI credits. Your key never leaves your machine.</p>
-        <div class="copy-chip"><code>git clone {{ REPO }} &amp;&amp; cd kane-fairness-auditor &amp;&amp; pip install -r requirements.txt &amp;&amp; kane-cli login &amp;&amp; python audit/gate.py --target {{ r.target }} --candidates cand01</code>
-          <button class="btn btn-sm btn-lime" type="button" data-copy="git clone {{ REPO }} && cd kane-fairness-auditor && pip install -r requirements.txt && kane-cli login && python audit/gate.py --target {{ r.target }} --candidates cand01">Copy</button></div>
-      </div>
-      <details class="owner" style="margin-top:14px">
-        <summary class="small muted">Owner: run with Kane CLI in a real browser (uses Kane credits)</summary>
+      <div class="kane-live" id="kane-live" data-target="{{ r.target }}">
+        <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between">
+          <div><span class="kicker" style="margin:0 0 6px">Real browser · Kane CLI</span>
+            <h3 style="margin:0;font-size:var(--step-1)">Run it with Kane, on our credits</h3>
+            <p class="small muted" style="margin:8px 0 0;max-width:60ch">Pick a candidate. Kane CLI opens {{ tool.name or r.target }} in a real browser on GitHub Actions, submits that candidate's 8 CVs (4 demographic twins + 4 placebo names), reads every score off the page and seals an evidence pack. About 15 minutes. One run at a time{% if kane_enabled %}, a few per day{% endif %}.</p></div>
+          {% if kane_enabled %}
+          <form id="kane-form" class="kane-form">
+            <label class="small" for="kane-cand">Candidate</label>
+            <select class="input" id="kane-cand">{% for i in range(1, 11) %}<option value="cand{{ '%02d'|format(i) }}">cand{{ '%02d'|format(i) }}</option>{% endfor %}</select>
+            <button class="btn btn-lime" type="submit">▶ Run with Kane</button>
+          </form>
+          {% endif %}
+        </div>
         {% if kane_enabled %}
-        <form id="kane-form" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px">
-          <label class="small" for="kane-key">Passcode</label>
-          <input class="input" id="kane-key" type="password" autocomplete="off" style="max-width:220px;padding:9px 12px">
-          <button class="btn btn-sm" type="submit">Start Kane run</button>
-        </form>
+        <div class="kane-status small" id="kane-status" role="status" aria-live="polite">Checking the latest Kane run…</div>
         {% else %}
-        <p class="small muted" style="margin:10px 0 0">Not enabled on this deployment. The owner can switch it on by setting <code>GITHUB_TOKEN</code> and <code>AUDIT_ADMIN_KEY</code> on the server.</p>
+        <p class="small muted" style="margin:12px 0 0">Not switched on for this deployment yet. Every Kane run so far is linked in the verified panel below and in the <a href="https://github.com/LovableLynx/kane-fairness-auditor/actions/workflows/fairness-gate.yml" target="_blank" rel="noopener">GitHub Actions history ↗</a>.</p>
         {% endif %}
-      </details>
+      </div>
     </div>
   </div>
 </section>

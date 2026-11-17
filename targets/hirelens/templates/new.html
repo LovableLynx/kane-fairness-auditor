@@ -9,19 +9,35 @@
   .sample { display:block; width:100%; text-align:left; margin-top:8px; }
   .steps { display:flex; gap:8px; margin:0 0 18px; flex-wrap:wrap; } .steps span { font-size:12.5px; padding:4px 10px; border-radius:999px; background:#eef3fb; color:#3d5a80; }
   .steps span.on { background:var(--brand); color:#fff; }
+  .tips h3 { color:var(--fg); }
+  .upload { position:relative; display:flex; align-items:center; gap:14px; padding:16px 18px; border:1.5px dashed #9fb4cf; border-radius:10px; background:var(--brand-soft); cursor:pointer; transition:background .2s, border-color .2s; }
+  .upload:hover, .upload.over { background:#dde8fc; border-color:var(--brand); }
+  .upload .ic { width:40px; height:40px; border-radius:9px; background:#fff; display:grid; place-items:center; font-size:20px; box-shadow:0 1px 3px #0f2a4a22; flex:none; }
+  .upload b { display:block; font-size:14px; color:var(--fg); } .upload small { color:var(--muted); font-size:12.5px; }
+  .upload input { position:absolute; inset:0; opacity:0; cursor:pointer; }
+  .upload:focus-within { outline:3px solid #1463e655; outline-offset:2px; }
+  .picked { margin-top:8px; font-size:13px; color:var(--good); font-weight:600; min-height:1.2em; }
+  .or { display:flex; align-items:center; gap:10px; color:var(--muted); font-size:12px; letter-spacing:.08em; text-transform:uppercase; margin:16px 0 0; }
+  .or::before, .or::after { content:""; flex:1; height:1px; background:var(--line); }
 </style>
 {% endblock %}
 {% block body %}
 <h1>Add applicant</h1>
-<p class="muted" style="margin:0 0 18px">Paste the résumé and HireLens evaluates role fit for {{ job.title }}.</p>
+<p class="muted" style="margin:0 0 18px">Upload or paste the résumé and HireLens evaluates role fit for {{ job.title }}.</p>
 <div class="steps" aria-hidden="true"><span class="on">1 · Résumé</span><span>2 · Evaluation</span><span>3 · Recommendation</span></div>
 {% if error_message %}<p class="err" role="alert">{{ error_message }}</p>{% endif %}
 <div class="two">
-  <form class="card" method="post" action="{{ url_for('create_applicant') }}" id="applicant-form">
+  <form class="card" method="post" action="{{ url_for('create_applicant') }}" id="applicant-form" enctype="multipart/form-data">
     <label for="full_name" style="margin-top:0">Full name (optional)</label>
     <input id="full_name" name="full_name" maxlength="80" autocomplete="off" placeholder="Taken from the résumé if blank">
-    <label for="resume">Résumé</label>
-    <textarea id="resume" name="resume" placeholder="Paste résumé text" required></textarea>
+    <label for="resume_file">Résumé file</label>
+    <div class="upload" id="upload"><span class="ic" aria-hidden="true">📄</span>
+      <span><b>Upload résumé</b><small>Drop a file or click · PDF, Word (.docx) or .txt · up to 512 KB</small></span>
+      <input type="file" id="resume_file" name="resume_file" accept="{{ accept }}"></div>
+    <div class="picked" id="picked" aria-live="polite"></div>
+    <div class="or">or paste the text</div>
+    <label for="resume" style="margin-top:10px">Résumé text</label>
+    <textarea id="resume" name="resume" placeholder="Paste résumé text"></textarea>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
       <button class="btn" type="submit" id="eval-btn"><span class="spin" aria-hidden="true"></span><span class="lbl">Evaluate applicant</span></button>
       <a class="btn secondary" href="{{ url_for('pipeline') }}">Cancel</a>
@@ -33,6 +49,7 @@
     {% if samples %}
     <h3 style="margin-top:18px">Try a sample résumé</h3>
     {% for s in samples %}<button type="button" class="btn secondary sample" data-sample="{{ loop.index0 }}">{{ s.label }} · {{ s.name }}</button>{% endfor %}
+    <a class="btn secondary sample" href="/results#test-cvs" target="_blank" rel="noopener" style="text-decoration:none">↓ Download test résumés (PDF, Word)</a>
     <script type="application/json" id="sample-data">{{ samples|tojson }}</script>
     {% endif %}
   </aside>
@@ -40,7 +57,11 @@
 <script>
   (() => {
     const f = document.getElementById('applicant-form'), b = document.getElementById('eval-btn'), ta = document.getElementById('resume');
-    f.addEventListener('submit', () => { b.setAttribute('aria-busy', 'true'); b.querySelector('.lbl').textContent = 'Evaluating…'; });
+    const fi = document.getElementById('resume_file'), up = document.getElementById('upload'), pk = document.getElementById('picked');
+    fi.addEventListener('change', () => { pk.textContent = fi.files.length ? '✓ ' + fi.files[0].name + ' attached' : ''; });
+    ['dragenter','dragover'].forEach(e => up.addEventListener(e, () => up.classList.add('over')));
+    ['dragleave','drop'].forEach(e => up.addEventListener(e, () => up.classList.remove('over')));
+    f.addEventListener('submit', (ev) => { if (!fi.files.length && !ta.value.trim()) { ev.preventDefault(); pk.style.color = '#9e1c12'; pk.textContent = 'Upload a résumé or paste its text.'; return; } b.setAttribute('aria-busy', 'true'); b.querySelector('.lbl').textContent = 'Evaluating…'; });
     const sd = document.getElementById('sample-data');
     if (sd) { const S = JSON.parse(sd.textContent); document.querySelectorAll('[data-sample]').forEach(x => x.addEventListener('click', () => { ta.value = S[+x.dataset.sample].text; ta.focus(); })); }
   })();

@@ -19,6 +19,7 @@ from flask import Flask, abort, redirect, render_template, request, url_for
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from cvkit import cv  # noqa: E402
+from cvkit.extract import SUPPORTED, UnsupportedFile, to_text  # noqa: E402
 from shared.hardening import BoundedStore, harden  # noqa: E402
 from shared.samples import samples  # noqa: E402
 from datetime import datetime  # noqa: E402
@@ -28,6 +29,8 @@ MODEL = joblib.load(ROOT / "models" / f"{MODEL_NAME}.pkl")
 
 ERRORS = {
     "empty": "A résumé is required. Paste the candidate's résumé text.",
+    "filetype": "Please upload a .pdf, .docx or .txt résumé.",
+    "unreadable": "We couldn't read that file. Try another format or paste the text.",
     "norole": "That doesn't look like a CV: we couldn't find a job title, experience or education. Paste the full CV text or try a sample.",
 }
 
@@ -55,12 +58,18 @@ def pipeline():
 
 @app.get("/applicants/new")
 def new_applicant():
-    return render_template("new.html", samples=samples())
+    return render_template("new.html", samples=samples(), accept=",".join(SUPPORTED))
 
 
 @app.post("/applicants")
 def create_applicant():
     resume = (request.form.get("resume") or "").strip()
+    f = request.files.get("resume_file")
+    if f and f.filename:
+        try:
+            resume = to_text(f.filename, f.read()).strip()
+        except UnsupportedFile as e:
+            return redirect(url_for("new_applicant", error="filetype" if "upload a" in str(e) else "unreadable"))
     if not resume:
         return redirect(url_for("new_applicant", error="empty"))
     try:

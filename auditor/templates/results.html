@@ -24,7 +24,7 @@
         <ul class="small" style="padding-left:18px;margin:0 0 16px">{% for x in r.reasons[:3] %}<li>{{ x }}</li>{% endfor %}</ul>
         <div style="display:flex;flex-wrap:wrap;gap:6px">
           <span class="chip {{ 'chip-verified' if r.verified else 'chip-dry' }} chip-dot">{{ 'Verified by Kane' if r.verified else 'Dry run' }}</span>{% if r.kane %} <span class="chip chip-verified chip-dot">Verified by Kane · {{ r.kane.candidates|length }} candidate{{ "s" if r.kane.candidates|length != 1 }} in a real browser</span>{% endif %}
-          <span class="chip chip-plain">{{ r.candidates|length }} candidates</span>
+          <span class="chip chip-plain">{{ r.candidates|length }} candidate{{ "s" if r.candidates|length != 1 }}</span>
           <span class="chip chip-plain">{{ r.length }} CVs</span>
         </div>
         </div>
@@ -34,6 +34,27 @@
     {% if reports.values()|selectattr('verified', 'equalto', false)|list %}
     <p class="notice small" style="margin-top:28px" role="note"><span aria-hidden="true">ⓘ</span><span><b>Dry run</b> results were produced through each tool's HTTP endpoint for development. Kane browser runs are published alongside them, each with a Test Manager evidence link. TalentScreen's Kane run read exactly the same scores as the dry run.</span></p>
     {% endif %}
+    {% endif %}
+
+    {% if test_cvs %}
+    <div class="window reveal" id="test-cvs" style="margin-top:44px;box-shadow:8px 8px 0 var(--lime)">
+      <div class="window-bar" aria-hidden="true"><span class="box"></span><span>TEST_CVS.ZIP</span><span class="stripes"></span></div>
+      <div class="window-body">
+        <span class="kicker">Try it by hand</span>
+        <h2 style="font-size:var(--step-2);margin:0 0 8px">Download test CVs and upload them to the tools</h2>
+        <p class="muted small" style="margin:0 0 18px;max-width:70ch">Realistic, fictional CVs as PDF, Word and text. The <b>twin set</b> is one data-analyst CV under four names, identical except name, email and pronouns: upload all four to a tool and compare the scores.</p>
+        <div class="cv-grid">
+          {% for c in test_cvs %}
+          <a class="cv-file{{ ' twin' if c.twin }}" href="{{ url_for('test_cv_file', name=c.file) }}" download>
+            <span class="ext">{{ c.ext }}</span>
+            <span><b>{{ c.name }}</b><small>{{ c.role }}{{ ' · twin set' if c.twin }} · {{ c.kb }} KB</small></span>
+            <span class="dl" aria-hidden="true">↓</span>
+          </a>
+          {% endfor %}
+        </div>
+        <p class="small" style="margin:18px 0 0">Open a tool: {% for key, t in TOOLS.items() %}<a href="{{ TOOL_URLS[key] }}" target="_blank" rel="noopener">{{ t.name }} ↗</a>{{ " · " if not loop.last }}{% endfor %}</p>
+      </div>
+    </div>
     {% endif %}
   </div>
 </section>

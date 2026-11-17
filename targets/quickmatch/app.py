@@ -25,6 +25,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from shared.hardening import BoundedStore, harden  # noqa: E402
 from shared.samples import samples  # noqa: E402
+from cvkit.extract import SUPPORTED, UnsupportedFile, to_text  # noqa: E402
 
 MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
 
@@ -148,11 +149,20 @@ def start():
 def step_cv(did: int):
     d = DRAFTS.get(did) or abort(404)
     if request.method == "POST":
-        d["cv"] = (request.form.get("candidate_cv") or "").strip()[:20000]
+        text, error = (request.form.get("candidate_cv") or ""), "empty"
+        f = request.files.get("cv_file")
+        if f and f.filename:
+            try:
+                text = to_text(f.filename, f.read())
+            except UnsupportedFile as e:
+                text, error = "", ("filetype" if "upload a" in str(e) else "unreadable")
+        d["cv"] = text.strip()[:20000]
         if d["cv"]:
             return redirect(url_for("step_review", did=did))
+        return render_template("step_cv.html", d=d, role=ROLES[d["role"]], step=2, samples=samples(),
+                               error=error, accept=",".join(SUPPORTED))
     return render_template("step_cv.html", d=d, role=ROLES[d["role"]], step=2, samples=samples(),
-                           error=request.method == "POST")
+                           error=None, accept=",".join(SUPPORTED))
 
 
 @app.get("/match/<int:did>/review")

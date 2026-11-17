@@ -1,0 +1,22 @@
+Daniel Mensah
+daniel.mensah@example.com | github.com/dmensah-example | London, UK
+
+PROFILE
+Backend software engineer with six years of experience, mostly Python and Go services on AWS.
+
+EXPERIENCE
+Software Engineer, Paywise Ltd, London (Apr 2023 - present)
+- Owns the payouts service (Go, PostgreSQL); cut p95 latency from 900 ms to 180 ms.
+- On-call lead for a team of five; wrote the incident runbooks.
+
+Software Developer, Kitebird Studio, Bristol (Sep 2020 - Mar 2023)
+- Built REST APIs in Python (FastAPI) for three client apps; added CI with GitHub Actions.
+
+EDUCATION
+BEng Computer Science, University of Bristol (2017 - 2020)
+
+SKILLS
+Python, Go, PostgreSQL, AWS (ECS, Lambda), Docker, Terraform, CI/CD, testing
+
+LANGUAGES
+English (fluent), Twi (native)

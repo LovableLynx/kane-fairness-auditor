@@ -37,6 +37,17 @@ class RealWorldCVs(unittest.TestCase):
     def test_overlapping_jobs_are_merged(self):
         self.check("Ade Farmer\nMechanical Engineer\nShell 2013 - 2018\nTotal 2017 - present", "Mechanical Engineer", 13)
 
+    def test_month_names_in_date_ranges(self):
+        t = "Jo Bloggs\nData Analyst, Acme (Sep 2020 - Mar 2023)\nAnalyst, Beta (Apr 2023 - present)\nSKILLS\nSQL"
+        self.assertEqual(cv.parse(t)["years"], 6)
+
+    def test_years_in_words(self):
+        self.assertEqual(cv.parse("Jo Bloggs\nNurse with eight years of experience on wards.")["years"], 8)
+
+    def test_professional_qualification_years_are_not_experience(self):
+        t = "Jo Bloggs\nAccountant, Acme (2021 - present)\nEDUCATION\nACCA (2016 - 2020)"
+        self.assertEqual(cv.parse(t)["years"], 5)
+
     def test_age_is_not_experience(self):
         self.check("Bola Ade\n25 years old\nBarista 2021 - 2024", "Barista", 3, "Hospitality & food")
 

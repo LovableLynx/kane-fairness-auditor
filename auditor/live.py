@@ -4,18 +4,19 @@
    decision, and computes the same verdict as the Kane audit. It talks to the tool over HTTP
    (or in-process when the tools share this server), so it is fast and costs no Kane credits,
    but it is not browser-verified. One job at a time, short cooldown.
-2. Kane run (owner only): triggers the GitHub Actions fairness gate, where Kane CLI drives the
-   real UI. Needs GITHUB_TOKEN and AUDIT_ADMIN_KEY set on the server; otherwise disabled.
+2. Kane run (public, on the project's Kane credits): triggers the GitHub Actions fairness gate, where
+   Kane CLI drives the real UI for one candidate (8 CVs with placebo names). One run at a time and
+   a daily cap counted on GitHub itself, so restarts cannot reset it. Needs GITHUB_TOKEN on the server.
 """
 from __future__ import annotations
 
-import hmac
 import json
 import os
 import re
 import sys
 import threading
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 import uuid
@@ -120,30 +121,75 @@ def get_job(job_id: str) -> dict | None:
     return _jobs.get(job_id)
 
 
-# ------------------------------------------------------------------ owner-only Kane run
+# ------------------------------------------------------------------ public Kane run (GitHub Actions)
+
+KANE_DAILY_CAP = int(os.environ.get("KANE_DAILY_CAP", "8"))
+_kane_lock = threading.Lock()
+_status_cache: dict = {"t": 0.0, "data": None}
+
 
 def kane_enabled() -> bool:
-    return bool(os.environ.get("GITHUB_TOKEN") and os.environ.get("AUDIT_ADMIN_KEY"))
+    return bool(os.environ.get("GITHUB_TOKEN"))
 
 
-def trigger_kane_run(target: str, key: str) -> tuple[bool, str]:
-    admin = os.environ.get("AUDIT_ADMIN_KEY", "")
-    if not kane_enabled():
-        return False, "Kane runs from the website are not configured on this server."
-    if not hmac.compare_digest(key.encode(), admin.encode()):
-        time.sleep(1.5)  # slow down guessing
-        return False, "Wrong passcode."
-    if target not in TARGETS:
-        return False, "Unknown tool."
-    body = json.dumps({"ref": "main", "inputs": {"target": target, "candidates": "cand01", "placebo": False}}).encode()
-    req = urllib.request.Request(f"https://api.github.com/repos/{REPO}/actions/workflows/{WORKFLOW}/dispatches",
-                                 data=body, method="POST",
+def _gh(path: str, body: dict | None = None) -> dict:
+    req = urllib.request.Request(f"https://api.github.com/repos/{REPO}{path}",
+                                 data=json.dumps(body).encode() if body is not None else None,
+                                 method="POST" if body is not None else "GET",
                                  headers={"Authorization": f"Bearer {os.environ['GITHUB_TOKEN']}",
                                           "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"})
+    with urllib.request.urlopen(req, timeout=20) as r:
+        raw = r.read()
+    return json.loads(raw) if raw else {}
+
+
+def _recent_runs() -> list[dict]:
+    since = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 86400))
+    data = _gh(f"/actions/workflows/{WORKFLOW}/runs?event=workflow_dispatch&per_page=50&created=%3E%3D{since}")
+    return data.get("workflow_runs", [])
+
+
+def kane_status() -> dict:
+    """Latest web-triggered Kane run and how many are left today (cached 10 s)."""
+    if not kane_enabled():
+        return {"enabled": False}
+    if time.time() - _status_cache["t"] < 10 and _status_cache["data"]:
+        return _status_cache["data"]
     try:
-        urllib.request.urlopen(req, timeout=20)
-    except urllib.error.HTTPError as e:
-        return False, f"GitHub refused the request ({e.code})."
-    except OSError:
-        return False, "Could not reach GitHub."
-    return True, f"https://github.com/{REPO}/actions/workflows/{WORKFLOW}"
+        runs = _recent_runs()
+    except (OSError, ValueError):
+        return {"enabled": True, "error": "Could not reach GitHub."}
+    latest = runs[0] if runs else None
+    data = {"enabled": True, "left_today": max(0, KANE_DAILY_CAP - len(runs)), "cap": KANE_DAILY_CAP,
+            "latest": latest and {"title": latest.get("display_title") or latest.get("name"),
+                                  "status": latest.get("status"), "conclusion": latest.get("conclusion"),
+                                  "url": latest.get("html_url"), "created": latest.get("created_at")}}
+    _status_cache.update(t=time.time(), data=data)
+    return data
+
+
+def trigger_kane_run(target: str, candidate: str) -> tuple[bool, str]:
+    if not kane_enabled():
+        return False, "Kane runs from the website are not configured on this server."
+    if target not in TARGETS:
+        return False, "Unknown tool."
+    if candidate not in MANIFEST:
+        return False, "Unknown candidate."
+    with _kane_lock:
+        try:
+            runs = _recent_runs()
+        except (OSError, ValueError):
+            return False, "Could not reach GitHub."
+        if any(r.get("status") != "completed" for r in runs):
+            return False, "A Kane run is already in progress. Watch it below, then try again."
+        if len(runs) >= KANE_DAILY_CAP:
+            return False, f"Today's {KANE_DAILY_CAP} Kane runs are used up. Try again tomorrow."
+        try:
+            _gh(f"/actions/workflows/{WORKFLOW}/dispatches",
+                {"ref": "main", "inputs": {"target": target, "candidates": candidate, "placebo": True}})
+        except urllib.error.HTTPError as e:
+            return False, f"GitHub refused the request ({e.code})."
+        except OSError:
+            return False, "Could not reach GitHub."
+        _status_cache["t"] = 0.0
+    return True, f"Kane is starting on {TARGETS[target].get('name', target)}, {candidate}: 8 CVs in a real browser, about 15 minutes."

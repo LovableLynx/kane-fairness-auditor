@@ -1,18 +1,28 @@
 {% extends "shell.html" %}
 {% block body %}
-<form class="box" method="post" data-busy="">
+<form class="box" method="post" data-busy="" enctype="multipart/form-data">
   <h1>Who's the candidate? 🧑‍💼</h1>
-  <p class="muted" style="margin:0 0 14px">Role: <b>{{ role.title }}</b>. Paste their CV below.</p>
-  {% if error %}<p style="color:var(--berry);font-weight:700" role="alert">Please paste a CV to continue.</p>{% endif %}
+  <p class="muted" style="margin:0 0 14px">Role: <b>{{ role.title }}</b>. Upload their CV or paste it below.</p>
+  {% if error %}<p style="color:var(--berry);font-weight:700" role="alert">{{ {"filetype": "Please upload a .pdf, .docx or .txt CV.", "unreadable": "We couldn't read that file. Try another format or paste the text."}.get(error, "Please upload or paste a CV to continue.") }}</p>{% endif %}
+  <label class="qm-up" id="qm-up"><span class="ic" aria-hidden="true">📎</span>
+    <span><b>Upload a CV</b><small>PDF, Word (.docx) or .txt · drop it here or click</small></span>
+    <input type="file" name="cv_file" id="cv_file" accept="{{ accept }}"></label>
+  <div class="qm-picked" id="qm-picked" aria-live="polite"></div>
+  <div class="qm-or">or paste it</div>
   <label for="candidate_cv" class="muted" style="font-size:13px;font-weight:700">Candidate's CV</label>
   <textarea id="candidate_cv" name="candidate_cv">{{ d.cv }}</textarea>
   {% if samples %}
   <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px"><span class="muted" style="font-size:13px">No CV handy? Try</span>
-    {% for s in samples %}<button type="button" class="chip" data-sample="{{ loop.index0 }}">{{ s.name }}{% if 'Long' in s.label %} (long){% endif %}</button>{% endfor %}</div>
+    {% for s in samples %}<button type="button" class="chip" data-sample="{{ loop.index0 }}">{{ s.name }}{% if 'Long' in s.label %} (long){% endif %}</button>{% endfor %}
+    <a class="chip" href="/results#test-cvs" target="_blank" rel="noopener" style="text-decoration:none">↓ Test CV files</a></div>
   <script type="application/json" id="sample-data">{{ samples|tojson }}</script>
   <script>(() => { const S = JSON.parse(document.getElementById('sample-data').textContent), ta = document.getElementById('candidate_cv');
     document.querySelectorAll('[data-sample]').forEach(b => b.addEventListener('click', () => { ta.value = S[+b.dataset.sample].text; ta.focus(); })); })();</script>
   {% endif %}
+  <script>(() => { const fi = document.getElementById('cv_file'), up = document.getElementById('qm-up'), pk = document.getElementById('qm-picked');
+    fi.addEventListener('change', () => { pk.textContent = fi.files.length ? '✓ ' + fi.files[0].name + ' attached' : ''; });
+    ['dragenter','dragover'].forEach(e => up.addEventListener(e, () => up.classList.add('over')));
+    ['dragleave','drop'].forEach(e => up.addEventListener(e, () => up.classList.remove('over'))); })();</script>
   <button class="go" type="submit"><span class="lbl">Continue →</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></button>
 </form>
 {% endblock %}

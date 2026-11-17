@@ -80,6 +80,7 @@
     {% if samples %}
     <div class="samples"><span>Try a sample:</span>
       {% for s in samples %}<button type="button" class="chipbtn" data-sample="{{ loop.index0 }}">{{ s.label }} · {{ s.name }}</button>{% endfor %}
+      <a class="chipbtn" href="/results#test-cvs" target="_blank" rel="noopener" style="text-decoration:none">↓ Test CV files (PDF, Word)</a>
     </div>
     <script type="application/json" id="sample-data">{{ samples|tojson }}</script>
     {% endif %}

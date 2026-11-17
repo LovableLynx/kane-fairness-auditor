@@ -186,15 +186,41 @@
         msg.textContent = e.message; liveBtn.removeAttribute("aria-busy"); liveBtn.disabled = false;
       }
     });
-    const kf = $("#kane-form");
+  }
+
+  // ---- public Kane run (GitHub Actions, project credits)
+  const kl = $("#kane-live"), ks = $("#kane-status"), kf = $("#kane-form");
+  if (kl && ks) {
+    const render = (s) => {
+      ks.textContent = "";
+      if (s.error) { ks.textContent = s.error; return; }
+      const L = s.latest, dot = el("span");
+      dot.className = "dot " + (!L ? "" : L.status !== "completed" ? "run" : L.conclusion === "success" ? "ok" : "bad");
+      ks.append(dot);
+      let txt = "No Kane run from the website in the last 24 h.";
+      if (L) {
+        const when = new Date(L.created).toLocaleString();
+        txt = L.status !== "completed" ? "Kane is running now: " + L.title + " (started " + when + "). "
+            : "Last Kane run: " + L.title + ", " + (L.conclusion === "success" ? "PASS, deploy allowed" : "gate failed, deploy blocked") + " (" + when + "). ";
+      }
+      ks.append(document.createTextNode(txt));
+      if (L && L.url) { const a = el("a"); a.href = L.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = "Open the run and Kane's evidence ↗"; ks.append(a); }
+      ks.append(document.createTextNode(" · " + s.left_today + "/" + s.cap + " runs left today."));
+      if (kf) kf.querySelector("button").disabled = !!(L && L.status !== "completed") || s.left_today === 0;
+      if (L && L.status !== "completed") setTimeout(refresh, 15000);
+    };
+    const refresh = async () => { try { render(await (await fetch("/api/kane-run")).json()); } catch (_) { ks.textContent = "Could not load the Kane run status."; } };
+    refresh();
     if (kf) kf.addEventListener("submit", async (ev) => {
       ev.preventDefault();
-      const r = await fetch("/api/kane-run", { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ target: liveBtn.dataset.target, key: $("#kane-key").value }) });
-      const j = await r.json();
-      msg.innerHTML = "";
-      msg.append(document.createTextNode(j.message + " "));
-      if (j.url) { const a = el("a"); a.href = j.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = "Watch it on GitHub ↗"; msg.append(a); }
+      const btn = kf.querySelector("button"); btn.disabled = true;
+      try {
+        const r = await fetch("/api/kane-run", { method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ target: kl.dataset.target, candidate: $("#kane-cand").value }) });
+        const j = await r.json();
+        ks.textContent = j.message;
+        if (r.ok) setTimeout(refresh, 6000); else btn.disabled = false;
+      } catch (_) { ks.textContent = "Could not start the run."; btn.disabled = false; }
     });
   }
 

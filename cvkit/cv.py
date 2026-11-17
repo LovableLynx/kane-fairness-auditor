@@ -291,7 +291,17 @@ def _find_role(text: str) -> tuple[int, str] | None:
 # are not enough: researchers, lecturers and staff list universities and schools as their employer.
 _EDU_LINE = re.compile(r"(?i)\b(degree|bachelor'?s?|master'?s?|diploma|certificate in|ph\.?d|d\.?phil|bsc|b\.sc|msc|m\.sc|"
                        r"mba|ba|ma|beng|meng|btech|llb|llm|bpharm|mbbs|b\.ed|hnd|ond|graduated|studied|student|"
-                       r"undergraduate|postgraduate|a-levels?|gcse|waec|high school)\b")
+                       r"undergraduate|postgraduate|a-levels?|gcse|waec|high school|acca|cima|cfa|icaew|ican|aat)\b")
+_WORD_NUM = {w: i for i, w in enumerate("one two three four five six seven eight nine ten eleven twelve thirteen "
+                                         "fourteen fifteen sixteen seventeen eighteen nineteen twenty".split(), 1)}
+_MONTH = r"(?:[A-Za-z]{3,9}\.?\s+)?"  # optional month before a year: "Sep 2020 - Mar 2023"
+_MONTHS = "jan feb mar apr may jun jul aug sep oct nov dec".split()
+_NOW_Y, _NOW_M = 2026, 11  # "present"; pinned so audits are reproducible
+
+
+def _month(token: str) -> int | None:
+    t = token.strip().rstrip(".").lower()[:3]
+    return _MONTHS.index(t) + 1 if t in _MONTHS else None
 _AGE = re.compile(r"(?i)\b\d{1,2}\s*(?:years|yrs)\s*(?:old|of age)\b")
 
 
@@ -303,20 +313,30 @@ def _years_freeform(text: str) -> int | None:
        merging overlapping periods so concurrent jobs are not double-counted."""
     body = _AGE.sub(" ", text)
     stated = [int(n) for n in re.findall(r"(\d{1,2})\+?\s*(?:years|yrs)\b", body, re.I) if 0 < int(n) <= 45]
+    stated += [_WORD_NUM[w.lower()] for w in re.findall(  # "eight years of experience", "six years' experience"
+        r"\b(" + "|".join(_WORD_NUM) + r")\s+(?:years|yrs)['’]?\s+(?:of\s+)?(?:[\w-]+\s+){0,2}experience", body, re.I)]
     if stated:
         return max(stated)
     spans = []
     for line in text.splitlines():
         if _EDU_LINE.search(line):
             continue
-        for a, b in re.findall(r"((?:19|20)\d{2})\s*(?:-|–|—|to)\s*((?:19|20)\d{2}|present|current|now|date)", line, re.I):
-            end = 2026 if not b[:2].isdigit() else int(b)
-            if end >= int(a):
-                spans.append((int(a), end))
+        for ma, a, mb, b in re.findall(r"(" + _MONTH + r")((?:19|20)\d{2})\s*(?:-|–|—|to)\s*(" + _MONTH +
+                                       r")((?:19|20)\d{2}|present|current|now|date)", line, re.I):
+            sa, sb = _month(ma), _month(mb)
+            # With months, count to the month ("Aug 2017 - Dec 2020" then "Jan 2021 -" is continuous);
+            # with bare years keep whole years ("2013 - 2018" = 5).
+            start = int(a) + ((sa - 1) / 12 if sa else 0)
+            if b[:2].isdigit():
+                end = int(b) + (sb / 12 if sb else 0)
+            else:
+                end = _NOW_Y + (_NOW_M / 12 if sa else 0)
+            if end >= start:
+                spans.append((start, end))
     if not spans:
         return None
     spans.sort()
-    total, (cur_a, cur_b) = 0, spans[0]
+    total, (cur_a, cur_b) = 0.0, spans[0]
     for a, b in spans[1:]:
         if a <= cur_b:
             cur_b = max(cur_b, b)
@@ -324,6 +344,7 @@ def _years_freeform(text: str) -> int | None:
             total += cur_b - cur_a
             cur_a, cur_b = a, b
     total += cur_b - cur_a
+    total = int(total + 0.5)
     return min(total, 45) if total else None
 
 

@@ -10,7 +10,7 @@ import os
 import sys
 from pathlib import Path
 
-from flask import Flask, abort, jsonify, redirect, render_template, request, url_for
+from flask import Flask, abort, jsonify, redirect, render_template, request, send_from_directory, url_for
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -174,7 +174,7 @@ def landing():
 
 @app.get("/results")
 def results():
-    return render_template("results.html", reports=load_reports(), page="results")
+    return render_template("results.html", reports=load_reports(), test_cvs=test_cvs(), page="results")
 
 
 @app.get("/results/<name>")
@@ -220,9 +220,32 @@ def api_live_status(job_id: str):
 @app.post("/api/kane-run")
 def api_kane_run():
     data = request.get_json(silent=True) or {}
-    ok, msg = live.trigger_kane_run(str(data.get("target", "")), str(data.get("key", "")))
-    return jsonify({"ok": ok, "message": msg if not ok else "Kane audit started on GitHub Actions.",
-                    "url": msg if ok else None}), 200 if ok else 403
+    ok, msg = live.trigger_kane_run(str(data.get("target", "")), str(data.get("candidate", "")))
+    return jsonify({"ok": ok, "message": msg}), 200 if ok else 429
+
+
+@app.get("/api/kane-run")
+def api_kane_status():
+    return jsonify(live.kane_status())
+
+
+TEST_CVS = ROOT / "samples" / "test-cvs"
+
+
+def test_cvs() -> list[dict]:
+    """Fictional test CVs (cvkit/make_test_cvs.py). The twin set is one CV under four names."""
+    out = []
+    for f in sorted(TEST_CVS.glob("*")) if TEST_CVS.exists() else []:
+        role, _, who = f.stem.partition("_")
+        out.append({"file": f.name, "name": who.replace("-", " ").title(), "twin": role.startswith("twin-"),
+                    "role": role.removeprefix("twin-").replace("-", " ").title(), "ext": f.suffix[1:].upper(),
+                    "kb": max(1, round(f.stat().st_size / 1024))})
+    return sorted(out, key=lambda c: (not c["twin"], c["role"], c["ext"]))
+
+
+@app.get("/test-cvs/<path:name>")
+def test_cv_file(name: str):
+    return send_from_directory(TEST_CVS, name, as_attachment=True)
 
 
 @app.get("/favicon.ico")
