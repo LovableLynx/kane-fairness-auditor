@@ -113,21 +113,31 @@ def groove(a, b, kick_gain=0.8, hats=True, with_bass=True):
         t += BEAT
 
 
-groove(4.0, 15.5)
-groove(15.5, 21.0, 0.9)
-groove(21.0, 25.0, 0.0, hats=False)          # stat moment: pad + bass only
-groove(25.0, 29.0, 0.95)
-groove(29.0, 31.0, 0.5, hats=False, with_bass=False)
+if len(sys.argv) > 3:  # custom cue sheet: "beat_from,beat_to;hit,hit,..." e.g. post-3 video
+    span, hits = sys.argv[3].split(";")
+    a, b = map(float, span.split(","))
+    groove(a, b)
+    groove(b, b + 2.0, 0.5, hats=False, with_bass=False)
+    n = int(1.6 * SR)
+    place(drums, lowpass(rng.standard_normal(n), 3000) * np.linspace(0, 1, n) ** 2 * 0.18, a - 1.6)
+    for h in hits.split(","):
+        place(drums, hit(), float(h), 0.8)
+else:
+    groove(4.0, 15.5)
+    groove(15.5, 21.0, 0.9)
+    groove(21.0, 25.0, 0.0, hats=False)          # stat moment: pad + bass only
+    groove(25.0, 29.0, 0.95)
+    groove(29.0, 31.0, 0.5, hats=False, with_bass=False)
 
-# riser into the first beat
-n = int(1.6 * SR)
-riser = lowpass(rng.standard_normal(n), 3000) * np.linspace(0, 1, n) ** 2 * 0.18
-place(drums, riser, 2.4)
+    # riser into the first beat
+    n = int(1.6 * SR)
+    riser = lowpass(rng.standard_normal(n), 3000) * np.linspace(0, 1, n) ** 2 * 0.18
+    place(drums, riser, 2.4)
 
-for t in (16.7, 17.5, 18.3):
-    place(drums, hit(), t, 0.55)
-place(drums, hit(), 26.0, 0.95)
-place(drums, hit(), 29.0, 0.5)
+    for t in (16.7, 17.5, 18.3):
+        place(drums, hit(), t, 0.55)
+    place(drums, hit(), 26.0, 0.95)
+    place(drums, hit(), 29.0, 0.5)
 
 mixL = L + drums + bass
 mixR = R + drums + bass

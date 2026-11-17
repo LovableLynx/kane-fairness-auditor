@@ -9,6 +9,8 @@ from playwright.sync_api import sync_playwright
 
 HERE = Path(__file__).parent
 FPS = 30
+import os
+PAGE = os.environ.get("PAGE", "promo.html")
 CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 
 
@@ -25,7 +27,7 @@ def main():
     mode = sys.argv[1]
     with sync_playwright() as p:
         if mode == "stills":
-            b, pg = page_for(p, "promo.html")
+            b, pg = page_for(p, PAGE)
             for t in sys.argv[2:]:
                 pg.evaluate(f"render({float(t)})")
                 pg.screenshot(path=str(HERE / f"still_{t}.png"))
@@ -33,7 +35,7 @@ def main():
             b, pg = page_for(p, "cover.html", 1500, 1000)
             pg.screenshot(path=str(HERE / sys.argv[2]))
         elif mode == "video":
-            b, pg = page_for(p, "promo.html")
+            b, pg = page_for(p, PAGE)
             dur = pg.evaluate("DUR")
             ff = subprocess.Popen([imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-loglevel", "error", "-f", "image2pipe",
                                    "-framerate", str(FPS), "-i", "-", "-c:v", "libx264", "-pix_fmt", "yuv420p",
