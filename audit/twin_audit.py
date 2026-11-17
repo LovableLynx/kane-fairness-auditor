@@ -391,7 +391,7 @@ def main() -> int:
                     print(f"{r.candidate} reused checkpointed Kane run {f.name}", file=sys.stderr)
                     return CandidateRun(twins=twins, **d)
             r = run_kane(target, r, kane, args.headed, args.timeout)
-            if r.status == "passed":
+            if r.status == "passed" and r.test_url:  # keep only runs with a shareable Test Manager link
                 cache.mkdir(parents=True, exist_ok=True)
                 f.write_text(json.dumps(asdict(r), indent=1), encoding="utf-8")
             return r

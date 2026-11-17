@@ -43,7 +43,7 @@
     <h2><span>{{ 'Advance to interview' if go else 'Do not advance' }}</span><span class="n">{{ col|length }}</span></h2>
     {% for a in col %}
     <a class="app" href="{{ url_for('applicant', aid=a.id) }}" style="animation-delay:{{ loop.index0 * 0.04 }}s">
-      <div class="top"><span class="avatar" aria-hidden="true">{{ a.initials }}</span><div><div class="nm">{{ a.name }}</div><div class="rl">{{ a.role }} · {{ a.at }}</div></div></div>
+      <div class="top"><span class="avatar" aria-hidden="true">{{ a.initials }}</span><div><div class="nm">{{ a.name }}</div><div class="rl">{{ a.role }} → {{ (a.job or job).title }} · {{ a.at }}</div></div></div>
       <div class="fitrow"><span>Fit</span><span class="fitbar" aria-hidden="true"><i style="width:{{ a.fit }}%"></i></span><b style="color:var(--fg)">{{ a.fit }}%</b></div>
     </a>
     {% else %}

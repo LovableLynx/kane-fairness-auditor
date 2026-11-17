@@ -23,11 +23,12 @@ from cvkit import cv  # noqa: E402
 from cvkit.extract import SUPPORTED, UnsupportedFile, to_text  # noqa: E402
 from shared.hardening import BoundedStore, harden  # noqa: E402
 from shared.samples import samples  # noqa: E402
+from shared import roles  # noqa: E402
 
 MODEL_NAME = os.environ.get("TARGET_MODEL", "biased")
 MODEL = joblib.load(ROOT / "models" / f"{MODEL_NAME}.pkl")
 THRESHOLD = 0.5
-JOB = {"title": "Data Analyst", "team": "Insights", "location": "Remote"}
+JOB = roles.get(roles.DEFAULT)
 ERRORS = {
     "empty": "Add a CV first: drop a file or paste the text.",
     "filetype": "That file type isn't supported. Upload a .txt, .pdf or .docx CV.",
@@ -49,11 +50,11 @@ def job_context():
     return {"job": JOB}
 
 
-def screen(text: str, source: str) -> dict:
+def screen(text: str, source: str, role: dict) -> dict:
     t0 = time.perf_counter()
     parsed = cv.parse(text)
     gender, group = cv.infer_identity(text)
-    score = float(MODEL.predict_proba([cv.features(parsed, gender, group)])[0, 1])
+    score = float(MODEL.predict_proba([cv.features(roles.for_role(parsed, role), gender, group)])[0, 1])
     name = text.strip().splitlines()[0].strip()[:80]
     strengths = []
     if parsed["years"] >= 6:
@@ -66,7 +67,8 @@ def screen(text: str, source: str) -> dict:
         strengths.append("multilingual")
     d = {
         "id": next(_ids), "name": name, "score": score, "shortlisted": score >= THRESHOLD,
-        "parsed": parsed, "strengths": strengths, "source": source,
+        "parsed": parsed, "strengths": strengths, "source": source, "job": role,
+        "role_match": int(parsed["occupation"]) == role["family"] or (role["slug"] == roles.DEFAULT and parsed["suitability"] >= 1.0),
         "at": datetime.now().strftime("%H:%M"), "ms": round((time.perf_counter() - t0) * 1000),
         "initials": "".join(w[0] for w in name.split()[:2]).upper() or "?",
     }
@@ -81,7 +83,8 @@ def home():
     stats = {"count": len(allv),
              "short_rate": round(100 * sum(d["shortlisted"] for d in allv) / len(allv)) if allv else None,
              "avg_ms": round(sum(d.get("ms", 0) for d in allv) / len(allv)) if allv else None}
-    return render_template("home.html", job=JOB, recent=recent, stats=stats, samples=samples(),
+    return render_template("home.html", job=JOB, recent=recent, stats=stats, samples=samples(), roles=roles.ROLES,
+                           role=roles.get(request.args.get("role")).get("slug"),
                            accept=",".join(SUPPORTED))
 
 
@@ -98,7 +101,7 @@ def screen_cv():
     if not text.strip():
         return redirect(url_for("home", error="empty"))
     try:
-        d = screen(text, source)
+        d = screen(text, source, roles.get(request.form.get("role")))
     except (ValueError, IndexError):
         return redirect(url_for("home", error="norole"))
     return redirect(url_for("result", did=d["id"]))
@@ -107,7 +110,7 @@ def screen_cv():
 @app.get("/result/<int:did>")
 def result(did: int):
     d = DECISIONS.get(did) or abort(404)
-    return render_template("result.html", d=d, job=JOB, cv=cv, labels=FIELD_LABELS)
+    return render_template("result.html", d=d, job=d.get("job", JOB), cv=cv, labels=FIELD_LABELS)
 
 
 @app.get("/favicon.ico")

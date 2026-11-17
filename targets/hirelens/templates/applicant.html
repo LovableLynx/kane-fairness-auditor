@@ -27,6 +27,12 @@
   .timeline li { position:relative; padding:0 0 16px 28px; font-size:13.5px; }
   .timeline li::before { content:""; position:absolute; left:0; top:4px; width:16px; height:16px; border-radius:50%; background:#fff; border:3px solid var(--brand); }
   .timeline li span { display:block; color:var(--muted); font-size:12.5px; }
+  .why { list-style:none; padding:0; margin:0; display:grid; gap:7px; }
+  .why li { display:grid; grid-template-columns:minmax(120px, 1.1fr) 1.4fr 70px; gap:10px; align-items:center; font-size:13px; }
+  .why .wb { height:9px; background:#eef2f7; border-radius:5px; overflow:hidden; }
+  .why .wb i { display:block; height:100%; border-radius:5px; }
+  .why .wb.up i { background:var(--good); } .why .wb.down i { background:#d9772f; }
+  .why .wv { color:var(--muted); font-size:12px; }
 </style>
 {% endblock %}
 {% block body %}
@@ -59,6 +65,12 @@
       <tr><th scope="row">Education</th><td>{{ cv.EDUCATION[a.parsed.education] }}</td></tr>
       <tr><th scope="row">Recommendation letter</th><td>{{ 'Yes' if a.parsed.recommendation else 'No' }}</td></tr>
     </table>
+    {% if a.why %}
+    <h2 style="font-size:16px;margin:20px 0 4px">Why this score</h2>
+    <p class="muted" style="font-size:12.5px;margin:0 0 10px">How each part of the profile moved the score compared with a typical applicant. Names and demographics play no part.</p>
+    <ul class="why">{% for w in a.why %}
+      <li><span class="wl">{{ w.label }}</span><span class="wb {{ 'up' if w.effect > 0 else 'down' }}"><i style="width:{{ w.pct }}%"></i></span><span class="wv">{{ 'helped' if w.effect > 0 else 'held back' }}</span></li>{% endfor %}</ul>
+    {% endif %}
     <h2 style="font-size:16px;margin:20px 0 12px">Activity</h2>
     <ul class="timeline">
       <li>Résumé received<span>{{ a.at }}</span></li>

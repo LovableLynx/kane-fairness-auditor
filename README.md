@@ -134,6 +134,8 @@ The auditor site and all three tools run as one web service (`serve.py`): `/` (a
 
 **Run Kane from the website.** Each results page has a *Run with Kane* button: pick a candidate and the site triggers the GitHub Actions gate, where Kane CLI submits that candidate's 8 CVs through the tool's real UI on the project's TestMu credits. One run at a time, capped per day (counted on GitHub, `KANE_DAILY_CAP`, default 8). Needs `GITHUB_TOKEN` on the server: a fine-grained token for this repo with *Actions: read and write*.
 
+**Pick the role.** TalentScreen and HireLens let the recruiter choose one of 10 roles (one per job family). The demo models were trained on FairCVdb labels for one job, Data Analyst, which stays the default and is the role every audit uses, so audit results are unaffected. For another role, a CV from that role's job family is scored as on-target and any other family as off-target; the rest of the CV is scored as before. HireLens shows *Why this score*: how each part of the profile moved the score (the FairCVdb labels reward a recommendation letter and Spanish or French, so many real CVs score low; the breakdown makes that visible instead of hiding it).
+
 **Test CVs.** `samples/test-cvs/` (and the results page) has realistic fictional CVs as PDF, Word and text, including one data-analyst CV under four names, for trying the tools by hand. Regenerate with `python -m cvkit.make_test_cvs`.
 
 ```bash

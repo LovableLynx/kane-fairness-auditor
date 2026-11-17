@@ -20,6 +20,10 @@
   .drop:hover .ico, .drop.over .ico { transform: translateY(-4px) rotate(-6deg); }
   .drop b { display:block; font-size:17px; margin-bottom:4px; }
   .file-name { margin-top:10px; color:var(--mint); font-size:13.5px; min-height:1.2em; font-weight:600; }
+  .rolepick { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:0 0 16px; }
+  .rolepick label { font-size:13px; color:var(--dim); }
+  .rolepick select { flex:1; min-width:200px; background:#0b0b14; color:inherit; border:1px solid var(--line); border-radius:12px; padding:11px 12px; font:inherit; font-weight:600; }
+  .rolepick select:focus { outline:2px solid var(--accent-hi); outline-offset:2px; }
   .or { display:flex; align-items:center; gap:12px; color:var(--dim); margin:18px 0 12px; font-size:11.5px; text-transform:uppercase; letter-spacing:.14em; }
   .or::before, .or::after { content:""; flex:1; height:1px; background:var(--line); }
   textarea { width:100%; min-height:170px; background:#0c0c15; color:var(--fg); border:1px solid var(--line2); border-radius:14px; padding:14px;
@@ -53,7 +57,7 @@
 <section class="hero rise">
   <div>
     <h1>Screen a candidate<br><span class="grad">in seconds.</span></h1>
-    <p class="muted" style="margin:0;max-width:46ch">Drop a CV and our AI reads it, scores the fit for {{ job.title }}, and decides whether to shortlist.</p>
+    <p class="muted" style="margin:0;max-width:46ch">Drop a CV and our AI reads it, scores the fit for the role you're hiring for, and decides whether to shortlist.</p>
   </div>
   <div class="kpis" aria-label="Today">
     <div class="kpi"><b>{{ stats.count }}</b><span>CVs screened</span></div>
@@ -65,6 +69,8 @@
 
 <div class="grid" style="margin-top:20px">
   <form class="glass pad rise d1" method="post" action="{{ url_for('screen_cv') }}" enctype="multipart/form-data" id="screen-form">
+    <div class="rolepick"><label for="role">Hiring for</label>
+      <select id="role" name="role">{% for slug, r in roles.items() %}<option value="{{ slug }}"{{ ' selected' if slug == role }}>{{ r.title }} · {{ r.team }}</option>{% endfor %}</select></div>
     <input type="file" id="cv_file" name="cv_file" accept="{{ accept }}" class="file-input" aria-describedby="file-hint">
     <div class="drop-wrap">
       <label class="drop" id="drop" for="cv_file">

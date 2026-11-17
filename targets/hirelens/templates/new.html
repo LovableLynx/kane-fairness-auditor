@@ -10,6 +10,8 @@
   .steps { display:flex; gap:8px; margin:0 0 18px; flex-wrap:wrap; } .steps span { font-size:12.5px; padding:4px 10px; border-radius:999px; background:#eef3fb; color:#3d5a80; }
   .steps span.on { background:var(--brand); color:#fff; }
   .tips h3 { color:var(--fg); }
+  .rolesel { width:100%; padding:11px 13px; border:1px solid #c9d3df; border-radius:8px; font:600 14px system-ui; background:#fbfcfe; color:var(--fg); }
+  .rolesel:focus { outline:none; border-color:var(--brand); box-shadow:0 0 0 4px #1463e624; }
   .upload { position:relative; display:flex; align-items:center; gap:14px; padding:16px 18px; border:1.5px dashed #9fb4cf; border-radius:10px; background:var(--brand-soft); cursor:pointer; transition:background .2s, border-color .2s; }
   .upload:hover, .upload.over { background:#dde8fc; border-color:var(--brand); }
   .upload .ic { width:40px; height:40px; border-radius:9px; background:#fff; display:grid; place-items:center; font-size:20px; box-shadow:0 1px 3px #0f2a4a22; flex:none; }
@@ -23,12 +25,14 @@
 {% endblock %}
 {% block body %}
 <h1>Add applicant</h1>
-<p class="muted" style="margin:0 0 18px">Upload or paste the résumé and HireLens evaluates role fit for {{ job.title }}.</p>
+<p class="muted" style="margin:0 0 18px">Upload or paste the résumé and HireLens evaluates fit for the role you pick.</p>
 <div class="steps" aria-hidden="true"><span class="on">1 · Résumé</span><span>2 · Evaluation</span><span>3 · Recommendation</span></div>
 {% if error_message %}<p class="err" role="alert">{{ error_message }}</p>{% endif %}
 <div class="two">
   <form class="card" method="post" action="{{ url_for('create_applicant') }}" id="applicant-form" enctype="multipart/form-data">
-    <label for="full_name" style="margin-top:0">Full name (optional)</label>
+    <label for="role" style="margin-top:0">Requisition (role you're hiring for)</label>
+    <select id="role" name="role" class="rolesel">{% for slug, r in roles.items() %}<option value="{{ slug }}"{{ ' selected' if slug == role }}>{{ r.title }} · {{ r.team }}</option>{% endfor %}</select>
+    <label for="full_name">Full name (optional)</label>
     <input id="full_name" name="full_name" maxlength="80" autocomplete="off" placeholder="Taken from the résumé if blank">
     <label for="resume_file">Résumé file</label>
     <div class="upload" id="upload"><span class="ic" aria-hidden="true">📄</span>

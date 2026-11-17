@@ -22,6 +22,8 @@ from cvkit import cv  # noqa: E402
 from cvkit.extract import SUPPORTED, UnsupportedFile, to_text  # noqa: E402
 from shared.hardening import BoundedStore, harden  # noqa: E402
 from shared.samples import samples  # noqa: E402
+from shared import roles  # noqa: E402
+from shared.explain import explain  # noqa: E402
 from datetime import datetime  # noqa: E402
 
 MODEL_NAME = os.environ.get("TARGET_MODEL", "fair")
@@ -40,7 +42,7 @@ _ids = itertools.count(1)
 APPLICANTS: BoundedStore = BoundedStore(300)
 
 
-JOB = {"title": "Data Analyst", "team": "Insights", "location": "Remote", "req": "DA-2026"}
+JOB = roles.get(roles.DEFAULT)
 
 
 @app.context_processor
@@ -58,7 +60,8 @@ def pipeline():
 
 @app.get("/applicants/new")
 def new_applicant():
-    return render_template("new.html", samples=samples(), accept=",".join(SUPPORTED))
+    return render_template("new.html", samples=samples(), accept=",".join(SUPPORTED), roles=roles.ROLES,
+                           role=roles.get(request.args.get("role"))["slug"])
 
 
 @app.post("/applicants")
@@ -79,8 +82,14 @@ def create_applicant():
     lines = resume.splitlines()
     name = ((request.form.get("full_name") or "").strip() or lines[0].strip())[:80]
     # Fair pipeline: demographics are not inferred; placeholders are dropped by the model anyway.
-    fit = float(MODEL.predict_proba([cv.features(parsed, "male", "B")])[0, 1])
-    a = {"id": next(_ids), "name": name, "role": parsed["title"], "fit": round(fit * 100),
+    role = roles.get(request.form.get("role"))
+    feats = cv.features(roles.for_role(parsed, role), "male", "B")
+    fit = float(MODEL.predict_proba([feats])[0, 1])
+    why = explain(MODEL, feats)
+    top = max((abs(w["effect"]) for w in why), default=1.0) or 1.0
+    for w in why:
+        w["pct"] = round(100 * abs(w["effect"]) / top)
+    a = {"id": next(_ids), "name": name, "role": parsed["title"], "fit": round(fit * 100), "job": role, "why": why,
          "advance": fit >= 0.5, "parsed": parsed, "at": datetime.now().strftime("%d %b, %H:%M"),
          "initials": "".join(w[0] for w in name.split()[:2]).upper() or "?"}
     APPLICANTS[a["id"]] = a
@@ -89,7 +98,8 @@ def create_applicant():
 
 @app.get("/applicants/<int:aid>")
 def applicant(aid: int):
-    return render_template("applicant.html", a=APPLICANTS.get(aid) or abort(404), cv=cv)
+    a = APPLICANTS.get(aid) or abort(404)
+    return render_template("applicant.html", a=a, cv=cv, job=a.get("job", JOB))
 
 
 @app.get("/favicon.ico")
