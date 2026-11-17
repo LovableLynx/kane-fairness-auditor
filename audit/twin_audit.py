@@ -379,7 +379,24 @@ def main() -> int:
         if not kane:
             print("kane-cli not on PATH", file=sys.stderr)
             return 2
-        driver, work = "Kane CLI (real browser)", lambda r: run_kane(target, r, kane, args.headed, args.timeout)
+        cache = ROOT / "reports" / "kane-cache"
+
+        def work(r: CandidateRun) -> CandidateRun:
+            # Checkpoint each finished Kane run so an interrupted audit resumes without re-spending credits.
+            f = cache / f"{args.target}_{'live' if args.live else 'local'}_{args.length}_{'p' if args.placebo else 'np'}_{r.candidate}.json"
+            if f.exists():
+                d = json.loads(f.read_text(encoding="utf-8"))
+                twins = [TwinResult(**{k: v for k, v in t.items() if k != "key"}) for t in d.pop("twins")]
+                if [t.key for t in twins] == [t.key for t in r.twins]:
+                    print(f"{r.candidate} reused checkpointed Kane run {f.name}", file=sys.stderr)
+                    return CandidateRun(twins=twins, **d)
+            r = run_kane(target, r, kane, args.headed, args.timeout)
+            if r.status == "passed":
+                cache.mkdir(parents=True, exist_ok=True)
+                f.write_text(json.dumps(asdict(r), indent=1), encoding="utf-8")
+            return r
+
+        driver = "Kane CLI (real browser)"
 
     done = []
     with cf.ThreadPoolExecutor(max_workers=max(1, args.parallel)) as pool:
