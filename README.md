@@ -75,8 +75,9 @@ To check that these findings are not artefacts of short CVs, cutoff choice or sa
 | Run | Scope | Result | Evidence |
 |---|---|---|---|
 | TalentScreen, GitHub Actions | 1 candidate, 4 demographic twins, **no placebo names** | **FAIL: BIASED**, deploy blocked, 80 credits | [CI run](https://github.com/LovableLynx/kane-fairness-auditor/actions/runs/43607099418) · Test Manager link on the [results page](https://kane-fairness-auditor.onrender.com/results/talentscreen) |
+| QuickMatch, local, real Chrome | **full audit: 10 candidates × 8 CVs (80 readings), with placebo names** | **FAIL: NAME-UNSTABLE**, deploy blocked, 1,545 credits | 10 Test Manager share links in [`results/twin_audit_quickmatch.kane.json`](results/twin_audit_quickmatch.kane.json) · [results page](https://kane-fairness-auditor.onrender.com/results/quickmatch) |
 
-Kane read exactly the scores the dry run predicted (1.000 / 0.001 / 0.632 / 0.000). The tables above are dry runs through each tool's HTTP endpoint, labelled as such on the site. Two Kane runs are queued for when credits allow, in this order: **QuickMatch** (the model we did not build, where Kane would confirm a finding we did not plant), then the TalentScreen **after-fix** run to close the loop with Kane's own verdict.
+Kane read exactly the scores the dry run predicted: 4/4 on TalentScreen (1.000 / 0.001 / 0.632 / 0.000) and **80/80 on QuickMatch**, the open-source model we did not build. So the NAME-UNSTABLE finding is confirmed in a real browser, not just over HTTP: 5/10 candidates get a different decision from a same-group name swap alone. The other tables are dry runs through each tool's HTTP endpoint, labelled as such on the site. Still queued: the TalentScreen **after-fix** run, to close the loop with Kane's own verdict.
 
 ### A finding about the legal metric
 

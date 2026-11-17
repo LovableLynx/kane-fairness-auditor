@@ -120,6 +120,21 @@ def parse_run_end(stdout: str) -> dict | None:
     return None
 
 
+def share_url_from_log(session_dir: str | None) -> str | None:
+    """Kane sometimes generates the share link but leaves it out of run_end; recover it from the session's tui.log."""
+    log = Path(session_dir or "") / "tui.log"
+    if not session_dir or not log.is_file():
+        return None
+    text = log.read_text(encoding="utf-8", errors="replace")
+    share = re.search(r'PIPELINE_SHARE_OK .*?"share_id":"(\w+)"', text)
+    case = re.search(r'PIPELINE_SHARE_START .*?"testcase_id":"(\w+)"', text)
+    proj = re.search(r'"project_id":"(\w+)"', text)
+    if not (share and case and proj):
+        return None
+    return (f"https://test-manager.lambdatest.com/projects/{proj.group(1)}/test-cases/{case.group(1)}"
+            f"/dashboard/share/{share.group(1)}?type=summary&agentView=true&fqdn=summary-page")
+
+
 def run_kane(target: dict, run: CandidateRun, kane: str, headed: bool, timeout: int) -> CandidateRun:
     variables = {f"cv_{t.key}": {"value": (ROOT / t.file).read_text(encoding="utf-8")} for t in run.twins}
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as vf:
@@ -144,6 +159,8 @@ def run_kane(target: dict, run: CandidateRun, kane: str, headed: bool, timeout: 
     run.test_url, run.duration = ev.get("test_url"), ev.get("duration")
     run.credits = ev.get("credits_consumed", ev.get("credits"))
     run.evidence = ev.get("run_dir") or ev.get("session_dir")
+    if not run.test_url:
+        run.test_url = share_url_from_log(ev.get("session_dir"))
     state = dict(ev.get("final_state") or {})
     # Values stored before a later step failed still live in context.variables.
     for k, v in ((ev.get("context") or {}).get("variables") or {}).items():

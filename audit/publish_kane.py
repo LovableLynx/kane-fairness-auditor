@@ -28,6 +28,7 @@ def main() -> int:
     ap.add_argument("--label", default="", help="free text stored with the run, e.g. after-fix")
     ap.add_argument("--ci-run", default="", help="GitHub Actions URL to link, if the run came from CI")
     ap.add_argument("--parallel", type=int, default=1, help="Kane runs at once; keep 1 locally (Kane Chrome instances share CDP port 9222)")
+    ap.add_argument("--timeout", type=int, default=0, help="seconds per Kane run (default: twin_audit's)")
     args = ap.parse_args()
 
     out = ROOT / "reports" / "kane"
@@ -37,6 +38,8 @@ def main() -> int:
         cmd.append("--no-placebo")
     if args.parallel > 1:
         cmd += ["--parallel", str(args.parallel)]
+    if args.timeout:
+        cmd += ["--timeout", str(args.timeout)]
     print("==", " ".join(cmd[1:]), flush=True)
     code = subprocess.call(cmd, cwd=ROOT)
 

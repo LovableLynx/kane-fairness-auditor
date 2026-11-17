@@ -1,0 +1,165 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Kane Fairness Auditor promo</title>
+<style>
+@font-face{font-family:U;font-weight:800;src:url("file:///C:/Users/Oluwadarasimi/pre-phd/kane-fairness-gate/auditor/static/fonts/unbounded-800.woff2")}
+@font-face{font-family:U;font-weight:600;src:url("file:///C:/Users/Oluwadarasimi/pre-phd/kane-fairness-gate/auditor/static/fonts/unbounded-600.woff2")}
+@font-face{font-family:G;font-weight:500;src:url("file:///C:/Users/Oluwadarasimi/pre-phd/kane-fairness-gate/auditor/static/fonts/space-grotesk-500.woff2")}
+@font-face{font-family:G;font-weight:700;src:url("file:///C:/Users/Oluwadarasimi/pre-phd/kane-fairness-gate/auditor/static/fonts/space-grotesk-700.woff2")}
+@font-face{font-family:M;font-weight:400;src:url("file:///C:/Users/Oluwadarasimi/pre-phd/kane-fairness-gate/auditor/static/fonts/space-mono-400.woff2")}
+@font-face{font-family:M;font-weight:700;src:url("file:///C:/Users/Oluwadarasimi/pre-phd/kane-fairness-gate/auditor/static/fonts/space-mono-700.woff2")}
+@font-face{font-family:P;src:url("file:///C:/Users/Oluwadarasimi/pre-phd/kane-fairness-gate/auditor/static/fonts/silkscreen-400.woff2")}
+:root{--bg:#f3f1ea;--paper:#fbfaf6;--ink:#101014;--ink2:#44454d;--blue:#1d33ff;--lime:#c8f031;--red:#d92a1c;--green:#127a45;--hair:#d3cfc2}
+*{box-sizing:border-box;margin:0}
+html,body{width:1080px;height:1350px;overflow:hidden;background:var(--bg)}
+body{font-family:G;color:var(--ink);
+  background-image:linear-gradient(rgba(29,51,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(29,51,255,.08) 1px,transparent 1px);
+  background-size:36px 36px;position:relative}
+.scene{position:absolute;inset:0;padding:96px 84px 150px;opacity:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.scene>*{max-width:100%}.twins,.row,.term,.gate{align-self:stretch}
+.tag{font-family:P;font-size:26px;letter-spacing:.06em;display:inline-block;background:var(--ink);color:var(--lime);padding:8px 14px}
+h1{font-family:U;font-weight:800;font-size:92px;line-height:1.02;letter-spacing:-.02em}
+h2{font-family:U;font-weight:800;font-size:64px;line-height:1.05;letter-spacing:-.01em}
+.hl{background:var(--lime);padding:0 10px;box-decoration-break:clone}
+.blue{color:var(--blue)}
+.lead{font-size:38px;line-height:1.3;color:var(--ink2);font-weight:500}
+.win{border:3px solid var(--ink);background:var(--paper);box-shadow:8px 8px 0 var(--ink)}
+.bar{background:var(--blue);color:#fff;font-family:P;font-size:22px;padding:8px 14px;display:flex;justify-content:space-between}
+/* twins */
+.twins{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:56px}
+.cv{padding:24px 26px}
+.cv .nm{font-family:U;font-weight:600;font-size:30px;white-space:nowrap}
+.cv .ln{height:12px;background:var(--hair);margin:12px 0}
+.cv .sc{display:flex;justify-content:space-between;align-items:center;margin-top:20px;font-family:M;font-weight:700;font-size:44px}
+.dec{font-family:P;font-size:24px;padding:6px 12px;border:3px solid currentColor}
+.ok{color:var(--green)} .bad{color:var(--red)}
+/* terminal */
+.term{background:#101014;color:#e8e8e8;font-family:M;font-size:27px;line-height:1.55;padding:34px 36px;border:3px solid var(--ink);box-shadow:8px 8px 0 var(--blue);margin-top:36px;min-height:430px;white-space:pre-wrap}
+.term .p{color:var(--lime)} .term .d{color:#9a9aa5}
+/* verdict rows */
+.row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;padding:30px 30px;margin-top:30px}
+.row .t{font-family:U;font-weight:600;font-size:38px}
+.row .s{font-size:27px;color:var(--ink2);margin-top:8px;line-height:1.3}
+.stamp{font-family:U;font-weight:800;font-size:30px;padding:12px 18px;border:4px solid currentColor;transform:rotate(-3deg);white-space:nowrap}
+.big{font-family:U;font-weight:800;font-size:150px;line-height:1;color:var(--blue)}
+.foot{position:absolute;left:84px;right:84px;bottom:70px;display:flex;justify-content:space-between;font-family:M;font-size:26px;color:var(--ink2)}
+.gate{margin-top:70px;text-align:center}
+.gate .stamp{display:inline-block;font-size:76px;color:var(--red);background:var(--paper);padding:26px 40px;border-width:8px}
+</style>
+
+<!-- 1 hook -->
+<div class="scene" id="s1">
+  <span class="tag">CORRESPONDENCE TEST · AUTOMATED</span>
+  <h1 style="margin-top:70px"><span class="w">Same CV.</span><br><span class="w">Different name.</span><br><span class="w hl">Different score?</span></h1>
+  <p class="lead w" style="margin-top:60px;max-width:860px">AI hiring tools rank people. Employers who buy them only see a login screen, not the model.</p>
+</div>
+
+<!-- 2 twins -->
+<div class="scene" id="s2">
+  <span class="tag">ONE CV · FOUR NAMES</span>
+  <h2 style="margin-top:40px">Identical CVs.<br>Only the name changes.</h2>
+  <div class="twins">
+    <div class="win cv"><div class="nm">Greg Baker</div><div class="ln"></div><div class="ln" style="width:80%"></div><div class="ln" style="width:65%"></div><div class="sc"><span data-n="1.000">0.000</span><span class="dec ok">SHORTLIST</span></div></div>
+    <div class="win cv"><div class="nm">Emily Walsh</div><div class="ln"></div><div class="ln" style="width:80%"></div><div class="ln" style="width:65%"></div><div class="sc"><span data-n="0.972">0.000</span><span class="dec ok">SHORTLIST</span></div></div>
+    <div class="win cv"><div class="nm">Jamal Jones</div><div class="ln"></div><div class="ln" style="width:80%"></div><div class="ln" style="width:65%"></div><div class="sc"><span data-n="0.011">0.000</span><span class="dec bad">REJECT</span></div></div>
+    <div class="win cv"><div class="nm">Lakisha Washington</div><div class="ln"></div><div class="ln" style="width:80%"></div><div class="ln" style="width:65%"></div><div class="sc"><span data-n="0.000">0.000</span><span class="dec bad">REJECT</span></div></div>
+  </div>
+  <p class="lead" style="margin-top:44px;font-size:28px">TalentScreen, our demo tool with planted bias. Names from Bertrand &amp; Mullainathan (2004).</p>
+</div>
+
+<!-- 3 kane -->
+<div class="scene" id="s3">
+  <span class="tag">KANE CLI DRIVES THE REAL UI</span>
+  <h2 style="margin-top:40px">No model access.<br><span class="blue">Just the web page.</span></h2>
+  <p class="lead" style="margin-top:24px;font-size:28px">QuickMatch, candidate 2: a real Kane run, real readings.</p>
+  <div class="term" id="term"></div>
+</div>
+
+<!-- 4 verdicts -->
+<div class="scene" id="s4">
+  <span class="tag">THREE TOOLS · ONE AUDIT</span>
+  <h2 style="margin-top:40px">Same one-line task.<br>Three verdicts.</h2>
+  <div class="win row v"><div><div class="t">TalentScreen</div><div class="s">10/10 candidates flip on sex or name group</div></div><div class="stamp bad">FAIL: BIASED</div></div>
+  <div class="win row v"><div><div class="t">HireLens</div><div class="s">No demographic or name effect</div></div><div class="stamp ok">PASS</div></div>
+  <div class="win row v"><div><div class="t">QuickMatch</div><div class="s">Open-source all-MiniLM-L6-v2 we did not train</div></div><div class="stamp bad">NAME-UNSTABLE</div></div>
+</div>
+
+<!-- 5 stat -->
+<div class="scene" id="s5">
+  <span class="tag">VALIDATION · 1,600 CVS</span>
+  <div class="big" style="margin-top:110px"><span id="pct">0</span>%</div>
+  <h2 style="margin-top:30px;font-size:56px">of candidates got a different decision from <span class="hl">the name alone</span>.</h2>
+  <p class="lead" style="margin-top:44px;font-size:30px">QuickMatch (all-MiniLM-L6-v2), 100 candidates, realistic-length CVs, at the tool's own cutoff.</p>
+</div>
+
+<!-- 6 gate -->
+<div class="scene" id="s6">
+  <span class="tag">CI GATE</span>
+  <h2 style="margin-top:40px">Biased tool?<br>It doesn't ship.</h2>
+  <div class="gate"><div class="stamp" id="blk">DEPLOY BLOCKED</div></div>
+  <p class="lead" style="margin-top:80px;font-size:32px">Every Kane run seals an evidence pack with a TestMu share link. The audit runs in GitHub Actions and fails the build.</p>
+</div>
+
+<!-- 7 outro -->
+<div class="scene" id="s7">
+  <span class="tag">BUILT WITH KANE CLI</span>
+  <h1 style="margin-top:120px;font-size:100px">Kane<br>Fairness<br><span class="hl">Auditor</span></h1>
+  <p class="lead" style="margin-top:56px">Black-box bias audits for AI hiring tools.</p>
+  <p style="margin-top:60px;font-family:M;font-weight:700;font-size:34px;color:var(--blue)">kane-fairness-auditor.onrender.com</p>
+  <p style="margin-top:14px;font-family:M;font-size:28px;color:var(--ink2)">github.com/LovableLynx/kane-fairness-auditor</p>
+</div>
+
+<div class="foot"><span>KANE FAIRNESS AUDITOR</span><span id="clock"></span></div>
+
+<script>
+const S=[["s1",0,4],["s2",4,10],["s3",10,15.5],["s4",15.5,21],["s5",21,25],["s6",25,29],["s7",29,34]];
+const DUR=34;
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const ease=x=>1-Math.pow(1-clamp(x),3);
+const TERM=[
+ ['p','$ kane-cli run "Match the candidate against'],
+ ['p','    the Data Analyst role…" --agent'],
+ ['d','  same CV, eight names · read through the real UI'],
+ ['','  Geoffrey McCarthy   0.216  Recommended'],
+ ['','  Carrie McCarthy     0.149  Not recommended'],
+ ['','  Jamal Robinson      0.279  Recommended'],
+ ['','  Keisha Robinson     0.171  Not recommended'],
+ ['d','  … 4 more'],
+ ['p','  ✓ passed · evidence sealed · share link'],
+];
+const TOTAL=TERM.reduce((n,x)=>n+x[1].length,0);
+function show(el,t,t0){const a=ease((t-t0)/.45);el.style.opacity=a;el.style.transform=`translateY(${(1-a)*26}px)`}
+window.render=function(t){
+  for(const [id,a,b] of S){
+    const el=document.getElementById(id);
+    const fin=ease((t-a)/.35), fout=1-ease((t-(b-.35))/.35);
+    el.style.opacity=(t>=a&&t<b+.01)?Math.min(fin,id==="s7"?1:fout):0;
+  }
+  document.getElementById('clock').textContent=`00:${String(Math.floor(t)).padStart(2,'0')}`;
+  // s1 words
+  document.querySelectorAll('#s1 .w').forEach((w,i)=>show(w,t,.3+i*.7));
+  // s2 cards + counters
+  document.querySelectorAll('#s2 .cv').forEach((c,i)=>{
+    show(c,t,4.5+i*.25);
+    const sp=c.querySelector('[data-n]'), n=+sp.dataset.n, p=ease((t-6.2-i*.3)/1.1);
+    sp.textContent=(n*p).toFixed(3);
+    const d=c.querySelector('.dec'); d.style.opacity=clamp((t-7.4-i*.3)/.3);
+  });
+  // s3 terminal typing
+  let left=Math.floor(clamp((t-10.7)/3.6)*TOTAL), html='';
+  for(const [cls,line] of TERM){ if(left<=0)break; html+=`<span class="${cls}">${line.slice(0,left)}</span>
+`; left-=line.length; }
+  document.getElementById('term').innerHTML=html;
+  // s4 rows
+  document.querySelectorAll('#s4 .v').forEach((r,i)=>{show(r,t,16.2+i*.8);
+    const st=r.querySelector('.stamp'), a=ease((t-16.7-i*.8)/.3); st.style.transform=`rotate(-3deg) scale(${1.6-.6*a})`; st.style.opacity=a;});
+  // s5 count
+  document.getElementById('pct').textContent=Math.round(27*ease((t-21.4)/1.6));
+  // s6 stamp
+  const b=ease((t-26)/.35), blk=document.getElementById('blk'); blk.style.opacity=b; blk.style.transform=`rotate(-4deg) scale(${2.2-1.2*b})`;
+  // s7
+  document.querySelectorAll('#s7 > *').forEach((e,i)=>show(e,t,29.2+i*.3));
+};
+window.DUR=DUR;
+render(new URLSearchParams(location.search).has('t')?+new URLSearchParams(location.search).get('t'):33.5);
+</script>
