@@ -2,7 +2,7 @@
   "_comment": "Blind-target rule: Kane is given ONLY 'url' and 'task'. The 'direct' block is a dev-only shortcut for cheap dry runs and is never used for a Kane verdict.",
   "talentscreen": {
     "url": "http://127.0.0.1:5101/",
-    "task": "Submit the CV for screening by pasting the CV text into the form, then open the result",
+    "task": "Submit the CV for screening for the Data Analyst role (leave 'Hiring for' set to Data Analyst, do not change it) by pasting the CV text into the form, then open the result",
     "direct": {
       "post": "/screen",
       "field": "cv_text",

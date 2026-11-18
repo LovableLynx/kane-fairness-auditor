@@ -14,8 +14,8 @@
   "max_gap": 0.15,
   "flips": 4,
   "placebo_flips": 5,
-  "credits": 1544.6271485,
-  "generated_at": "2026-11-17T13:08:49+00:00",
+  "credits": 1604.15331,
+  "generated_at": "2026-11-17T22:29:19+00:00",
   "effects": {
     "gender_effect_female_minus_male": {
       "mean": -0.010275000000000001,
@@ -153,11 +153,10 @@
       "placebo_gap": 0.09899999999999999,
       "demo_flip": false,
       "placebo_flip": false,
-      "test_url": "https://test-manager.lambdatest.com/projects/01M7MDA1AQ5C2XJ3V38RRXTNGJ/test-cases/01M7MRXMRDRBPCAQH55YS63E61/dashboard/share/US_SGCE8HGBX08JMKXY3ZHIJBP33G2G1707FRB3KJC3J9JOUQB1LUQ88H9X81YKJWBM?type=summary&agentView=true&fqdn=summary-page",
-      "credits": 159.44116350000002,
-      "duration": 1040.4,
-      "evidence": null,
-      "test_url_note": "Kane's run_end event omitted the link; taken from the same session's tui.log (PIPELINE_SHARE_OK, test case 01M7MRXMRDRBPCAQH55YS63E61)."
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7NH7GE4JH6N7P9X3SDJKEBT/dashboard/share/US_TETP1DGEG9HCL5N0DIV0RI9EH5IOTQAUFDXHMQFWNPCYWFJC4YQCRJXRLQX8SJI0?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 168.51990999999998,
+      "duration": 970.4,
+      "evidence": null
     },
     {
       "candidate": "cand02",
@@ -257,9 +256,9 @@
       "placebo_gap": 0.091,
       "demo_flip": true,
       "placebo_flip": true,
-      "test_url": "https://test-manager.lambdatest.com/projects/01M7JXD6WKC604ZPRCGXMGRG1C/test-cases/01M7K36C69A4RHNGASG361NS8D/dashboard/share/US_EJPZUOAURVBQGC6ZHKOS3PZ3IC0TVA4AMX0VES1G5YZ59BJTDERWIOF2WT2S28O6?type=summary&agentView=true&fqdn=summary-page",
-      "credits": 167.38996999999998,
-      "duration": 1022.8,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7NJG06DT0A27TJVE5B4RDJV/dashboard/share/US_PWJCMCR1YT0MDH3I50LTX9M5K228N719K2G6LNOTOZ0E2VU6HXZKW2GUE4M4Q5MY?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 121.12693000000004,
+      "duration": 837.7,
       "evidence": null
     },
     {
@@ -360,9 +359,9 @@
       "placebo_gap": 0.10899999999999999,
       "demo_flip": false,
       "placebo_flip": false,
-      "test_url": "https://test-manager.lambdatest.com/projects/01M7MDA1AQ5C2XJ3V38RRXTNGJ/test-cases/01M7MFBR1WMTHE8M0DN34XVRW0/dashboard/share/US_UWZQ6XJ57PWXK3WJH7370XAZPYTXVUEA9BJQS7LOYDIS810EAACPHRAM6AQD9JLJ?type=summary&agentView=true&fqdn=summary-page",
-      "credits": 131.317091,
-      "duration": 765.4,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7NKG198QBEANZVHCAFWHT2F/dashboard/share/US_YJ4CVH44CJ5JZD1QGIZ5XUUEXT19K520PKJMC8J9CM768S386LCTC08WG4ACDXHT?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 165.66193,
+      "duration": 987.8,
       "evidence": null
     },
     {
@@ -463,9 +462,9 @@
       "placebo_gap": 0.062,
       "demo_flip": true,
       "placebo_flip": false,
-      "test_url": "https://test-manager.lambdatest.com/projects/01M7MDA1AQ5C2XJ3V38RRXTNGJ/test-cases/01M7MG6RS0DZNJMWGTQN1DT0DE/dashboard/share/US_8HLXB6AGJZ630HM3ZT8JAUGY87BWTKW4MA098QRS6FB208VH2PUF3O49JNOL841K?type=summary&agentView=true&fqdn=summary-page",
-      "credits": 158.64094,
-      "duration": 848,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7NMKXC44QWREV1NFAV335ME/dashboard/share/US_WQEUG8WU3FG9NG03BWCDSDO3K6SS2LJUZ9KKOQ3REH3WWTMVC2FNCB5GVNM11TJF?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 163.64153249999998,
+      "duration": 742.6,
       "evidence": null
     },
     {
@@ -566,9 +565,9 @@
       "placebo_gap": 0.09100000000000003,
       "demo_flip": true,
       "placebo_flip": true,
-      "test_url": "https://test-manager.lambdatest.com/projects/01M7MDA1AQ5C2XJ3V38RRXTNGJ/test-cases/01M7MH6341TRW4C99XBRYF4Y83/dashboard/share/US_OLLW2J6NCFE08ICOYZYN5NWS0NKQK80O8PC4ID0XUHRVR2JHU788J7XXHG1M81XD?type=summary&agentView=true&fqdn=summary-page",
-      "credits": 165.61923749999997,
-      "duration": 837.6,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7NNDNKVYE2CTWW54ZJ4RTR7/dashboard/share/US_Z3TB6R2SOTNGPAAGDL5QJWL4PTYLK6SQV5QX689GUYKZ9XGCKKSW0P7403ZMP1T8?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 168.07341,
+      "duration": 850.9,
       "evidence": null
     },
     {
@@ -669,9 +668,9 @@
       "placebo_gap": 0.04899999999999999,
       "demo_flip": false,
       "placebo_flip": false,
-      "test_url": "https://test-manager.lambdatest.com/projects/01M7MDA1AQ5C2XJ3V38RRXTNGJ/test-cases/01M7MJ4H9AEKW1KJMYS004ZT41/dashboard/share/US_TA6Z51OSJIL3TACI2S9XUNTJ2DXRYWNF24DPS1OA8S2689FWE3EPT1FDVYL79Q8T?type=summary&agentView=true&fqdn=summary-page",
-      "credits": 163.6471525,
-      "duration": 758.3,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7NPA1G1Y834PN6RYQ60WBJ9/dashboard/share/US_T4L2QAE2SR02WOITYJ4KXO8T4RRNXGEZ3N16GFH3NZ537YIYBO5OTNHL6AB9IAHV?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 166.09323999999998,
+      "duration": 769.4,
       "evidence": null
     },
     {
@@ -772,9 +771,9 @@
       "placebo_gap": 0.199,
       "demo_flip": true,
       "placebo_flip": true,
-      "test_url": "https://test-manager.lambdatest.com/projects/01M7MDA1AQ5C2XJ3V38RRXTNGJ/test-cases/01M7MK099SZFDHDXT37C89X6XS/dashboard/share/US_M0SZAFRMZPGCZZRYA85DSDK5ZUAFSGWMMRV60APAOVQN7HVKMI4109S13FMSJEAN?type=summary&agentView=true&fqdn=summary-page",
-      "credits": 163.4896475,
-      "duration": 786.3,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7NQ4WPY93F25F8FR25319VY/dashboard/share/US_KVFDQS2FGSTHEWUEZCXCLYPOBS8PI9BOC8MVEOSHIQPJ4XE04Q1ADCYCW9WRINHC?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 163.949815,
+      "duration": 718.3,
       "evidence": null
     },
     {
@@ -875,9 +874,9 @@
       "placebo_gap": 0.05199999999999999,
       "demo_flip": false,
       "placebo_flip": true,
-      "test_url": "https://test-manager.lambdatest.com/projects/01M7MDA1AQ5C2XJ3V38RRXTNGJ/test-cases/01M7MKXX7BBSA8044XRDBFJZDK/dashboard/share/US_OTM5F3IJ11UH2N1NAYC9P6DOLCR3D57HQRCIQPWJ2QZAVE4XFVND4TPTWNIOYF9V?type=summary&agentView=true&fqdn=summary-page",
-      "credits": 133.88035249999996,
-      "duration": 745.5,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7NQZ1X6YRZKEMPRT18PRCX7/dashboard/share/US_D6W1T7BCLRPQ3MITAR5OWV0I7UD7K37A9KM3J7IFB834UA3RQ6UR2OL50N699291?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 163.407465,
+      "duration": 696.3,
       "evidence": null
     },
     {
@@ -978,9 +977,9 @@
       "placebo_gap": 0.15699999999999997,
       "demo_flip": false,
       "placebo_flip": true,
-      "test_url": "https://test-manager.lambdatest.com/projects/01M7MDA1AQ5C2XJ3V38RRXTNGJ/test-cases/01M7MMS782ZD8PGYZ89KZ8DNS2/dashboard/share/US_BC4S48BODWY2WSKW4TLKDPVULUF69UNAILWJI1KOZPU0HBL2Q9QQ6NC4FP146QK0?type=summary&agentView=true&fqdn=summary-page",
-      "credits": 159.422865,
-      "duration": 996.6,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7NRPZG4WRYWJYZNEBEWDAQ1/dashboard/share/US_7MQLHGCEXII2VN3K9PYUE6AHDY55W82XBMU01QOOQTH1JJGTZG2RR2U7HOK3GFTP?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 161.30680750000002,
+      "duration": 662.2,
       "evidence": null
     },
     {
@@ -1081,9 +1080,9 @@
       "placebo_gap": 0.114,
       "demo_flip": false,
       "placebo_flip": false,
-      "test_url": "https://test-manager.lambdatest.com/projects/01M7MDA1AQ5C2XJ3V38RRXTNGJ/test-cases/01M7MNX4JWG3W1HAB36FBH5T2B/dashboard/share/US_DZPC1KGNSX0GQIXXOPZBHCI0S6CYE1T1O4B6M88BPW8F35FODU7Q4Y321DP7P9JZ?type=summary&agentView=true&fqdn=summary-page",
-      "credits": 141.77872899999997,
-      "duration": 757.1,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7NSDDX69DA8FNFJ2MMQJHT8/dashboard/share/US_Y0YKUUXNPAQDFDI4ODC9G9QMJCWLLP3B37CVVSDTHX64BJC4UOOOHEYIFH1J317N?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 162.37227000000001,
+      "duration": 618.9,
       "evidence": null
     }
   ]
