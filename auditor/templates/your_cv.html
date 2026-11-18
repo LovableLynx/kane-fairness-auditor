@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Twin your CV · Fairness Auditor{% endblock %}
+{% block body %}
+<section class="section yc-hero">
+  <div class="wrap">
+    <span class="kicker">Twin your CV · free · runs here, not on Kane</span>
+    <h1>Your CV. Eight names.<br><span class="hl">Does the AI notice?</span></h1>
+    <p class="lede">We rewrite your CV under eight test names: men and women, from two name groups, two names each. Nothing else changes. Then three AI recruiters score every version, and you watch whether a name alone changes their mind.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <form class="window yc-input" id="yc-form" enctype="multipart/form-data" novalidate>
+      <div class="window-bar" aria-hidden="true"><span class="box"></span><span>YOUR_CV.TXT</span><span class="stripes"></span><span class="box"></span></div>
+      <div class="window-body">
+        <label for="yc-text" class="kicker" style="display:block">Paste your CV, with your name on the first line</label>
+        <textarea id="yc-text" name="cv_text" class="yc-text" rows="10" maxlength="20000" placeholder="Ada Obi&#10;ada.obi@example.com&#10;&#10;Data Analyst, Acme Ltd, 2020 - present&#10;BSc Statistics, University of Lagos&#10;..."></textarea>
+        <div class="yc-row">
+          <label class="btn btn-sm yc-file">
+            <input type="file" id="yc-file" name="cv_file" accept=".txt,.pdf,.docx">
+            <span id="yc-file-label">Upload .pdf, .docx or .txt</span>
+          </label>
+          <span class="muted small">or</span>
+          <button type="button" class="btn btn-sm btn-lime" id="yc-sample">Use a sample CV</button>
+          <button type="submit" class="btn btn-primary" id="yc-go" style="margin-left:auto">▶ Run the twin test</button>
+        </div>
+        <p class="yc-privacy small"><b>Private by design.</b> Your CV is scored on this server by the three demo tools and kept in memory only until the results reach your browser (two minutes at most). It is never saved to disk, logged, or sent to Kane, GitHub or TestMu. This check costs no credits.</p>
+        <p class="yc-error" id="yc-error" role="alert" hidden></p>
+      </div>
+    </form>
+
+    <div class="yc-stage" id="yc-stage" hidden>
+      <div class="lab yc-lab">
+        <div class="lab-left">
+          <div class="window-bar" aria-hidden="true"><span class="box"></span><span id="yc-file-name">CV · AS YOU WROTE IT</span><span class="stripes"></span><span class="box"></span></div>
+          <pre class="lab-cv yc-cv" id="yc-cv" tabindex="0" aria-label="The CV version being scored"></pre>
+        </div>
+        <div class="lab-right">
+          <div class="yc-now">
+            <span class="kicker" id="yc-phase">Writing your twins</span>
+            <div class="twin-name" id="yc-name" aria-live="polite">&nbsp;</div>
+            <div class="yc-tag small muted" id="yc-tag">&nbsp;</div>
+          </div>
+          <div class="live-progress" id="yc-progress"><i id="yc-bar"></i></div>
+          <div class="small muted yc-count" id="yc-count">&nbsp;</div>
+          <div class="lab-tools" id="yc-tools"></div>
+          <div class="yc-board" id="yc-board" aria-label="Every version, every tool"></div>
+          <div class="lab-foot">
+            <span class="small muted">Bars show each tool's score; the black line is its shortlist cutoff.</span>
+            <button type="button" class="btn btn-sm" id="yc-skip">Skip ▸▸</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="yc-results" id="yc-results" hidden>
+        <h2 class="yc-headline" id="yc-headline"></h2>
+        <p class="yc-sample-note small" id="yc-sample-note" hidden></p>
+        <div class="grid-3" id="yc-verdicts"></div>
+        <div class="yc-explore">
+          <div class="names-label">Replay any version: click a name</div>
+          <div class="names" id="yc-names" role="group" aria-label="Versions of your CV"></div>
+        </div>
+        <div class="yc-actions">
+          <button type="button" class="btn btn-primary" id="yc-again">↺ Try another CV</button>
+          <a class="btn" href="{{ url_for('results') }}">See the full Kane-verified audits →</a>
+        </div>
+        <details class="yc-notes">
+          <summary>How to read this, honestly</summary>
+          <ul>
+            <li><b>One CV is a spot check, not an audit.</b> The full audits test 10 candidates × 8 names on each tool, and Kane CLI checked all 240 readings in a real browser.</li>
+            <li><b>Only the name, the email address and he/she pronouns change</b> between versions. Everything else is your CV, word for word. Click any name to see its version.</li>
+            <li><b>The score itself means little.</b> The demo tools' models were trained on FairCVdb, a research dataset, so they reward odd things (Spanish, reference letters). The question is only whether the score moves when the name does.</li>
+            <li><b>The names</b> come from the Bertrand &amp; Mullainathan (2004) correspondence study. "Changed its mind" means the shortlist decision differs between versions; "score moved" means scores differ by more than 0.05, the audit's threshold.</li>
+            <li>This check runs in Python on our server, through each tool's own form. Kane runs use our prepared test CVs only.</li>
+          </ul>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="{{ url_for('static', filename='yourcv.js') }}" defer></script>
+{% endblock %}

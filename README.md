@@ -83,6 +83,10 @@ To check that these findings are not artefacts of short CVs, cutoff choice or sa
 
 **What went wrong once, and how we caught it.** The first TalentScreen full run matched the dry run on only 64/80 readings. Kane's logs showed why: on 6 candidates it had chosen the "Hiring for" job matching the CV (Chef, Teacher, Accountant...) instead of leaving Data Analyst, so twins were scored for different jobs. Kane read every number correctly; replaying those CVs with the job it picked reproduces its scores exactly. We pinned the role in Kane's task, added the setting-change check to the verifier, and re-ran all 10 candidates: 80/80. The discarded run is kept locally for the record, not published. Still queued: the TalentScreen **after-fix** run, to close the loop with Kane's own verdict.
 
+### Twin your own CV (free, on the website)
+
+[`/your-cv`](https://kane-fairness-auditor.onrender.com/your-cv) rewrites a visitor's CV under the audit's eight test names (only the name, email and he/she pronouns change), scores every version on all three tools through their own forms, and replays the results. It runs in Python on the server: no Kane, no credits. The CV is never written to disk or sent to Kane, GitHub or TestMu; each tool's copy is deleted as soon as its score is read. The sample CV reproduces the Kane-verified readings for candidate 2 exactly ([`tests/test_yourcv.py`](tests/test_yourcv.py)). Kane runs from the website use the prepared test CVs only.
+
 ### A finding about the legal metric
 
 On TalentScreen, the LL144-style **impact ratio for sex is 1.0**, which looks perfectly fair, while every woman scored far below her identical male twin. Aggregate selection ratios can hide individual-level discrimination that twin testing exposes. We report both.

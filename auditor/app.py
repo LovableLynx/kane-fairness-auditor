@@ -15,9 +15,11 @@ from flask import Flask, abort, jsonify, redirect, render_template, request, sen
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from shared.hardening import harden  # noqa: E402
+from cvkit.extract import UnsupportedFile, to_text  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import live  # noqa: E402
+import yourcv  # noqa: E402
 
 RESULTS = Path(os.environ.get("AUDIT_REPORTS", ROOT / "results"))
 REPO = "https://github.com/LovableLynx/kane-fairness-auditor"
@@ -215,6 +217,36 @@ def api_live_status(job_id: str):
     since = request.args.get("since", default=0, type=int)
     return jsonify({**{k: job[k] for k in ("id", "target", "status", "done", "total", "verdict", "code")},
                     "lines": job["lines"][since:], "next": len(job["lines"])})
+
+
+@app.get("/your-cv")
+def your_cv():
+    return render_template("your_cv.html", page="yourcv")
+
+
+@app.post("/api/your-cv")
+def api_your_cv_start():
+    text = request.form.get("cv_text", "")
+    f = request.files.get("cv_file")
+    if f and f.filename:
+        try:
+            text = to_text(f.filename, f.read())
+        except UnsupportedFile:
+            return jsonify({"error": "We couldn't read that file. Upload a .txt, .pdf or .docx CV, or paste the text."}), 400
+    job, err = yourcv.start(text, request.form.get("sample") == "1")
+    if err:
+        return jsonify({"error": err}), 429 if "already running" in err else 400
+    return jsonify({"id": job["id"]})
+
+
+@app.get("/api/your-cv/<job_id>")
+def api_your_cv_status(job_id: str):
+    job = yourcv.get(job_id) or abort(404)
+    out = {k: job.get(k) for k in ("status", "done", "total", "error", "name", "sample", "tools", "twins",
+                                    "original", "summary")}
+    if job["status"] == "finished":
+        out["cv"] = job.pop("cv", None)  # the CV versions go to this browser once, then the server drops them
+    return jsonify(out)
 
 
 @app.post("/api/kane-run")

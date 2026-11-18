@@ -25,6 +25,7 @@
       <li><a href="{{ url_for('landing') }}#lab">Twin Lab</a></li>
       <li><a href="{{ url_for('results') }}" {% if page == 'results' %}aria-current="page"{% endif %}>Results</a></li>
       <li><a href="{{ url_for('method') }}" {% if page == 'method' %}aria-current="page"{% endif %}>Method</a></li>
+      <li><a href="{{ url_for('your_cv') }}" {% if page == 'yourcv' %}aria-current="page"{% endif %}>Twin your CV</a></li>
       <li><a href="{{ url_for('landing') }}#try">Try the tools</a></li>
       <li><a href="{{ REPO }}" rel="noopener">GitHub ↗</a></li>
     </ul>
