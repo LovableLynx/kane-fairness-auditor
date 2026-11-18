@@ -183,7 +183,11 @@ def results():
 def result(name: str):
     r = load_reports().get(name) or abort(404)
     bar_max = 0.5 if name == "quickmatch" else 1.0  # similarity scores sit on a smaller range
-    return render_template("result.html", r=r, tool=TOOLS.get(name, {}), bar_max=bar_max,
+    try:
+        loop = json.loads((RESULTS / f"loop_{name}.json").read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        loop = None
+    return render_template("result.html", r=r, tool=TOOLS.get(name, {}), bar_max=bar_max, loop=loop,
                            kane_enabled=live.kane_enabled(), page="results")
 
 

@@ -81,7 +81,7 @@ To check that these findings are not artefacts of short CVs, cutoff choice or sa
 
 **240 real-browser readings, 240/240 identical to the dry run.** Every one is checked three ways by [`audit/verify_kane.py`](audit/verify_kane.py) (read-only): the published number against Kane's own raw `run_end` log, against the dry run through the tool's HTTP endpoint, and that Kane changed no setting on the page before submitting. QuickMatch is the open-source language model we did not build: its NAME-UNSTABLE finding holds in a real browser (5/10 candidates get a different decision from a same-group name swap alone). The full runs were made on 17–18 Nov; the GitHub Actions run above is the earlier CI demo.
 
-**What went wrong once, and how we caught it.** The first TalentScreen full run matched the dry run on only 64/80 readings. Kane's logs showed why: on 6 candidates it had chosen the "Hiring for" job matching the CV (Chef, Teacher, Accountant...) instead of leaving Data Analyst, so twins were scored for different jobs. Kane read every number correctly; replaying those CVs with the job it picked reproduces its scores exactly. We pinned the role in Kane's task, added the setting-change check to the verifier, and re-ran all 10 candidates: 80/80. The discarded run is kept locally for the record, not published. Still queued: the TalentScreen **after-fix** run, to close the loop with Kane's own verdict.
+**What went wrong once, and how we caught it.** The first TalentScreen full run matched the dry run on only 64/80 readings. Kane's logs showed why: on 6 candidates it had chosen the "Hiring for" job matching the CV (Chef, Teacher, Accountant...) instead of leaving Data Analyst, so twins were scored for different jobs. Kane read every number correctly; replaying those CVs with the job it picked reproduces its scores exactly. We pinned the role in Kane's task, added the setting-change check to the verifier, and re-ran all 10 candidates: 80/80. The discarded run is kept locally for the record, not published.
 
 ### Twin your own CV (free, on the website)
 
@@ -116,6 +116,16 @@ python audit/study.py --target quickmatch                # needs the tool runnin
 Regenerating data needs FairCVdb: `python -m cvkit.build path/to/FairCVdb.npy`.
 
 ## Closed loop: Kane's verdict feeds the coding agent
+
+**The loop has been closed with Kane, not just rehearsed** (18 Nov, candidate 1, 8 CVs with placebo names, real browser):
+
+| | Kane verdict | Scores across the 8 names | Evidence |
+|---|---|---|---|
+| Before: TalentScreen as shipped | **FAIL: BIASED** | 0.000 to 1.000, decision flips on the name | [Kane run](https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7P5RTAZR0ZPGDFMW3EGTVEX/dashboard/share/US_UTY9XFHKLYP08AH2FMCKP9L4XXOHLBHKFTG1ST48DN84MTZACCAO54UGAILJPK2E?type=summary&agentView=true&fqdn=summary-page) |
+| Claude Code's fix | removed name/pronoun-based demographic guessing, switched to the fair model | | [diff](https://github.com/LovableLynx/kane-fairness-auditor/compare/main...loop-kane) · [loop log](https://github.com/LovableLynx/kane-fairness-auditor/blob/loop-kane/docs/loop/loop_talentscreen.md) |
+| After: fresh Kane run on the fixed code | **PASS** | every name 0.644, SHORTLIST | [Kane run](https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7PSYFS7GHQMK11V14KQNV6E/dashboard/share/US_CMKVC1L8MNI2B3W0YMWM1PVW1N3B2YFJ0GB5O3A9Y0M96TUN9LNNI6PUSMSVTRG3?type=summary&agentView=true&fqdn=summary-page) |
+
+Checked like the full audits: 8/8 after-fix readings equal Kane's raw log and the fixed tool's own scores, Kane changed no page settings, and the PASS is a new Kane run (154 credits). Kane checkpoints carry a fingerprint of the tool's code, so an after-fix audit can never reuse a run made before the fix. `main` keeps the biased TalentScreen as a demo target; the fixed version lives on the [`loop-kane`](https://github.com/LovableLynx/kane-fairness-auditor/tree/loop-kane) branch.
 
 Kane is the referee; the agent never grades its own work. Three ways to run the loop:
 
@@ -177,3 +187,7 @@ python serve.py        # the same service locally on http://127.0.0.1:8000
 | `.testmuai/` | Kane test and evidence from real runs |
 
 Data: [FairCVdb](https://github.com/BiDAlab/FairCVtest) (Peña et al., 2020), synthetic profiles. Built for the TestMu AI Kane CLI Online Hackathon, November 2026.
+
+## Licence
+
+Copyright © 2026 LovableLynx. **All rights reserved.** You may view and run this repository to evaluate it (including for hackathon judging); copying, modifying or reusing any part of it needs written permission. Third-party fonts, data and packages keep their own licences. See [LICENSE](LICENSE).
