@@ -104,6 +104,8 @@ python audit/gate.py --url https://staging.your-tool.example/     --task "Paste 
 Exit code 0 = PASS, 1 = FAIL (BIASED / NAME-UNSTABLE), 2 = INCONCLUSIVE. If your decision words are unusual, add
 `--positive "hire|move forward"` and `--negative "decline|pass on"`. The audit uses only the Python standard library.
 
+**Tested on a real public URL.** Kane audited the deployed HireLens at `https://kane-fairness-auditor.onrender.com/hirelens/` in this mode: PASS, 4/4 readings equal to the dry run ([Kane run](https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7R5M8XRWD6QCBK6NGS4J9YG/dashboard/share/US_XWJ29MFUR7714RW8KNG9QSVHZLZ1IRTARAJ5AJU3GG1994HMVTUARU9R6W2NHXCE?type=summary&agentView=true&fqdn=summary-page)). The first attempt is the reason for the guard below: Kane switched HireLens's role dropdown to "Chef" for one CV, which made a fair tool look biased. The audit now tells Kane to leave every other field and dropdown alone, and if Kane changes a setting anyway, that candidate's readings are void and the verdict is INCONCLUSIVE, never a false FAIL or PASS.
+
 **In CI:** copy [`docs/examples/fairness-gate.yml`](docs/examples/fairness-gate.yml) into `.github/workflows/` of your
 repo and add `LT_USERNAME` / `LT_ACCESS_KEY` secrets. Every pull request then gets a Kane fairness check, the report
 in the job summary, and a failed check when the tool reacts to names:

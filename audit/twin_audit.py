@@ -107,6 +107,7 @@ def pick_twins(cand: dict, length: str, placebo: bool) -> list[TwinResult]:
 def build_objective(url: str, task: str, twins: list[TwinResult]) -> str:
     return " ".join(
         f"Go to {url}. {task}, using exactly this CV text: {{{{cv_{t.key}}}}} . "
+        f"Leave every other field, dropdown and setting on the page exactly as it is. "
         f"On the result, store the match score number as 'score_{t.key}' "
         f"and store the decision text as 'decision_{t.key}'."
         for t in twins)
@@ -155,6 +156,34 @@ def code_fingerprint(target_name: str, task: str) -> str:
     return h.hexdigest()[:16]
 
 
+OBJECTIVE_VERSION = "2"  # bump when build_objective's wording changes, so old checkpoints are not reused
+
+
+def kane_selects(session: Path) -> dict[str, list[str]]:
+    """Dropdown choices Kane made on its own before typing each twin's CV (e.g. a 'Hiring for' role).
+    Twins must be scored under identical settings, so any such choice voids that candidate's readings."""
+    out, pending = {}, []
+    ev = Path(session) / "events.ndjson"
+    if not ev.is_file():
+        return out
+    for line in ev.read_text(encoding="utf-8", errors="replace").splitlines():
+        try:
+            e = json.loads(line)
+        except ValueError:
+            continue
+        r = e.get("remark") or ""
+        if e.get("status") != "done":
+            continue
+        if r.startswith("navigate:"):
+            pending = []
+        elif r.startswith("select:"):
+            pending.append(r[len("select:"):].strip())
+        m = re.search(r"global\.cv_(\w+)\}\}", r)
+        if m and pending:
+            out[m.group(1)] = list(pending)
+    return out
+
+
 def run_kane(target: dict, run: CandidateRun, kane: str, headed: bool, timeout: int) -> CandidateRun:
     variables = {f"cv_{t.key}": {"value": (ROOT / t.file).read_text(encoding="utf-8")} for t in run.twins}
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as vf:
@@ -193,7 +222,12 @@ def run_kane(target: dict, run: CandidateRun, kane: str, headed: bool, timeout: 
         t.decision = state.get(f"decision_{t.key}")
         t.selected = to_selected(t.decision)
     missing = [t.key for t in run.twins if t.score is None or t.selected is None]
-    if missing:
+    session = ev.get("session_dir") or (str(Path(run.evidence).parents[1]) if run.evidence else None)
+    changed = kane_selects(Path(session)) if session else {}
+    if changed:  # readings taken under different page settings are not twins any more
+        run.status = "error"
+        run.detail = f"Kane changed a page setting before submitting, readings void: {changed}"
+    elif missing:
         run.status = "error"
         run.detail = f"could not read {missing}; kane: {ev.get('status')} {ev.get('one_liner') or ev.get('reason')}"
     else:
@@ -441,7 +475,7 @@ def main() -> int:
             print("kane-cli not on PATH", file=sys.stderr)
             return 2
         cache = ROOT / "reports" / "kane-cache"
-        fp = code_fingerprint(args.target, target["task"] + ("|" + target["url"] if args.url else ""))
+        fp = code_fingerprint(args.target, OBJECTIVE_VERSION + "|" + target["task"] + ("|" + target["url"] if args.url else ""))
 
         def work(r: CandidateRun) -> CandidateRun:
             # Checkpoint each finished Kane run so an interrupted audit resumes without re-spending credits.
