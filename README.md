@@ -187,3 +187,7 @@ python serve.py        # the same service locally on http://127.0.0.1:8000
 | `.testmuai/` | Kane test and evidence from real runs |
 
 Data: [FairCVdb](https://github.com/BiDAlab/FairCVtest) (Peña et al., 2020), synthetic profiles. Built for the TestMu AI Kane CLI Online Hackathon, November 2026.
+
+## Licence
+
+Copyright © 2026 LovableLynx. **All rights reserved.** You may view and run this repository to evaluate it (including for hackathon judging); copying, modifying or reusing any part of it needs written permission. Third-party fonts, data and packages keep their own licences. See [LICENSE](LICENSE).
