@@ -125,9 +125,10 @@ def apply_patch(target: str, diff: str) -> tuple[bool, str]:
 
 def ask_agent(agent: str, prompt: str) -> str:
     env = {k: v for k, v in os.environ.items() if not k.startswith(("CLAUDE", "MCP_")) and k != "CLAUDECODE"}
-    a = subprocess.run([agent, "-p", prompt, "--output-format", "json",
+    # The prompt goes in on stdin: with a tool's full source it is longer than Windows allows on a command line.
+    a = subprocess.run([agent, "-p", "--output-format", "json",
                         "--disallowedTools", "Bash,PowerShell,Edit,Write,MultiEdit,NotebookEdit,WebFetch,WebSearch,Task,Agent"],
-                       cwd=ROOT, env=env, capture_output=True, text=True, encoding="utf-8", errors="replace")
+                       input=prompt, cwd=ROOT, env=env, capture_output=True, text=True, encoding="utf-8", errors="replace")
     try:
         return str(json.loads(a.stdout).get("result", "")).strip()
     except json.JSONDecodeError:
