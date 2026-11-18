@@ -47,11 +47,10 @@ trained on labels carrying gender and ethnicity penalties. cv.features(parsed, g
 group into columns 0-1. The sibling tool targets/hirelens/app.py scores fairly by never inferring demographics
 and passing constant placeholders ("male", "B") to the fair model.
 
-Your job: reply with ONE unified diff (git format, paths relative to the repo root, e.g.
-`--- a/targets/{target}/app.py` / `+++ b/targets/{target}/app.py`) that fixes the discrimination with the
-smallest sensible change. Only files under targets/{target}/ may be touched. Never change anything under
-audit/, data/ or cvkit/. Put the diff inside a single ```diff fenced block, preceded by one short paragraph
-naming the cause. Do not run tools; everything you need is above."""
+Your job: fix the discrimination with the smallest sensible change to targets/{target}/app.py. Never change
+anything under audit/, data/ or cvkit/. Reply with one short paragraph naming the cause, then the COMPLETE new
+contents of targets/{target}/app.py in a single ```python fenced block (the loop computes and records the diff).
+You have no tools in this session and need none: do not try to run, read or edit anything."""
 
 
 def run_gate(target: str, gate_args: list[str], dry: bool) -> tuple[int, str]:
@@ -70,6 +69,26 @@ def extract_diff(reply: str) -> str | None:
             return None
     diff = m.group(1).rstrip() + "\n"
     return diff if diff.lstrip().startswith(("---", "diff --git")) else None
+
+
+def extract_file(reply: str) -> str | None:
+    """The complete new app.py, when the agent returns the file instead of a diff."""
+    blocks = re.findall(r"```python\s*\n(.*?)```", reply, re.S)
+    return max(blocks, key=len) if blocks else None
+
+
+def write_file(target: str, source: str) -> tuple[bool, str, str]:
+    """Write the agent's file (only targets/<target>/app.py), refuse anything that does not compile,
+    and return the exact diff as git sees it."""
+    path = ROOT / "targets" / target / "app.py"
+    try:
+        compile(source, str(path), "exec")
+    except SyntaxError as e:
+        return False, f"file does not compile: {e}", ""
+    path.write_text(source.rstrip() + "\n", encoding="utf-8", newline="\n")
+    d = subprocess.run(["git", "diff", "--", str(path)], cwd=ROOT, capture_output=True, text=True,
+                       encoding="utf-8", errors="replace").stdout
+    return bool(d.strip()), (f"targets/{target}/app.py" if d.strip() else "no change"), d
 
 
 def diff_paths(diff: str) -> list[str]:
@@ -144,12 +163,15 @@ def main() -> int:
         reply = ask_agent(agent, PROMPT.format(target=args.target, code=code, report=report, source=source))
         summary = reply.split("```")[0].strip()
         print(summary[:600], flush=True)
-        diff = extract_diff(reply)
-        if not diff:
-            print("-- agent returned no patch", flush=True)
-            log += [f"- Agent: {summary[:1200]}", "- No patch returned.", ""]
+        new_file, diff = extract_file(reply), extract_diff(reply)
+        if new_file:
+            ok, info, diff = write_file(args.target, new_file)
+        elif diff:
+            ok, info = apply_patch(args.target, diff)
+        else:
+            print("-- agent returned no fix", flush=True)
+            log += [f"- Agent: {summary[:1200]}", "- No fix returned.", ""]
             continue
-        ok, info = apply_patch(args.target, diff)
         print(f"-- patch {'applied to ' + info if ok else 'rejected: ' + info}", flush=True)
         log += [f"- Agent: {summary[:1200]}", f"- Patch {'applied' if ok else 'REJECTED'}: {info}", "", "```diff", diff.rstrip(), "```", ""]
     else:
