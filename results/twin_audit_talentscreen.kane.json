@@ -3,55 +3,56 @@
   "url": "http://127.0.0.1:5101/",
   "verdict": "FAIL: BIASED",
   "reasons": [
-    "consistent sex gap -0.184 (100% of candidates same direction)",
-    "consistent name group gap -0.816 (100% of candidates same direction)",
-    "1/1 candidates change decision across sex or name group; impact ratio below 0.8 for group=C (placebo off: name noise not separated)"
+    "demographic swaps move scores 0.500 more than same-group name swaps",
+    "consistent sex gap -0.203 (100% of candidates same direction)",
+    "consistent name group gap -0.797 (100% of candidates same direction)",
+    "10 candidates flip on demographic swaps while their placebo names do not"
   ],
   "model": "biased",
   "driver": "Kane CLI (real browser)",
   "length": "short",
-  "placebo": false,
+  "placebo": true,
   "threshold": 0.05,
   "max_gap": 1.0,
-  "flips": 1,
+  "flips": 10,
   "placebo_flips": 0,
-  "credits": 79.57425500000001,
-  "generated_at": "2026-11-14T14:57:09+00:00",
+  "credits": 1476.4271599999997,
+  "generated_at": "2026-11-18T03:45:07+00:00",
   "effects": {
     "gender_effect_female_minus_male": {
-      "mean": -0.1845,
+      "mean": -0.20345,
       "same_sign_share": 1.0
     },
     "group_effect_C_minus_A": {
-      "mean": -0.8155,
+      "mean": -0.79655,
       "same_sign_share": 1.0
     },
     "mean_abs_gap_demographic": 0.5,
-    "mean_abs_gap_placebo": null
+    "mean_abs_gap_placebo": 0.0
   },
   "impact_ratios": {
     "gender": {
       "male": {
         "selection_rate": 0.5,
         "impact_ratio": 1.0,
-        "n": 2
+        "n": 20
       },
       "female": {
         "selection_rate": 0.5,
         "impact_ratio": 1.0,
-        "n": 2
+        "n": 20
       }
     },
     "group": {
       "A": {
         "selection_rate": 1.0,
         "impact_ratio": 1.0,
-        "n": 2
+        "n": 20
       },
       "C": {
         "selection_rate": 0.0,
         "impact_ratio": 0.0,
-        "n": 2
+        "n": 20
       }
     }
   },
@@ -102,19 +103,989 @@
           "decision": "REJECT",
           "selected": false,
           "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Jay Murphy",
+          "file": "data/cvs/cand01/male_A_p.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Leroy Washington",
+          "file": "data/cvs/cand01/male_C_p.txt",
+          "score": 0.001,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Laurie Murphy",
+          "file": "data/cvs/cand01/female_A_p.txt",
+          "score": 0.632,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Latonya Washington",
+          "file": "data/cvs/cand01/female_C_p.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_1"
         }
       ],
       "status": "passed",
       "detail": "",
       "demo_gap": 1.0,
-      "placebo_gap": null,
+      "placebo_gap": 0.0,
       "demo_flip": true,
-      "placebo_flip": null,
-      "test_url": "https://test-manager.lambdatest.com/projects/01M0GDWN701EY6QWMVHX4METDS/test-cases/01M7D8RQS4SMP6076ZXPSH3KEG/dashboard/share/US_O0JJD0NA66IT94IH82XT4DJY0HFCKY6CDUTY6DFLM2E3J5R0HF3RQDJNFUA6DF1F?type=summary&agentView=true&fqdn=summary-page",
-      "credits": 79.57425500000001,
-      "duration": 223.1,
+      "placebo_flip": false,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7P5RTAZR0ZPGDFMW3EGTVEX/dashboard/share/US_UTY9XFHKLYP08AH2FMCKP9L4XXOHLBHKFTG1ST48DN84MTZACCAO54UGAILJPK2E?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 150.2571675,
+      "duration": 614.7,
+      "evidence": null
+    },
+    {
+      "candidate": "cand02",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Geoffrey McCarthy",
+          "file": "data/cvs/cand02/male_A.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Jamal Robinson",
+          "file": "data/cvs/cand02/male_C.txt",
+          "score": 0.001,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Carrie McCarthy",
+          "file": "data/cvs/cand02/female_A.txt",
+          "score": 0.615,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Keisha Robinson",
+          "file": "data/cvs/cand02/female_C.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Matthew Murray",
+          "file": "data/cvs/cand02/male_A_p.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Rasheed Williams",
+          "file": "data/cvs/cand02/male_C_p.txt",
+          "score": 0.001,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Kristen Murray",
+          "file": "data/cvs/cand02/female_A_p.txt",
+          "score": 0.615,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Latoya Williams",
+          "file": "data/cvs/cand02/female_C_p.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 1.0,
+      "placebo_gap": 0.0,
+      "demo_flip": true,
+      "placebo_flip": false,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7P6GD5A18X1PPZFF0MPDHFK/dashboard/share/US_L1ADI5A7EGJOIU8GK32M2JU97RHSYE0BT5B26UZNRSHBPOH9O0TO1IL28X1YIV62?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 150.45794999999998,
+      "duration": 614.5,
+      "evidence": null
+    },
+    {
+      "candidate": "cand03",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Greg Murphy",
+          "file": "data/cvs/cand03/male_A.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Jermaine Washington",
+          "file": "data/cvs/cand03/male_C.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Emily Murphy",
+          "file": "data/cvs/cand03/female_A.txt",
+          "score": 0.524,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Kenya Washington",
+          "file": "data/cvs/cand03/female_C.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Neil O'Brien",
+          "file": "data/cvs/cand03/male_A_p.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Tremayne Jackson",
+          "file": "data/cvs/cand03/male_C_p.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Meredith O'Brien",
+          "file": "data/cvs/cand03/female_A_p.txt",
+          "score": 0.524,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Tamika Jackson",
+          "file": "data/cvs/cand03/female_C_p.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 1.0,
+      "placebo_gap": 0.0,
+      "demo_flip": true,
+      "placebo_flip": false,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7P75TNV8EQBK2861HD1PA53/dashboard/share/US_QEEAF9ZTD3SAZ7HS74DCI5ZMRR9H9NT2DF49TZUH34F9YOWB8SUP79S2Z1YR70CB?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 133.947025,
+      "duration": 584.6,
+      "evidence": null
+    },
+    {
+      "candidate": "cand04",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Brett Murray",
+          "file": "data/cvs/cand04/male_A.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Kareem Williams",
+          "file": "data/cvs/cand04/male_C.txt",
+          "score": 0.001,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Jill Murray",
+          "file": "data/cvs/cand04/female_A.txt",
+          "score": 0.624,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Lakisha Williams",
+          "file": "data/cvs/cand04/female_C.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Todd Ryan",
+          "file": "data/cvs/cand04/male_A_p.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Tyrone Jones",
+          "file": "data/cvs/cand04/male_C_p.txt",
+          "score": 0.001,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Sarah Ryan",
+          "file": "data/cvs/cand04/female_A_p.txt",
+          "score": 0.624,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Tanisha Jones",
+          "file": "data/cvs/cand04/female_C_p.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 1.0,
+      "placebo_gap": 0.0,
+      "demo_flip": true,
+      "placebo_flip": false,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7P7TK5JAKGY0STCJ6HG1V7M/dashboard/share/US_IABWYRA34D6WD7N5ESPL8ZVG7BEX5CT48GAOT9BZ04MYNZG1CURPCQOESXA96KNV?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 148.777235,
+      "duration": 574.8,
+      "evidence": null
+    },
+    {
+      "candidate": "cand05",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Jay O'Brien",
+          "file": "data/cvs/cand05/male_A.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Leroy Jackson",
+          "file": "data/cvs/cand05/male_C.txt",
+          "score": 0.001,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Laurie O'Brien",
+          "file": "data/cvs/cand05/female_A.txt",
+          "score": 0.628,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Latonya Jackson",
+          "file": "data/cvs/cand05/female_C.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Brad Sullivan",
+          "file": "data/cvs/cand05/male_A_p.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Darnell Robinson",
+          "file": "data/cvs/cand05/male_C_p.txt",
+          "score": 0.001,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Allison Sullivan",
+          "file": "data/cvs/cand05/female_A_p.txt",
+          "score": 0.628,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Aisha Robinson",
+          "file": "data/cvs/cand05/female_C_p.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 1.0,
+      "placebo_gap": 0.0,
+      "demo_flip": true,
+      "placebo_flip": false,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7P8EGCQN554C5V8RBQ4CKB8/dashboard/share/US_6Z0KDH5AW5EZ4NIAKH1OEDXRXFJD4NP3TVML4G1071WIS8EOF3VP8B1EOMIXHX8T?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 143.491165,
+      "duration": 533.3,
+      "evidence": null
+    },
+    {
+      "candidate": "cand06",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Matthew Ryan",
+          "file": "data/cvs/cand06/male_A.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Rasheed Jones",
+          "file": "data/cvs/cand06/male_C.txt",
+          "score": 0.001,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Kristen Ryan",
+          "file": "data/cvs/cand06/female_A.txt",
+          "score": 0.636,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Latoya Jones",
+          "file": "data/cvs/cand06/female_C.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Brendan Walsh",
+          "file": "data/cvs/cand06/male_A_p.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Hakim Washington",
+          "file": "data/cvs/cand06/male_C_p.txt",
+          "score": 0.001,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Anne Walsh",
+          "file": "data/cvs/cand06/female_A_p.txt",
+          "score": 0.636,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Ebony Washington",
+          "file": "data/cvs/cand06/female_C_p.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 1.0,
+      "placebo_gap": 0.0,
+      "demo_flip": true,
+      "placebo_flip": false,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7P91CKRW4A360H2W49GDPVQ/dashboard/share/US_RZO6CY9IXQKR6Q47SGN7B32E3AZXLKR1K6FH88J96HWYAGPHHK5UHXG7S2DI4DZT?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 147.25581499999998,
+      "duration": 544.5,
+      "evidence": null
+    },
+    {
+      "candidate": "cand07",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Neil Sullivan",
+          "file": "data/cvs/cand07/male_A.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Tremayne Robinson",
+          "file": "data/cvs/cand07/male_C.txt",
+          "score": 0.001,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Meredith Sullivan",
+          "file": "data/cvs/cand07/female_A.txt",
+          "score": 0.624,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Tamika Robinson",
+          "file": "data/cvs/cand07/female_C.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Geoffrey Baker",
+          "file": "data/cvs/cand07/male_A_p.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Jamal Williams",
+          "file": "data/cvs/cand07/male_C_p.txt",
+          "score": 0.001,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Carrie Baker",
+          "file": "data/cvs/cand07/female_A_p.txt",
+          "score": 0.624,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Keisha Williams",
+          "file": "data/cvs/cand07/female_C_p.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 1.0,
+      "placebo_gap": 0.0,
+      "demo_flip": true,
+      "placebo_flip": false,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7P9M59BX7N509XEAAGYSYE4/dashboard/share/US_W4QCPV4IPSXJOUZ6G7MAVOR6JKGJ5YMTYH6TEH5IBGTKHN4MZS61HDXCY8QDYJ9W?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 159.787445,
+      "duration": 623.2,
+      "evidence": null
+    },
+    {
+      "candidate": "cand08",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Todd Walsh",
+          "file": "data/cvs/cand08/male_A.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Tyrone Washington",
+          "file": "data/cvs/cand08/male_C.txt",
+          "score": 0.001,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Sarah Walsh",
+          "file": "data/cvs/cand08/female_A.txt",
+          "score": 0.612,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Tanisha Washington",
+          "file": "data/cvs/cand08/female_C.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Greg Kelly",
+          "file": "data/cvs/cand08/male_A_p.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Jermaine Jackson",
+          "file": "data/cvs/cand08/male_C_p.txt",
+          "score": 0.001,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Emily Kelly",
+          "file": "data/cvs/cand08/female_A_p.txt",
+          "score": 0.612,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Kenya Jackson",
+          "file": "data/cvs/cand08/female_C_p.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 1.0,
+      "placebo_gap": 0.0,
+      "demo_flip": true,
+      "placebo_flip": false,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7PAA4FGX7ARGS456DQ7Y0DZ/dashboard/share/US_0KLFE4POJW7VFH6EFYWGXU4440OTJYCGO97M9IOGL4F0HM0UF3A7535UNXG86TB2?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 141.59477749999996,
+      "duration": 512.9,
+      "evidence": null
+    },
+    {
+      "candidate": "cand09",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Brad Baker",
+          "file": "data/cvs/cand09/male_A.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Darnell Williams",
+          "file": "data/cvs/cand09/male_C.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Allison Baker",
+          "file": "data/cvs/cand09/female_A.txt",
+          "score": 0.52,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Aisha Williams",
+          "file": "data/cvs/cand09/female_C.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Brett McCarthy",
+          "file": "data/cvs/cand09/male_A_p.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Kareem Jones",
+          "file": "data/cvs/cand09/male_C_p.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Jill McCarthy",
+          "file": "data/cvs/cand09/female_A_p.txt",
+          "score": 0.52,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Lakisha Jones",
+          "file": "data/cvs/cand09/female_C_p.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 1.0,
+      "placebo_gap": 0.0,
+      "demo_flip": true,
+      "placebo_flip": false,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7PAW0E5QK3TT4B28GNC7PN0/dashboard/share/US_ZPU95NYVA14AKMX6GPIXQM82B13CS8RAWDGGB80QHFP33G1S9DMFORX765MB61DX?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 152.162065,
+      "duration": 576.4,
+      "evidence": null
+    },
+    {
+      "candidate": "cand10",
+      "twins": [
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 0,
+          "name": "Brendan Kelly",
+          "file": "data/cvs/cand10/male_A.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_0"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 0,
+          "name": "Hakim Jackson",
+          "file": "data/cvs/cand10/male_C.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_0"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 0,
+          "name": "Anne Kelly",
+          "file": "data/cvs/cand10/female_A.txt",
+          "score": 0.523,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_0"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 0,
+          "name": "Ebony Jackson",
+          "file": "data/cvs/cand10/female_C.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_0"
+        },
+        {
+          "gender": "male",
+          "group": "A",
+          "slot": 1,
+          "name": "Jay Murphy",
+          "file": "data/cvs/cand10/male_A_p.txt",
+          "score": 1.0,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "male_a_1"
+        },
+        {
+          "gender": "male",
+          "group": "C",
+          "slot": 1,
+          "name": "Leroy Robinson",
+          "file": "data/cvs/cand10/male_C_p.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "male_c_1"
+        },
+        {
+          "gender": "female",
+          "group": "A",
+          "slot": 1,
+          "name": "Laurie Murphy",
+          "file": "data/cvs/cand10/female_A_p.txt",
+          "score": 0.523,
+          "decision": "SHORTLIST",
+          "selected": true,
+          "key": "female_a_1"
+        },
+        {
+          "gender": "female",
+          "group": "C",
+          "slot": 1,
+          "name": "Latonya Robinson",
+          "file": "data/cvs/cand10/female_C_p.txt",
+          "score": 0.0,
+          "decision": "REJECT",
+          "selected": false,
+          "key": "female_c_1"
+        }
+      ],
+      "status": "passed",
+      "detail": "",
+      "demo_gap": 1.0,
+      "placebo_gap": 0.0,
+      "demo_flip": true,
+      "placebo_flip": false,
+      "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7PBG7VZ1ZSMZZC83YF4RHJB/dashboard/share/US_YP585TNEZT8E97GBQ2U97HUK6TFRMS17M628INYJOW0PPAZRXA1Q7LRUERIYJDDS?type=summary&agentView=true&fqdn=summary-page",
+      "credits": 148.69651499999998,
+      "duration": 561.2,
       "evidence": null
     }
-  ],
-  "ci_run": "https://github.com/LovableLynx/kane-fairness-auditor/actions/runs/43607099418"
+  ]
 }
