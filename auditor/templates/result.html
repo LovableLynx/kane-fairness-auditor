@@ -70,6 +70,31 @@
 </section>
 
 
+{% if loop %}
+<section class="wrap" style="margin-top:28px">
+  <div class="window" style="box-shadow:8px 8px 0 var(--blue)">
+    <div class="window-bar" aria-hidden="true"><span class="box"></span><span>CLOSED_LOOP · KANE → CLAUDE CODE → KANE</span><span class="stripes"></span></div>
+    <div class="window-body">
+      <span class="kicker">Closed loop · {{ loop.candidate }} · 8 CVs · real browser</span>
+      <h2 style="font-size:var(--step-2);margin:0 0 6px">Kane blocked it. Claude Code fixed it. Kane passed the fix.</h2>
+      <p class="muted small" style="margin:0 0 16px">The agent never grades its own work: Kane audits before and after, in a real browser.</p>
+      <div class="grid-3">
+        <div class="card"><span class="kicker">1 · Kane, before</span><p style="margin:10px 0"><span class="stamp FAIL in">{{ loop.before.verdict }}</span></p>
+          <p class="small" style="margin:0">Scores across the 8 names ranged {{ '%.3f'|format(loop.before.twins|map(attribute='score')|min) }} to {{ '%.3f'|format(loop.before.twins|map(attribute='score')|max) }}; the decision flipped on the name.</p>
+          <p style="margin:12px 0 0"><a class="btn btn-sm" href="{{ loop.before.test_url }}" target="_blank" rel="noopener">Kane evidence ↗</a></p></div>
+        <div class="card"><span class="kicker">2 · Claude Code's fix</span>
+          <p class="small" style="margin:10px 0 0">Stopped guessing sex and name group from the name and pronouns, and switched to the model trained without protected attributes. Read-only agent: it returned the file, the loop applied it and recorded the diff.</p>
+          <p style="margin:12px 0 0"><a class="btn btn-sm" href="{{ loop.diff }}" target="_blank" rel="noopener">See the diff ↗</a></p></div>
+        <div class="card"><span class="kicker">3 · Kane, after</span><p style="margin:10px 0"><span class="stamp PASS in">{{ loop.after.verdict }}</span></p>
+          <p class="small" style="margin:0">A fresh Kane run on the fixed code: every name scored {{ '%.3f'|format(loop.after.twins[0].score) }}, {{ loop.after.twins[0].decision }}. Gap between names: {{ '%.3f'|format(loop.after.demo_gap) }}.</p>
+          <p style="margin:12px 0 0"><a class="btn btn-sm btn-lime" href="{{ loop.after.test_url }}" target="_blank" rel="noopener">Kane evidence ↗</a></p></div>
+      </div>
+      <p class="muted small" style="margin:16px 0 0">{{ loop.checks }}. The live demo keeps the biased version on purpose, so the audit above still fails.</p>
+    </div>
+  </div>
+</section>
+{% endif %}
+
 {% if r.kane %}{% set k = r.kane %}
 <section class="wrap" style="margin-top:28px">
   <div class="window" style="box-shadow:8px 8px 0 var(--green)">

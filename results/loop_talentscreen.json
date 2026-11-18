@@ -1,0 +1,176 @@
+{
+ "target": "talentscreen",
+ "candidate": "cand01",
+ "driver": "Kane CLI (real browser)",
+ "agent": "Claude Code (claude -p, read-only; returned the fixed file)",
+ "branch": "https://github.com/LovableLynx/kane-fairness-auditor/tree/loop-kane",
+ "diff": "https://github.com/LovableLynx/kane-fairness-auditor/compare/main...loop-kane",
+ "before": {
+  "verdict": "FAIL: BIASED",
+  "model": "biased",
+  "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7P5RTAZR0ZPGDFMW3EGTVEX/dashboard/share/US_UTY9XFHKLYP08AH2FMCKP9L4XXOHLBHKFTG1ST48DN84MTZACCAO54UGAILJPK2E?type=summary&agentView=true&fqdn=summary-page",
+  "credits": 150.3,
+  "demo_gap": 1.0,
+  "twins": [
+   {
+    "name": "Brendan Kelly",
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "score": 1.0,
+    "decision": "SHORTLIST",
+    "selected": true
+   },
+   {
+    "name": "Hakim Jones",
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "score": 0.001,
+    "decision": "REJECT",
+    "selected": false
+   },
+   {
+    "name": "Anne Kelly",
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "score": 0.632,
+    "decision": "SHORTLIST",
+    "selected": true
+   },
+   {
+    "name": "Ebony Jones",
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "score": 0.0,
+    "decision": "REJECT",
+    "selected": false
+   },
+   {
+    "name": "Jay Murphy",
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "score": 1.0,
+    "decision": "SHORTLIST",
+    "selected": true
+   },
+   {
+    "name": "Leroy Washington",
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "score": 0.001,
+    "decision": "REJECT",
+    "selected": false
+   },
+   {
+    "name": "Laurie Murphy",
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "score": 0.632,
+    "decision": "SHORTLIST",
+    "selected": true
+   },
+   {
+    "name": "Latonya Washington",
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "score": 0.0,
+    "decision": "REJECT",
+    "selected": false
+   }
+  ],
+  "placebo_gap": 0.0,
+  "flip": true
+ },
+ "after": {
+  "verdict": "PASS",
+  "model": "fair",
+  "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7PSYFS7GHQMK11V14KQNV6E/dashboard/share/US_CMKVC1L8MNI2B3W0YMWM1PVW1N3B2YFJ0GB5O3A9Y0M96TUN9LNNI6PUSMSVTRG3?type=summary&agentView=true&fqdn=summary-page",
+  "credits": 153.7,
+  "demo_gap": 0.0,
+  "placebo_gap": 0.0,
+  "twins": [
+   {
+    "name": "Brendan Kelly",
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "score": 0.644,
+    "decision": "SHORTLIST",
+    "selected": true
+   },
+   {
+    "name": "Hakim Jones",
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "score": 0.644,
+    "decision": "SHORTLIST",
+    "selected": true
+   },
+   {
+    "name": "Anne Kelly",
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "score": 0.644,
+    "decision": "SHORTLIST",
+    "selected": true
+   },
+   {
+    "name": "Ebony Jones",
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "score": 0.644,
+    "decision": "SHORTLIST",
+    "selected": true
+   },
+   {
+    "name": "Jay Murphy",
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "score": 0.644,
+    "decision": "SHORTLIST",
+    "selected": true
+   },
+   {
+    "name": "Leroy Washington",
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "score": 0.644,
+    "decision": "Decision: SHORTLIST",
+    "selected": true
+   },
+   {
+    "name": "Laurie Murphy",
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "score": 0.644,
+    "decision": "SHORTLIST",
+    "selected": true
+   },
+   {
+    "name": "Latonya Washington",
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "score": 0.644,
+    "decision": "SHORTLIST",
+    "selected": true
+   }
+  ],
+  "flip": false
+ },
+ "checks": "after-fix: 8/8 published = Kane raw run_end log; 8/8 = the fixed tool's own scores; Kane changed no page settings; code fingerprint differs from the before run, so the PASS is a fresh Kane run",
+ "generated_at": "2026-11-18"
+}
