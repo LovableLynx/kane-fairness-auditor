@@ -19,6 +19,9 @@ Verdicts and exit codes:
 
     python audit/twin_audit.py --target talentscreen --candidates cand01,cand02,cand03
     python audit/twin_audit.py --target quickmatch --length long --direct   # dev dry run, no credits
+
+Any hiring tool, by URL (Kane gets only the URL and your one-sentence task):
+    python audit/twin_audit.py --url https://your-tool.example/         --task "Paste the CV into the application form and submit it" --candidates cand01,cand02
 """
 from __future__ import annotations
 
@@ -381,7 +384,12 @@ def write_reports(out: Path, meta: dict, runs: list[CandidateRun], ratios: dict,
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--target", required=True)
+    ap.add_argument("--target", help="one of the demo tools in audit/targets.json")
+    ap.add_argument("--url", help="audit any hiring tool at this URL instead of a demo tool")
+    ap.add_argument("--task", help="with --url: one sentence telling Kane how to submit a CV and open the result")
+    ap.add_argument("--name", help="with --url: a short name for reports (default: the URL's host)")
+    ap.add_argument("--positive", help="regex for decision words that mean shortlisted (default covers shortlist/advance/recommend...)")
+    ap.add_argument("--negative", help="regex for decision words that mean rejected (default covers reject/decline/not...)")
     ap.add_argument("--candidates", default="cand01,cand02,cand03")
     ap.add_argument("--length", choices=["short", "long"], default="short")
     ap.add_argument("--no-placebo", dest="placebo", action="store_false",
@@ -396,7 +404,22 @@ def main() -> int:
     ap.add_argument("--out", default=str(ROOT / "reports"))
     args = ap.parse_args()
 
-    target = json.loads((ROOT / "audit" / "targets.json").read_text(encoding="utf-8"))[args.target]
+    global POSITIVE, NEGATIVE
+    if args.positive:
+        POSITIVE = re.compile(args.positive, re.I)
+    if args.negative:
+        NEGATIVE = re.compile(args.negative, re.I)
+    if args.url:
+        if not args.task:
+            ap.error("--url needs --task: one sentence telling Kane how to submit a CV and open the result")
+        if args.direct or args.live:
+            ap.error("--direct and --live only apply to the demo tools")
+        args.target = args.name or re.sub(r"[^a-z0-9]+", "-", urllib.parse.urlparse(args.url).netloc.lower()).strip("-") or "custom"
+        target = {"url": args.url, "task": args.task.rstrip(". ")}
+    elif args.target:
+        target = json.loads((ROOT / "audit" / "targets.json").read_text(encoding="utf-8"))[args.target]
+    else:
+        ap.error("give --target (a demo tool) or --url and --task (any hiring tool)")
     if args.live:
         target["url"] = target["live_url"]
     manifest = {c["candidate"]: c for c in json.loads(MANIFEST.read_text())}
@@ -418,7 +441,7 @@ def main() -> int:
             print("kane-cli not on PATH", file=sys.stderr)
             return 2
         cache = ROOT / "reports" / "kane-cache"
-        fp = code_fingerprint(args.target, target["task"])
+        fp = code_fingerprint(args.target, target["task"] + ("|" + target["url"] if args.url else ""))
 
         def work(r: CandidateRun) -> CandidateRun:
             # Checkpoint each finished Kane run so an interrupted audit resumes without re-spending credits.

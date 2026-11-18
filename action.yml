@@ -1,0 +1,88 @@
+name: Kane Fairness Gate
+description: >-
+  Block a deploy when your hiring tool treats identical CVs differently because of the name.
+  Kane CLI drives your tool's real web interface with CV twins (and placebo names) and the job
+  fails on FAIL or INCONCLUSIVE.
+author: LovableLynx
+branding:
+  icon: shield
+  color: blue
+
+inputs:
+  url:
+    description: URL of your hiring tool (a staging or preview deployment reachable from the runner)
+    required: true
+  task:
+    description: One sentence telling Kane how to submit a CV and open the result, e.g. "Paste the CV into the application form and submit it"
+    required: true
+  candidates:
+    description: Test candidates to use (cand01 ... cand10, comma-separated, or "all"). Each costs about 150 Kane credits with placebo names.
+    default: cand01,cand02
+  placebo:
+    description: Also test a second name from the same group, to tell bias apart from name noise (doubles credits)
+    default: "true"
+  positive:
+    description: Optional regex for your tool's "shortlisted" decision words (defaults cover shortlist/advance/recommend/interview...)
+    default: ""
+  negative:
+    description: Optional regex for your tool's "rejected" decision words (defaults cover reject/decline/not...)
+    default: ""
+  lt-username:
+    description: TestMu AI (LambdaTest) username, from a secret
+    required: true
+  lt-access-key:
+    description: TestMu AI (LambdaTest) access key, from a secret
+    required: true
+
+outputs:
+  verdict:
+    description: "PASS, FAIL: BIASED, FAIL: NAME-UNSTABLE, FAIL: BIASED + NAME-UNSTABLE or INCONCLUSIVE"
+    value: ${{ steps.gate.outputs.verdict }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with: { python-version: "3.12" }
+    - uses: actions/setup-node@v4
+      with: { node-version: "20" }
+    - uses: browser-actions/setup-chrome@v1
+    - name: Install Kane CLI
+      shell: bash
+      run: npm install -g @testmuai/kane-cli
+    - name: Kane login
+      shell: bash
+      env:
+        LT_USERNAME: ${{ inputs.lt-username }}
+        LT_ACCESS_KEY: ${{ inputs.lt-access-key }}
+      run: kane-cli login --username "$LT_USERNAME" --access-key "$LT_ACCESS_KEY"
+    - name: Fairness gate (Kane drives your tool's real UI)
+      id: gate
+      shell: bash
+      env:
+        FG_URL: ${{ inputs.url }}
+        FG_TASK: ${{ inputs.task }}
+        FG_CANDIDATES: ${{ inputs.candidates }}
+        FG_PLACEBO: ${{ inputs.placebo }}
+        FG_POSITIVE: ${{ inputs.positive }}
+        FG_NEGATIVE: ${{ inputs.negative }}
+        FG_OUT: ${{ runner.temp }}/fairness-gate
+      run: |
+        args=(--url "$FG_URL" --task "$FG_TASK" --candidates "$FG_CANDIDATES" --out "$FG_OUT" --timeout 2400)
+        [ "$FG_PLACEBO" = "true" ] || args+=(--no-placebo)
+        [ -n "$FG_POSITIVE" ] && args+=(--positive "$FG_POSITIVE")
+        [ -n "$FG_NEGATIVE" ] && args+=(--negative "$FG_NEGATIVE")
+        set +e
+        python "$GITHUB_ACTION_PATH/audit/twin_audit.py" "${args[@]}" | tee "$RUNNER_TEMP/fairness-gate.log"
+        code=${PIPESTATUS[0]}
+        set -e
+        verdict=$(grep -m1 '^VERDICT' "$RUNNER_TEMP/fairness-gate.log" | sed -E 's/^VERDICT (.*)  target=.*/\1/')
+        echo "verdict=${verdict:-INCONCLUSIVE}" >> "$GITHUB_OUTPUT"
+        cat "$FG_OUT"/twin_audit_*.md >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || echo "No report produced" >> "$GITHUB_STEP_SUMMARY"
+        exit $code
+    - name: Keep the report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: kane-fairness-report
+        path: ${{ runner.temp }}/fairness-gate/

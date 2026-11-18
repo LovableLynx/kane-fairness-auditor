@@ -1,0 +1,176 @@
+{
+ "target": "quickmatch",
+ "candidate": "cand02",
+ "driver": "Kane CLI (real browser)",
+ "agent": "Claude Code (claude -p, read-only; returned the fixed file)",
+ "fix": "Blind screening at the input: the open-source model can't be retrained, so the CV's name, contact details, honorifics and gendered words are removed before it is embedded, and the cutoff is recalibrated on the same de-identified pool.",
+ "branch": "https://github.com/LovableLynx/kane-fairness-auditor/tree/loop-quickmatch",
+ "diff": "https://github.com/LovableLynx/kane-fairness-auditor/compare/main...loop-quickmatch",
+ "log": "https://github.com/LovableLynx/kane-fairness-auditor/blob/loop-quickmatch/docs/loop/loop_quickmatch.md",
+ "before": {
+  "verdict": "FAIL: BIASED + NAME-UNSTABLE",
+  "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7NJG06DT0A27TJVE5B4RDJV/dashboard/share/US_PWJCMCR1YT0MDH3I50LTX9M5K228N719K2G6LNOTOZ0E2VU6HXZKW2GUE4M4Q5MY?type=summary&agentView=true&fqdn=summary-page",
+  "twins": [
+   {
+    "name": "Geoffrey McCarthy",
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "score": 0.216,
+    "decision": "Recommended for interview",
+    "selected": true
+   },
+   {
+    "name": "Jamal Robinson",
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "score": 0.279,
+    "decision": "Recommended for interview",
+    "selected": true
+   },
+   {
+    "name": "Carrie McCarthy",
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "score": 0.149,
+    "decision": "Not recommended",
+    "selected": false
+   },
+   {
+    "name": "Keisha Robinson",
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "score": 0.171,
+    "decision": "Not recommended",
+    "selected": false
+   },
+   {
+    "name": "Matthew Murray",
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "score": 0.18,
+    "decision": "Not recommended",
+    "selected": false
+   },
+   {
+    "name": "Rasheed Williams",
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "score": 0.255,
+    "decision": "Recommended for interview",
+    "selected": true
+   },
+   {
+    "name": "Kristen Murray",
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "score": 0.163,
+    "decision": "Not recommended",
+    "selected": false
+   },
+   {
+    "name": "Latoya Williams",
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "score": 0.262,
+    "decision": "Recommended for interview",
+    "selected": true
+   }
+  ],
+  "demo_gap": 0.13,
+  "placebo_gap": 0.091,
+  "flip": true
+ },
+ "after": {
+  "verdict": "PASS",
+  "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7R01K0Y35P4N3Y5C8ZFZM6N/dashboard/share/US_G5YQ1HWOA4KC4DI7AW71RQCQD5MB9IROSZ63PKO9JP34IUGUAL94UZBTTJK0Z4OL?type=summary&agentView=true&fqdn=summary-page",
+  "credits": 170.6,
+  "twins": [
+   {
+    "name": "Geoffrey McCarthy",
+    "gender": "male",
+    "group": "A",
+    "slot": 0,
+    "score": 0.186,
+    "decision": "Not recommended",
+    "selected": false
+   },
+   {
+    "name": "Jamal Robinson",
+    "gender": "male",
+    "group": "C",
+    "slot": 0,
+    "score": 0.186,
+    "decision": "Not recommended",
+    "selected": false
+   },
+   {
+    "name": "Carrie McCarthy",
+    "gender": "female",
+    "group": "A",
+    "slot": 0,
+    "score": 0.186,
+    "decision": "Not recommended",
+    "selected": false
+   },
+   {
+    "name": "Keisha Robinson",
+    "gender": "female",
+    "group": "C",
+    "slot": 0,
+    "score": 0.186,
+    "decision": "Not recommended",
+    "selected": false
+   },
+   {
+    "name": "Matthew Murray",
+    "gender": "male",
+    "group": "A",
+    "slot": 1,
+    "score": 0.186,
+    "decision": "Not recommended",
+    "selected": false
+   },
+   {
+    "name": "Rasheed Williams",
+    "gender": "male",
+    "group": "C",
+    "slot": 1,
+    "score": 0.186,
+    "decision": "Not recommended",
+    "selected": false
+   },
+   {
+    "name": "Kristen Murray",
+    "gender": "female",
+    "group": "A",
+    "slot": 1,
+    "score": 0.186,
+    "decision": "Not recommended",
+    "selected": false
+   },
+   {
+    "name": "Latoya Williams",
+    "gender": "female",
+    "group": "C",
+    "slot": 1,
+    "score": 0.186,
+    "decision": "Not recommended",
+    "selected": false
+   }
+  ],
+  "demo_gap": 0.0,
+  "placebo_gap": 0.0,
+  "flip": false
+ },
+ "checks": "after-fix: 8/8 published = Kane raw run_end log; Kane changed no page settings; fresh Kane run (new code fingerprint). Free dry run on all 10 candidates: PASS, scores still differ across candidates (0.101 to 0.253)",
+ "caveat": "The first after-fix Kane run stalled (no values, 6.5 credits) and was re-run unchanged. The recalibrated cutoff is stricter: 8/80 readings shortlisted after the fix vs 24/80 before (which were partly decided by name).",
+ "generated_at": "2026-11-18"
+}

@@ -172,5 +172,7 @@
   "flip": false
  },
  "checks": "after-fix: 8/8 published = Kane raw run_end log; 8/8 = the fixed tool's own scores; Kane changed no page settings; code fingerprint differs from the before run, so the PASS is a fresh Kane run",
- "generated_at": "2026-11-18"
+ "generated_at": "2026-11-18",
+ "fix": "Stopped guessing sex and name group from the name and pronouns, and switched to the model trained without protected attributes.",
+ "log": "https://github.com/LovableLynx/kane-fairness-auditor/blob/loop-kane/docs/loop/loop_talentscreen.md"
 }

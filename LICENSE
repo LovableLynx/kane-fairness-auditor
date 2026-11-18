@@ -4,8 +4,11 @@ Kane Fairness Auditor: source code, documentation, design, text, videos and imag
 in this repository, except the third-party components listed below.
 
 PERMITTED
-You may view and read this repository, and run it unmodified, solely to evaluate it,
+You may view and read this repository, and run it unmodified, to evaluate it,
 including as a judge or organiser of the TestMu AI Kane CLI Online Hackathon 2026.
+You may also run it unmodified, directly or through its GitHub Action
+(uses: LovableLynx/kane-fairness-auditor), to audit hiring tools that you own or are
+authorised to test. This permission is to use the software, not to copy it.
 The organisers may feature the project in their marketing materials with attribution,
 as set out in the hackathon rules.
 

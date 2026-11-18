@@ -91,6 +91,32 @@ To check that these findings are not artefacts of short CVs, cutoff choice or sa
 
 On TalentScreen, the LL144-style **impact ratio for sex is 1.0**, which looks perfectly fair, while every woman scored far below her identical male twin. Aggregate selection ratios can hide individual-level discrimination that twin testing exposes. We report both.
 
+## Use it on your own hiring tool
+
+Kane needs only your tool's URL and one sentence; no selectors, no API, no access to your model. Your page has to
+show a score and a decision after a CV is submitted.
+
+```bash
+npm install -g @testmuai/kane-cli && kane-cli login
+python audit/gate.py --url https://staging.your-tool.example/     --task "Paste the CV into the application form and submit it, then open the result"     --candidates cand01,cand02          # 8 CVs per candidate with placebo names, ~150 Kane credits each
+```
+
+Exit code 0 = PASS, 1 = FAIL (BIASED / NAME-UNSTABLE), 2 = INCONCLUSIVE. If your decision words are unusual, add
+`--positive "hire|move forward"` and `--negative "decline|pass on"`. The audit uses only the Python standard library.
+
+**In CI:** copy [`docs/examples/fairness-gate.yml`](docs/examples/fairness-gate.yml) into `.github/workflows/` of your
+repo and add `LT_USERNAME` / `LT_ACCESS_KEY` secrets. Every pull request then gets a Kane fairness check, the report
+in the job summary, and a failed check when the tool reacts to names:
+
+```yaml
+- uses: LovableLynx/kane-fairness-auditor@main
+  with:
+    url: https://staging.your-hiring-tool.example/
+    task: Paste the CV into the application form and submit it, then open the result
+    lt-username: ${{ secrets.LT_USERNAME }}
+    lt-access-key: ${{ secrets.LT_ACCESS_KEY }}
+```
+
 ## Quick start
 
 ```bash
@@ -124,6 +150,16 @@ Regenerating data needs FairCVdb: `python -m cvkit.build path/to/FairCVdb.npy`.
 | Before: TalentScreen as shipped | **FAIL: BIASED** | 0.000 to 1.000, decision flips on the name | [Kane run](https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7P5RTAZR0ZPGDFMW3EGTVEX/dashboard/share/US_UTY9XFHKLYP08AH2FMCKP9L4XXOHLBHKFTG1ST48DN84MTZACCAO54UGAILJPK2E?type=summary&agentView=true&fqdn=summary-page) |
 | Claude Code's fix | removed name/pronoun-based demographic guessing, switched to the fair model | | [diff](https://github.com/LovableLynx/kane-fairness-auditor/compare/main...loop-kane) · [loop log](https://github.com/LovableLynx/kane-fairness-auditor/blob/loop-kane/docs/loop/loop_talentscreen.md) |
 | After: fresh Kane run on the fixed code | **PASS** | every name 0.644, SHORTLIST | [Kane run](https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7PSYFS7GHQMK11V14KQNV6E/dashboard/share/US_CMKVC1L8MNI2B3W0YMWM1PVW1N3B2YFJ0GB5O3A9Y0M96TUN9LNNI6PUSMSVTRG3?type=summary&agentView=true&fqdn=summary-page) |
+
+**And on the real black box.** QuickMatch is an open-source model nobody can retrain, so the fix has to be real engineering, not a model swap. Claude Code made it screen blind: the name, contact details, honorifics and gendered words are removed before the CV is embedded, and the cutoff is recalibrated on CVs cleaned the same way.
+
+| QuickMatch, candidate 2 | Kane verdict | Scores across the 8 names | Evidence |
+|---|---|---|---|
+| Before | **FAIL: BIASED + NAME-UNSTABLE** | 0.149 to 0.279; 4 recommended, 4 not | [Kane run](https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7NJG06DT0A27TJVE5B4RDJV/dashboard/share/US_PWJCMCR1YT0MDH3I50LTX9M5K228N719K2G6LNOTOZ0E2VU6HXZKW2GUE4M4Q5MY?type=summary&agentView=true&fqdn=summary-page) |
+| Claude Code's fix | de-identify before embedding, recalibrate | | [diff](https://github.com/LovableLynx/kane-fairness-auditor/compare/main...loop-quickmatch) · [loop log](https://github.com/LovableLynx/kane-fairness-auditor/blob/loop-quickmatch/docs/loop/loop_quickmatch.md) |
+| After (fresh Kane run) | **PASS** | every name 0.186 | [Kane run](https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7R01K0Y35P4N3Y5C8ZFZM6N/dashboard/share/US_G5YQ1HWOA4KC4DI7AW71RQCQD5MB9IROSZ63PKO9JP34IUGUAL94UZBTTJK0Z4OL?type=summary&agentView=true&fqdn=summary-page) |
+
+Free dry run of the fixed tool on all 10 candidates: PASS, and scores still differ between candidates (0.101 to 0.253), so the fix did not just flatten everything; the loop rejects fixes that do. Two honest notes: the first after-fix Kane run stalled without reading anything (6.5 credits) and was re-run unchanged; and the recalibrated cutoff is stricter, so 8/80 readings are shortlisted after the fix against 24/80 before (which were partly decided by name). Where to set the cutoff is a business choice; the name no longer moves it.
 
 Checked like the full audits: 8/8 after-fix readings equal Kane's raw log and the fixed tool's own scores, Kane changed no page settings, and the PASS is a new Kane run (154 credits). Kane checkpoints carry a fingerprint of the tool's code, so an after-fix audit can never reuse a run made before the fix. `main` keeps the biased TalentScreen as a demo target; the fixed version lives on the [`loop-kane`](https://github.com/LovableLynx/kane-fairness-auditor/tree/loop-kane) branch.
 
@@ -190,4 +226,4 @@ Data: [FairCVdb](https://github.com/BiDAlab/FairCVtest) (Peña et al., 2020), sy
 
 ## Licence
 
-Copyright © 2026 LovableLynx. **All rights reserved.** You may view and run this repository to evaluate it (including for hackathon judging); copying, modifying or reusing any part of it needs written permission. Third-party fonts, data and packages keep their own licences. See [LICENSE](LICENSE).
+Copyright © 2026 LovableLynx. **All rights reserved.** You may view and run this repository, unmodified, to evaluate it (including for hackathon judging) and to audit hiring tools you own or are authorised to test, directly or through the GitHub Action. Copying, modifying or reusing any part of it in other work needs written permission. Third-party fonts, data and packages keep their own licences. See [LICENSE](LICENSE).

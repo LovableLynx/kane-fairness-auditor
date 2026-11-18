@@ -1,0 +1,20 @@
+# .github/workflows/fairness-gate.yml in YOUR repository.
+# Blocks a merge when your hiring tool treats identical CVs differently because of the name.
+name: Fairness gate
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  fairness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      # ... deploy a preview of your app first, or point at your staging URL ...
+      - uses: LovableLynx/kane-fairness-auditor@main
+        with:
+          url: https://staging.your-hiring-tool.example/
+          task: Paste the CV into the application form and submit it, then open the result
+          candidates: cand01,cand02            # ~150 Kane credits each with placebo names
+          lt-username: ${{ secrets.LT_USERNAME }}
+          lt-access-key: ${{ secrets.LT_ACCESS_KEY }}
