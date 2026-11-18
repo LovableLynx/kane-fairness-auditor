@@ -1,9 +1,9 @@
 """TalentScreen -- target A. A recruiter drops a CV, the AI shortlists or rejects it.
 
-This target deliberately reads the candidate's name and pronouns (as some real tools
-do) and feeds the inferred demographics to its model. The auditor does not know that.
+Screening is blind: the candidate's name and pronouns are never read for demographics,
+and the model is trained on blind labels with the protected columns dropped.
 
-    TARGET_MODEL=biased python targets/talentscreen/app.py   # port 5101
+    TARGET_MODEL=fair python targets/talentscreen/app.py   # port 5101
 """
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ from shared.hardening import BoundedStore, harden  # noqa: E402
 from shared.samples import samples  # noqa: E402
 from shared import roles  # noqa: E402
 
-MODEL_NAME = os.environ.get("TARGET_MODEL", "biased")
+MODEL_NAME = os.environ.get("TARGET_MODEL", "fair")
 MODEL = joblib.load(ROOT / "models" / f"{MODEL_NAME}.pkl")
 THRESHOLD = 0.5
 JOB = roles.get(roles.DEFAULT)
@@ -53,8 +53,8 @@ def job_context():
 def screen(text: str, source: str, role: dict) -> dict:
     t0 = time.perf_counter()
     parsed = cv.parse(text)
-    gender, group = cv.infer_identity(text)
-    score = float(MODEL.predict_proba([cv.features(roles.for_role(parsed, role), gender, group)])[0, 1])
+    # Fair pipeline: demographics are not inferred; placeholders are dropped by the model anyway.
+    score = float(MODEL.predict_proba([cv.features(roles.for_role(parsed, role), "male", "B")])[0, 1])
     name = text.strip().splitlines()[0].strip()[:80]
     strengths = []
     if parsed["years"] >= 6:
