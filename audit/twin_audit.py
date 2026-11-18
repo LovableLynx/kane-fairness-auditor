@@ -290,6 +290,10 @@ def decide(runs: list[CandidateRun], eff: dict, ratios: dict, threshold: float, 
     if any(r.status != "passed" for r in runs):
         return "INCONCLUSIVE", 2, ["one or more Kane runs did not return every value"]
 
+    scores = [t.score for r in runs for t in r.twins if t.score is not None]
+    if len(runs) >= 3 and scores and max(scores) - min(scores) < 0.02:
+        return "INCONCLUSIVE", 2, ["scores do not depend on the CV: every candidate gets the same score, so a name test proves nothing"]
+
     plac = eff["mean_abs_gap_placebo"] or 0.0
     biased = False
     if placebo:  # the comparison only exists when placebo names were actually tested
