@@ -23,6 +23,8 @@ Verdicts and exit codes:
 from __future__ import annotations
 
 import argparse
+import hashlib
+import os
 import concurrent.futures as cf
 import datetime as dt
 import json
@@ -133,6 +135,21 @@ def share_url_from_log(session_dir: str | None) -> str | None:
         return None
     return (f"https://test-manager.lambdatest.com/projects/{proj.group(1)}/test-cases/{case.group(1)}"
             f"/dashboard/share/{share.group(1)}?type=summary&agentView=true&fqdn=summary-page")
+
+
+def code_fingerprint(target_name: str, task: str) -> str:
+    """Hash of everything that decides what the tool shows: its own folder, the shared CV reader and roles,
+    the models, the TARGET_MODEL setting and Kane's task. A checkpoint is reused only for identical code,
+    so an audit after a fix can never be answered by a Kane run made before it."""
+    h = hashlib.sha256(task.encode("utf-8"))
+    h.update(os.environ.get("TARGET_MODEL", "").encode())
+    files = [*sorted((ROOT / "targets" / target_name).rglob("*")), *sorted((ROOT / "cvkit").glob("*.py")),
+             *sorted((ROOT / "shared").glob("*.py")), *sorted((ROOT / "models").glob("*.pkl"))]
+    for f in files:
+        if f.is_file() and "__pycache__" not in f.parts:
+            h.update(f.relative_to(ROOT).as_posix().encode())
+            h.update(f.read_bytes().replace(b"\r\n", b"\n"))
+    return h.hexdigest()[:16]
 
 
 def run_kane(target: dict, run: CandidateRun, kane: str, headed: bool, timeout: int) -> CandidateRun:
@@ -397,6 +414,7 @@ def main() -> int:
             print("kane-cli not on PATH", file=sys.stderr)
             return 2
         cache = ROOT / "reports" / "kane-cache"
+        fp = code_fingerprint(args.target, target["task"])
 
         def work(r: CandidateRun) -> CandidateRun:
             # Checkpoint each finished Kane run so an interrupted audit resumes without re-spending credits.
@@ -404,13 +422,15 @@ def main() -> int:
             if f.exists():
                 d = json.loads(f.read_text(encoding="utf-8"))
                 twins = [TwinResult(**{k: v for k, v in t.items() if k != "key"}) for t in d.pop("twins")]
-                if [t.key for t in twins] == [t.key for t in r.twins]:
+                if d.pop("fingerprint", None) != fp:
+                    print(f"{r.candidate} checkpoint is from different code; running Kane again", file=sys.stderr)
+                elif [t.key for t in twins] == [t.key for t in r.twins]:
                     print(f"{r.candidate} reused checkpointed Kane run {f.name}", file=sys.stderr)
                     return CandidateRun(twins=twins, **d)
             r = run_kane(target, r, kane, args.headed, args.timeout)
             if r.status == "passed" and r.test_url:  # keep only runs with a shareable Test Manager link
                 cache.mkdir(parents=True, exist_ok=True)
-                f.write_text(json.dumps(asdict(r), indent=1), encoding="utf-8")
+                f.write_text(json.dumps({**asdict(r), "fingerprint": fp}, indent=1), encoding="utf-8")
             return r
 
         driver = "Kane CLI (real browser)"
