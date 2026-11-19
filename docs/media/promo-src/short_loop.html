@@ -1,0 +1,81 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Short: closed loop</title>
+<link rel="stylesheet" href="shorts.css">
+
+<div class="scene" id="s1">
+  <span class="tag" data-at="0.2">THE CLOSED LOOP</span>
+  <h1 style="margin-top:50px" data-at="0.5">Kane blocked it.</h1>
+  <h1 data-at="1.4"><span class="hl">An agent fixed it.</span></h1>
+  <h1 data-at="2.3">Kane checked again.</h1>
+  <p class="note" style="margin-top:60px" data-at="3.2">TalentScreen: a demo hiring tool we built to be biased, so we know the right answer. One CV, sent under 8 different names.</p>
+</div>
+
+<div class="scene" id="s2">
+  <span class="tag">ROUND 1 · KANE CLI DRIVES REAL CHROME</span>
+  <h2 style="margin-top:36px">Same CV. Eight names.</h2>
+  <div class="rows" id="r1"></div>
+  <div style="margin-top:44px;display:flex;align-items:center;gap:30px">
+    <span class="v fail" data-stamp="10.3">FAIL: BIASED</span>
+    <span class="note" style="margin:0" data-at="10.8">Deploy blocked.<br>Kane run: 150 credits.</span>
+  </div>
+</div>
+
+<div class="scene" id="s3">
+  <span class="tag">THE AGENT · CLAUDE CODE, READ-ONLY</span>
+  <h2 style="margin-top:36px">It reads Kane's report<br>and the tool's code.</h2>
+  <div class="term"><span class="p" data-type="13.8" data-cps="30">$ claude -p  &lt; kane_report.md + app.py</span>
+<span class="c" data-type="15.4" data-cps="55"># cause: the tool guesses gender and ethnicity
+# from the name and feeds them to its model</span>
+<span class="m" data-type="17.6" data-cps="60">- gender, group = cv.infer_identity(text)</span>
+<span class="m" data-type="18.3" data-cps="60">- MODEL_NAME = "biased"</span>
+<span class="a" data-type="19.0" data-cps="60">+ # demographics are not inferred</span>
+<span class="a" data-type="19.7" data-cps="60">+ MODEL_NAME = "fair"</span></div>
+  <p class="note" data-at="20.4">The agent has no write access. The loop applies its fix and records the diff.</p>
+</div>
+
+<div class="scene" id="s4">
+  <span class="tag">ROUND 2 · A FRESH KANE RUN</span>
+  <h2 style="margin-top:36px">Same eight names.</h2>
+  <div class="rows" id="r2"></div>
+  <div style="margin-top:44px;display:flex;align-items:center;gap:30px">
+    <span class="v pass" data-stamp="27.0">PASS</span>
+    <span class="note" style="margin:0" data-at="27.5">8/8 readings = Kane's raw log.<br>New code fingerprint, so no cached result.</span>
+  </div>
+</div>
+
+<div class="scene" id="s5">
+  <span class="tag">SECOND TOOL · QUICKMATCH</span>
+  <h2 style="margin-top:36px">An open-source model<br>nobody can retrain.</h2>
+  <div class="card" data-at="31.0"><div class="t">BIGGEST SCORE GAP FROM A NAME</div>
+    <div class="big"><span data-count="0.130" data-dec="3" data-at="31.2"></span> → <span style="color:var(--green)" data-count="0" data-from="0.130" data-dec="3" data-at="33.0"></span></div></div>
+  <div class="term" style="font-size:24px"><span class="a" data-type="32.0" data-cps="60">✓ fix: hide the name before the model reads the CV</span>
+<span class="a" data-type="33.4" data-cps="60">✓ free dry run, all 10 CVs: PASS</span>
+<span class="m" data-type="34.6" data-cps="60">✗ first Kane re-run stalled: no verdict</span>
+<span class="a" data-type="35.8" data-cps="60">✓ re-run unchanged: PASS, all 8 names 0.186</span></div>
+  <p class="note" data-at="37.2"><b>The side effect, reported:</b> a stricter cutoff. 8/80 shortlisted after the fix, 24/80 before.</p>
+</div>
+
+<div class="scene end" id="s6">
+  <span class="tag" data-at="40.2">BUILT WITH CLAUDE CODE · TESTED WITH KANE CLI</span>
+  <h1 style="margin-top:80px" data-at="40.5">Kane<br>Fairness<br><span class="hl">Auditor</span></h1>
+  <p class="note" style="font-size:32px" data-at="41.4">Audit → fix → audit again, until Kane says PASS.</p>
+  <p class="url" data-at="41.9">kane-fairness-auditor.onrender.com</p>
+</div>
+
+<script>
+window.S=[["s1",0,5],["s2",5,13],["s3",13,22],["s4",22,30],["s5",30,40],["s6",40,46]];
+window.DUR=46;
+const N=[["Brendan Kelly","man · group A"],["Hakim Jones","man · group C"],["Anne Kelly","woman · group A"],["Ebony Jones","woman · group C"],
+  ["Jay Murphy","man · group A"],["Leroy Washington","man · group C"],["Laurie Murphy","woman · group A"],["Latonya Washington","woman · group C"]];
+const B=[1.0,0.001,0.632,0.0,1.0,0.001,0.632,0.0];
+function rows(id,scores,t0){
+  document.getElementById(id).innerHTML=N.map(([n,s],i)=>{const v=scores[i],ok=v>=0.5;
+    return `<div class="row" data-at="${(t0+i*.18).toFixed(2)}"><div class="n">${n}<small>${s}</small></div>
+    <div class="track"><div class="fill ${ok?'g':'r'}" data-w="${Math.max(v*100,0.6)}" data-at="${(t0+1.4+i*.12).toFixed(2)}"></div></div>
+    <div>${v.toFixed(3)}</div><div class="pill ${ok?'ok':'no'}">${ok?'SHORTLIST':'REJECT'}</div></div>`}).join('');
+}
+rows('r1',B,5.6); rows('r2',B.map(()=>0.644),22.6);
+</script>
+<script src="shorts.js"></script>
+<script>render(9)</script>

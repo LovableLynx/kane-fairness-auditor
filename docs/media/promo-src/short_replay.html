@@ -1,0 +1,79 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Short: free replay</title>
+<link rel="stylesheet" href="shorts.css">
+<style>
+.res{display:grid;grid-template-columns:270px 1fr 200px;align-items:center;gap:20px;margin-top:30px;font-family:M;font-size:28px}
+.res .n{font-family:G;font-weight:700;font-size:30px}
+.seg{display:flex;height:56px;border:3px solid var(--ink);background:var(--paper)}
+.seg i{display:block;height:100%;border-right:2px solid var(--paper);opacity:0}
+.key{display:flex;gap:26px;margin-top:22px;font-family:M;font-size:21px;color:var(--ink2)}
+.key span:before{content:"";display:inline-block;width:18px;height:18px;margin-right:8px;vertical-align:-3px;background:var(--c)}
+.cred{font-family:U;font-weight:800;font-size:150px;line-height:1;color:var(--green)}
+</style>
+
+<div class="scene" id="s1">
+  <span class="tag" data-at="0.2">A KANE FEATURE MOST PEOPLE SKIP</span>
+  <h1 style="margin-top:50px" data-at="0.5">Every Kane run<br><span class="hl">writes a test.</span></h1>
+  <p class="note" data-at="1.6">Kane CLI exports the exact steps it took as a Playwright script. We keep it in the repo.</p>
+  <div class="term" style="font-size:22px"><span class="c" data-type="2.6" data-cps="70"># kane-tests/quickmatch_cand02/test.py  (394 lines, written by Kane)</span>
+<span data-type="3.6" data-cps="70">await page.goto("http://127.0.0.1:5103/")</span>
+<span data-type="4.3" data-cps="70">await testmu.fill(element_0, variable_value_1)</span>
+<span data-type="5.0" data-cps="70">set_var('score_male_a_0', await testmu.textual_analyzer(page, ...))</span>
+<span data-type="6.0" data-cps="70">set_var('decision_male_a_0', ...)</span></div>
+</div>
+
+<div class="scene" id="s2">
+  <span class="tag">STEP 1</span>
+  <h2 style="margin-top:36px">Wipe every number<br>Kane remembered.</h2>
+  <div class="term" style="font-size:23px"><span class="m" data-type="10.0" data-cps="70">- variables={"score_male_a_0": "0.216", "decision_male_a_0": ...}</span>
+<span class="a" data-type="11.4" data-cps="40">+ variables={}</span></div>
+  <p class="note" data-at="12.4">So the replay can't pass by repeating Kane's answers. <b>Every score has to be read from the page again.</b></p>
+  <p class="note" data-at="13.6">Then it runs offline: plain Playwright, no Kane AI, <b>0 credits</b>, about 2 minutes.</p>
+</div>
+
+<div class="scene" id="s3">
+  <span class="tag">STEP 2 · REPLAY AGAINST THE SAME TOOLS</span>
+  <h2 style="margin-top:36px">16 readings per tool.</h2>
+  <div class="key" data-at="17.0"><span style="--c:var(--green)">re-read, identical</span><span style="--c:#9a9aa5">Kane vision AI, not replayable</span><span style="--c:var(--red)">changed</span></div>
+  <div id="rs"></div>
+  <div style="margin-top:44px;display:flex;align-items:center;gap:30px"><span class="v pass" data-stamp="22.4">CONFIRMED</span>
+    <span class="note" style="margin:0" data-at="22.9">All 3 tools.<br>Kane credits used: 0.</span></div>
+</div>
+
+<div class="scene" id="s4">
+  <span class="tag">STEP 3 · CAN IT FAKE A PASS?</span>
+  <h2 style="margin-top:36px">Replay against the<br><span class="hl">fixed</span> QuickMatch.</h2>
+  <p class="note" data-at="26.6">After the fix, the scores really changed. A good regression test must notice.</p>
+  <div id="rs2"></div>
+  <div style="margin-top:44px;display:flex;align-items:center;gap:30px"><span class="v fail" data-stamp="30.6">NOT CONFIRMED</span>
+    <span class="note" style="margin:0" data-at="31.1">12 readings changed.<br>Exit 1: re-run Kane.</span></div>
+</div>
+
+<div class="scene" id="s5">
+  <span class="tag">IN CI</span>
+  <h2 style="margin-top:36px">Replay on every commit.<br>Pay Kane only<br>when something changed.</h2>
+  <div class="stat" data-at="36.6"><div class="cred">0</div><div class="lbl">Kane credits to confirm a tool still gives the readings Kane verified</div></div>
+  <p class="note" data-at="38.0">Honest limit: the replay confirms "unchanged". It can't measure new scores. That's Kane's job.</p>
+</div>
+
+<div class="scene end" id="s6">
+  <span class="tag" data-at="41.2">BUILT WITH CLAUDE CODE · TESTED WITH KANE CLI</span>
+  <h1 style="margin-top:80px" data-at="41.5">Kane<br>Fairness<br><span class="hl">Auditor</span></h1>
+  <p class="note" style="font-size:32px" data-at="42.4">Kane audits once. Its test guards every commit after.</p>
+  <p class="url" data-at="42.9">kane-fairness-auditor.onrender.com</p>
+</div>
+
+<script>
+window.S=[["s1",0,9],["s2",9,16],["s3",16,25.5],["s4",25.5,34.5],["s5",34.5,41],["s6",41,47]];
+window.DUR=47;
+function seg(name,c,v,x,t0,label){
+  const cells=[...Array(c).fill('var(--green)'),...Array(v).fill('#9a9aa5'),...Array(x).fill('var(--red)')];
+  return `<div class="res" data-at="${t0}"><div class="n">${name}</div><div class="seg">${cells.map((col,i)=>`<i data-cell="${(t0+.4+i*.07).toFixed(2)}" style="width:6.25%;background:${col}"></i>`).join('')}</div><div>${label}</div></div>`;
+}
+document.getElementById('rs').innerHTML=seg('TalentScreen',12,4,0,17.6,'12/16 ✓')+seg('HireLens',14,2,0,18.6,'14/16 ✓')+seg('QuickMatch',16,0,0,19.6,'16/16 ✓');
+document.getElementById('rs2').innerHTML=seg('QuickMatch, fixed',4,0,12,27.6,'4/16');
+window.extra=function(t){document.querySelectorAll('[data-cell]').forEach(e=>e.style.opacity=t>=+e.dataset.cell?1:0)};
+</script>
+<script src="shorts.js"></script>
+<script>render(24)</script>
