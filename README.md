@@ -81,6 +81,8 @@ To check that these findings are not artefacts of short CVs, cutoff choice or sa
 
 **240 real-browser readings, 240/240 identical to the dry run.** Every one is checked three ways by [`audit/verify_kane.py`](audit/verify_kane.py) (read-only): the published number against Kane's own raw `run_end` log, against the dry run through the tool's HTTP endpoint, and that Kane changed no setting on the page before submitting. QuickMatch is the open-source language model we did not build: its NAME-UNSTABLE finding holds in a real browser (5/10 candidates get a different decision from a same-group name swap alone). The full runs were made on 17–18 Nov; the GitHub Actions run above is the earlier CI demo.
 
+**Repeatable.** QuickMatch was audited in full twice, by separate Kane runs on two TestMu accounts (17 and 18 Nov): all 80 readings are identical, score for score and decision for decision, and so is the verdict.
+
 **What went wrong once, and how we caught it.** The first TalentScreen full run matched the dry run on only 64/80 readings. Kane's logs showed why: on 6 candidates it had chosen the "Hiring for" job matching the CV (Chef, Teacher, Accountant...) instead of leaving Data Analyst, so twins were scored for different jobs. Kane read every number correctly; replaying those CVs with the job it picked reproduces its scores exactly. We pinned the role in Kane's task, added the setting-change check to the verifier, and re-ran all 10 candidates: 80/80. The discarded run is kept locally for the record, not published.
 
 ### Twin your own CV (free, on the website)
