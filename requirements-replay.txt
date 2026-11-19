@@ -1,0 +1,2 @@
+testmuai-playwright-bindings==0.1.59
+playwright==1.57.0

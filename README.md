@@ -121,6 +121,30 @@ in the job summary, and a failed check when the tool reacts to names:
     lt-access-key: ${{ secrets.LT_ACCESS_KEY }}
 ```
 
+## Kane writes the regression test: replay for free
+
+Every Kane run also exports a Playwright test of exactly what it did (`code-export/test.py`). We keep the Kane-verified
+ones in [`kane-tests/`](kane-tests/) and replay them offline with [`audit/kane_replay.py`](audit/kane_replay.py): no Kane
+AI, **no credits**, about 2 minutes per candidate. The values Kane stored are wiped first, so every number has to be
+read from the page again.
+
+| Replay against the unchanged tools (19 Nov) | Re-read and identical to Kane's | Read by Kane's vision AI, not replayable offline |
+|---|---|---|
+| TalentScreen, candidate 1 | 12/16 | 4 |
+| HireLens, candidate 1 | 14/16 | 2 |
+| QuickMatch, candidate 2 | 16/16 | 0 |
+| **Negative test:** QuickMatch's test against the *fixed* QuickMatch | 4/16, **NOT CONFIRMED** | 0 |
+
+What it is and is not: Kane often locates a score by the text it saw (the element reading "0.216"), and offline there is
+no self-healing, so the replay **confirms** a tool still gives exactly the readings Kane verified; when anything changes it
+cannot read the new value and says *re-run Kane*. Readings Kane took with its vision AI are never counted as confirmed.
+Used in CI: replay on every commit for free, and spend Kane credits only when the replay can't confirm.
+
+```bash
+pip install -r requirements-replay.txt && python -m playwright install chromium
+python audit/kane_replay.py --target quickmatch --candidate cand02      # exit 0 confirmed, 1 re-run Kane
+```
+
 ## Quick start
 
 ```bash

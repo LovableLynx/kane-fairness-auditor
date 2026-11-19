@@ -1,0 +1,43 @@
+{
+ "talentscreen": {
+  "candidate": "cand01",
+  "result": "CONFIRMED",
+  "counts": {
+   "confirmed": 12,
+   "vision": 4,
+   "changed": 0
+  },
+  "kane_test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7P5RTAZR0ZPGDFMW3EGTVEX/dashboard/share/US_UTY9XFHKLYP08AH2FMCKP9L4XXOHLBHKFTG1ST48DN84MTZACCAO54UGAILJPK2E?type=summary&agentView=true&fqdn=summary-page"
+ },
+ "hirelens": {
+  "candidate": "cand01",
+  "result": "CONFIRMED",
+  "counts": {
+   "confirmed": 14,
+   "vision": 2,
+   "changed": 0
+  },
+  "kane_test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7P0DEPD6BW854R603PTQ010/dashboard/share/US_5OA3GLJBWQGILZNKQI36VDKXHF3OM6BW0I4IY4DK58M95I67G2SRJ5I9E8P07V4J?type=summary&agentView=true&fqdn=summary-page"
+ },
+ "quickmatch": {
+  "candidate": "cand02",
+  "result": "CONFIRMED",
+  "counts": {
+   "confirmed": 16,
+   "vision": 0,
+   "changed": 0
+  },
+  "kane_test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7NJG06DT0A27TJVE5B4RDJV/dashboard/share/US_PWJCMCR1YT0MDH3I50LTX9M5K228N719K2G6LNOTOZ0E2VU6HXZKW2GUE4M4Q5MY?type=summary&agentView=true&fqdn=summary-page"
+ },
+ "negative_test": {
+  "what": "Kane's QuickMatch cand02 test replayed against the FIXED QuickMatch (scores really changed)",
+  "result": "NOT CONFIRMED",
+  "counts": {
+   "confirmed": 4,
+   "vision": 0,
+   "changed": 12
+  }
+ },
+ "generated_at": "2026-11-19",
+ "credits": 0
+}

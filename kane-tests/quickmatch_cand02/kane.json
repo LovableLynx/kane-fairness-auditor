@@ -1,0 +1,88 @@
+{
+ "candidate": "cand02",
+ "test_url": "https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M7NJG06DT0A27TJVE5B4RDJV/dashboard/share/US_PWJCMCR1YT0MDH3I50LTX9M5K228N719K2G6LNOTOZ0E2VU6HXZKW2GUE4M4Q5MY?type=summary&agentView=true&fqdn=summary-page",
+ "credits": 121.12693000000004,
+ "fingerprint": null,
+ "twins": [
+  {
+   "gender": "male",
+   "group": "A",
+   "slot": 0,
+   "name": "Geoffrey McCarthy",
+   "file": "data/cvs/cand02/male_A.txt",
+   "score": 0.216,
+   "decision": "Recommended for interview",
+   "selected": true
+  },
+  {
+   "gender": "male",
+   "group": "C",
+   "slot": 0,
+   "name": "Jamal Robinson",
+   "file": "data/cvs/cand02/male_C.txt",
+   "score": 0.279,
+   "decision": "Recommended for interview",
+   "selected": true
+  },
+  {
+   "gender": "female",
+   "group": "A",
+   "slot": 0,
+   "name": "Carrie McCarthy",
+   "file": "data/cvs/cand02/female_A.txt",
+   "score": 0.149,
+   "decision": "Not recommended",
+   "selected": false
+  },
+  {
+   "gender": "female",
+   "group": "C",
+   "slot": 0,
+   "name": "Keisha Robinson",
+   "file": "data/cvs/cand02/female_C.txt",
+   "score": 0.171,
+   "decision": "Not recommended",
+   "selected": false
+  },
+  {
+   "gender": "male",
+   "group": "A",
+   "slot": 1,
+   "name": "Matthew Murray",
+   "file": "data/cvs/cand02/male_A_p.txt",
+   "score": 0.18,
+   "decision": "Not recommended",
+   "selected": false
+  },
+  {
+   "gender": "male",
+   "group": "C",
+   "slot": 1,
+   "name": "Rasheed Williams",
+   "file": "data/cvs/cand02/male_C_p.txt",
+   "score": 0.255,
+   "decision": "Recommended for interview",
+   "selected": true
+  },
+  {
+   "gender": "female",
+   "group": "A",
+   "slot": 1,
+   "name": "Kristen Murray",
+   "file": "data/cvs/cand02/female_A_p.txt",
+   "score": 0.163,
+   "decision": "Not recommended",
+   "selected": false
+  },
+  {
+   "gender": "female",
+   "group": "C",
+   "slot": 1,
+   "name": "Latoya Williams",
+   "file": "data/cvs/cand02/female_C_p.txt",
+   "score": 0.262,
+   "decision": "Recommended for interview",
+   "selected": true
+  }
+ ]
+}
