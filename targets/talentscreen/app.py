@@ -65,6 +65,14 @@ def screen(text: str, source: str, role: dict) -> dict:
     score = float(MODEL.predict_proba([cv.features(roles.for_role(parsed, role), gender, group)])[0, 1])
     if off_role(parsed, role):
         score *= OFF_ROLE
+    # Real CVs rarely mention a recommendation letter, but this demo model (trained on synthetic FairCVdb CVs)
+    # weighs one very heavily. When that is what sinks a CV, say so, with the score it would get with one.
+    if_rec = None
+    if score < THRESHOLD and not parsed["recommendation"]:
+        alt = float(MODEL.predict_proba([cv.features(roles.for_role({**parsed, "recommendation": 1.0}, role), gender, group)])[0, 1])
+        alt = alt * OFF_ROLE if off_role(parsed, role) else alt
+        if alt - score >= 0.2:
+            if_rec = alt
     name = text.strip().splitlines()[0].strip()[:80]
     strengths = []
     if parsed["years"] >= 6:
@@ -76,7 +84,7 @@ def screen(text: str, source: str, role: dict) -> dict:
     if sum(v >= 0.6 for v in parsed["languages"]) >= 2:
         strengths.append("multilingual")
     d = {
-        "id": next(_ids), "name": name, "score": score, "shortlisted": score >= THRESHOLD,
+        "id": next(_ids), "name": name, "score": score, "shortlisted": score >= THRESHOLD, "if_rec": if_rec,
         "parsed": parsed, "strengths": strengths, "source": source, "job": role,
         "role_match": int(parsed["occupation"]) == role["family"] or (role["slug"] == roles.DEFAULT and parsed["suitability"] >= 1.0),
         "at": datetime.now().strftime("%H:%M"), "ms": round((time.perf_counter() - t0) * 1000),

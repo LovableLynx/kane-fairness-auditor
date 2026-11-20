@@ -47,6 +47,7 @@
     </div>
     <p class="scoretext">Match score: <span id="match-score" data-testid="match-score">{{ '%.3f'|format(d.score) }}</span></p>
     <div class="verdict"><span id="decision" class="badge {{ 'ok' if d.shortlisted else 'bad' }}">Decision: {{ 'SHORTLIST' if d.shortlisted else 'REJECT' }}</span></div>
+    {% if d.if_rec is not none %}<p class="muted" role="note" style="font-size:13px;text-align:center;margin:14px 0 0">Biggest factor: the CV doesn't mention a <b style="color:inherit">recommendation letter</b>, which this demo model weighs very heavily. With one, it would score {{ '%.3f'|format(d.if_rec) }}.</p>{% endif %}
     {% if d.strengths %}<div class="chips" aria-label="Strengths noted">{% for s in d.strengths %}<span>✓ {{ s }}</span>{% endfor %}</div>{% endif %}
   </section>
 
@@ -60,8 +61,8 @@
       <div class="field"><span class="ic" aria-hidden="true">🎯</span><span class="k">Fits the role</span><span class="v">{% if d.role_match %}✓ Relevant experience for {{ job.title }}{% elif job.slug == 'data-analyst' %}≈ Other job family: weighed with experience and education{% else %}✗ Not in the {{ job.title }} job family, so it can't be shortlisted{% endif %}</span></div>
       <div class="field"><span class="ic" aria-hidden="true">⏱️</span><span class="k">Experience</span><span class="v">{{ d.parsed.years }} years{% if 'experience' in notes %}<span class="est">estimated</span>{% endif %}</span></div>
       <div class="field"><span class="ic" aria-hidden="true">🎓</span><span class="k">Education</span><span class="v">{{ cv.EDUCATION[d.parsed.education] }}{% if 'education' in notes %}<span class="est">estimated</span>{% endif %}</span></div>
-      <div class="field"><span class="ic" aria-hidden="true">✉️</span><span class="k">Recommendation</span><span class="v">{{ 'Yes' if d.parsed.recommendation else 'No' }}{% if 'recommendation' in notes %}<span class="est">estimated</span>{% endif %}</span></div>
-      <div class="field"><span class="ic" aria-hidden="true">🌍</span><span class="k">Languages</span><span class="v">{% for n, v in zip(cv.LANGUAGES, d.parsed.languages) %}{{ n }} {{ cv.LEVELS[v] or '–' }}{{ ' · ' if not loop.last }}{% endfor %}{% if 'language' in notes %}<span class="est">estimated</span>{% endif %}</span></div>
+      <div class="field"><span class="ic" aria-hidden="true">✉️</span><span class="k">Recommendation</span><span class="v">{{ 'Yes' if d.parsed.recommendation else 'Not mentioned' }}{% if 'recommendation' in notes %}<span class="est">estimated</span>{% endif %}</span></div>
+      <div class="field"><span class="ic" aria-hidden="true">🌍</span><span class="k">Languages</span><span class="v">{% for n, v in zip(cv.LANGUAGES, d.parsed.languages) %}{{ n }} {{ cv.LEVELS[v] or 'not stated' }}{{ ' · ' if not loop.last }}{% endfor %}{% if 'language' in notes %}<span class="est">estimated</span>{% endif %}</span></div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
       <a class="btn" href="{{ url_for('home', role=job.slug) }}">Screen another CV</a>
