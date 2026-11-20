@@ -16,9 +16,9 @@
       <a class="window reveal" style="--i:{{ loop.index0 }}" href="{{ url_for('result', name=key) }}">
         <div class="window-bar" aria-hidden="true"><span class="box"></span><span>{{ t.name|upper }}.AUDIT</span><span class="stripes"></span></div>
         <div class="window-body">
-        <div style="display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:12px">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:start;gap:12px;margin-bottom:12px">
           <h2 style="font-size:var(--step-2);margin:0">{{ t.name }}</h2>
-          <span class="stamp {{ r.verdict_class }}" data-animate>{{ r.verdict.replace('FAIL: ', '') if r.verdict_class == 'FAIL' else r.verdict }}</span>
+          <span class="stamp {{ r.verdict_class }}" style="flex:none;white-space:nowrap" data-animate>{{ r.verdict.replace('FAIL: ', '') if r.verdict_class == 'FAIL' else r.verdict }}</span>
         </div>
         <p class="muted small">{{ t.ui }}</p>
         <ul class="small" style="padding-left:18px;margin:0 0 16px">{% for x in r.reasons[:3] %}<li>{{ x }}</li>{% endfor %}</ul>
