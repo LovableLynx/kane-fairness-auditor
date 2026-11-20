@@ -83,7 +83,7 @@ def home():
     stats = {"count": len(allv),
              "short_rate": round(100 * sum(d["shortlisted"] for d in allv) / len(allv)) if allv else None,
              "avg_ms": round(sum(d.get("ms", 0) for d in allv) / len(allv)) if allv else None}
-    return render_template("home.html", job=JOB, recent=recent, stats=stats, samples=samples(), roles=roles.ROLES,
+    return render_template("home.html", job=roles.get(request.args.get("role")), recent=recent, stats=stats, samples=samples(), roles=roles.ROLES,
                            role=roles.get(request.args.get("role")).get("slug"),
                            accept=",".join(SUPPORTED))
 

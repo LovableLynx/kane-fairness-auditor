@@ -31,7 +31,7 @@
 <div class="two">
   <form class="card" method="post" action="{{ url_for('create_applicant') }}" id="applicant-form" enctype="multipart/form-data">
     <label for="role" style="margin-top:0">Requisition (role you're hiring for)</label>
-    <select id="role" name="role" class="rolesel">{% for slug, r in roles.items() %}<option value="{{ slug }}"{{ ' selected' if slug == role }}>{{ r.title }} · {{ r.team }}</option>{% endfor %}</select>
+    <select id="role" name="role" class="rolesel">{% for slug, r in roles.items() %}<option value="{{ slug }}" data-title="{{ r.title }}" data-team="{{ r.team }}" data-req="{{ r.req }}"{{ ' selected' if slug == role }}>{{ r.title }} · {{ r.team }}</option>{% endfor %}</select>
     <label for="full_name">Full name (optional)</label>
     <input id="full_name" name="full_name" maxlength="80" autocomplete="off" placeholder="Taken from the résumé if blank">
     <label for="resume_file">Résumé file</label>
@@ -69,5 +69,22 @@
     const sd = document.getElementById('sample-data');
     if (sd) { const S = JSON.parse(sd.textContent); document.querySelectorAll('[data-sample]').forEach(x => x.addEventListener('click', () => { ta.value = S[+x.dataset.sample].text; ta.focus(); })); }
   })();
+  // The header shows the role picked in "Hiring for", and the URL keeps it, so the two never disagree
+  // (browsers restore a dropdown's last value on reload or Back, which used to leave the header stale).
+  (() => {
+    const sel = document.getElementById('role');
+    if (!sel) return;
+    const sync = () => {
+      const o = sel.options[sel.selectedIndex];
+      document.querySelectorAll('[data-job-title]').forEach(e => e.textContent = o.dataset.title);
+      document.querySelectorAll('[data-job-team]').forEach(e => e.textContent = o.dataset.team);
+      document.querySelectorAll('[data-job-req]').forEach(e => e.textContent = o.dataset.req);
+      const u = new URL(location.href); u.searchParams.set('role', sel.value); history.replaceState(null, '', u);
+    };
+    sel.addEventListener('change', sync);
+    window.addEventListener('pageshow', sync);
+    sync();
+  })();
+
 </script>
 {% endblock %}

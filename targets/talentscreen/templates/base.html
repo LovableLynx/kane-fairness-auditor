@@ -77,7 +77,7 @@
       <a href="{{ url_for('home') }}#recent">Decisions</a></nav>
     <div class="right">
       <span class="pill model"><span class="live-dot" aria-hidden="true"></span>AI model <b>live</b></span>
-      <span class="pill">Hiring <b>{{ job.title }}</b> · {{ job.team }} · {{ job.location }}</span>
+      <span class="pill">Hiring <b data-job-title>{{ job.title }}</b> · <span data-job-team>{{ job.team }}</span> · {{ job.location }}</span>
     </div>
   </div>
 </header>

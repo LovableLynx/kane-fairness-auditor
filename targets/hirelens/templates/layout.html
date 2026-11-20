@@ -67,12 +67,12 @@
     <div class="navlabel">Recruiting</div>
     <a class="nav" href="{{ url_for('pipeline') }}" {% if request.endpoint == 'pipeline' %}aria-current="page"{% endif %}><span aria-hidden="true">▦</span> Pipeline</a>
     <a class="nav" href="{{ url_for('new_applicant') }}" {% if request.endpoint == 'new_applicant' %}aria-current="page"{% endif %}><span aria-hidden="true">＋</span> Add applicant</a>
-    <div class="job"><span class="muted" style="color:#9fb6d2">Open requisition</span><b>{{ job.title }}</b>{{ job.team }} · {{ job.location }}<br><span style="color:#9fb6d2">Req #{{ job.req }}</span></div>
+    <div class="job"><span class="muted" style="color:#9fb6d2">Open requisition</span><b data-job-title>{{ job.title }}</b><span data-job-team>{{ job.team }}</span> · {{ job.location }}<br><span style="color:#9fb6d2">Req #<span data-job-req>{{ job.req }}</span></span></div>
     <div class="foot">Fictional demo ATS for fairness research. <a href="{{ legal_url }}#privacy">Privacy</a></div>
   </aside>
   <div class="main">
     <div class="topbar">
-      <div class="crumbs">Recruiting / <b>{{ job.title }}</b> / {% block crumb %}Pipeline{% endblock %}</div>
+      <div class="crumbs">Recruiting / <b data-job-title>{{ job.title }}</b> / {% block crumb %}Pipeline{% endblock %}</div>
       <div class="right"><span class="pill go" style="background:#eef3fb;color:#3d5a80">Fair-scoring model</span><span class="user" aria-hidden="true">HR</span></div>
     </div>
     <div class="content" id="main">

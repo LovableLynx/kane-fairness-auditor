@@ -60,8 +60,9 @@ def pipeline():
 
 @app.get("/applicants/new")
 def new_applicant():
+    role = roles.get(request.args.get("role"))
     return render_template("new.html", samples=samples(), accept=",".join(SUPPORTED), roles=roles.ROLES,
-                           role=roles.get(request.args.get("role"))["slug"])
+                           role=role["slug"], job=role)
 
 
 @app.post("/applicants")
