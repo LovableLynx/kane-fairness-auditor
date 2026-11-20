@@ -22,6 +22,12 @@
     again: $("#yc-again"),
   };
   let busy = false, skip = false, shuffle = null, draft = "", toolsBuilt = false;
+  // The last result is kept in this browser tab only (sessionStorage: never sent anywhere, gone when the tab
+  // closes or on "Try another CV"), so going to another page and coming Back shows it again.
+  const KEY = "yc-last";
+  const remember = (job) => { try { sessionStorage.setItem(KEY, JSON.stringify(job)); } catch (_) { /* storage off: fine */ } };
+  const forget = () => { try { sessionStorage.removeItem(KEY); } catch (_) { /* ignore */ } };
+  const recall = () => { try { return JSON.parse(sessionStorage.getItem(KEY) || "null"); } catch (_) { return null; } };
 
   ui.file.addEventListener("change", () => {
     const f = ui.file.files[0];
@@ -187,7 +193,8 @@
     finish(job, vs);
   }
 
-  function finish(job, vs) {
+  function finish(job, vs, quiet) {
+    remember(job);
     const S = job.summary, keys = job.tools.map((t) => t.key);
     const flips = keys.filter((k) => S[k].flip), moved = keys.filter((k) => !S[k].flip && S[k].swing > 0.05);
     ui.headline.innerHTML = flips.length
@@ -221,18 +228,35 @@
     ui.results.hidden = false;
     ui.verdicts.querySelectorAll(".stamp").forEach((st, i) => setTimeout(() => st.classList.add("in"), reduce ? 0 : 140 * i));
     show(job, vs[0], 0);
-    ui.results.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    if (!quiet) ui.results.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     busy = false; ui.go.disabled = ui.sample.disabled = false;
   }
 
   const card = (k, cls, label, body) => `<div class="window yc-verdict"><div class="window-bar" aria-hidden="true"><span class="box"></span><span>${TOOL[k].name.toUpperCase()}</span><span class="stripes"></span></div>
     <div class="window-body"><span class="kicker" style="margin:0">${TOOL[k].role}</span><div style="margin:14px 0"><span class="stamp ${cls}">${label}</span></div><p class="small" style="margin:0">${body}</p></div></div>`;
 
+  // Coming back to the page: show the last result again, without replaying the animation.
+  function restore() {
+    const job = recall();
+    if (!job || !job.tools || !job.twins || busy || !ui.results.hidden) return;
+    const vs = versions(job);
+    ui.stage.hidden = false; ui.error.hidden = true; ui.progress.hidden = true; ui.skip.hidden = true; ui.count.textContent = " ";
+    if (!job.sample && !ui.text.value) ui.text.value = job.cv.original;
+    buildTools(job.tools); buildBoard(job, vs);
+    ui.names.innerHTML = vs.map((v, i) => `<button type="button" class="name-chip${v.slot ? " ph" : ""}" data-i="${i}" aria-pressed="false">${esc(v.name)}<small>${i === 0 ? "YOU" : esc(v.tag.replace("name group", "group").toUpperCase())}</small></button>`).join("");
+    ui.names.onclick = (e) => { const b = e.target.closest(".name-chip"); if (b) show(job, vs[+b.dataset.i], +b.dataset.i); };
+    vs.forEach((v, i) => fillCell(job, v, i));
+    ui.phase.textContent = "All nine versions scored";
+    finish(job, vs, true);
+  }
+  restore();
+  window.addEventListener("pageshow", restore);
+
   form.addEventListener("submit", (e) => { e.preventDefault(); start(false); });
   ui.sample.addEventListener("click", () => start(true));
   ui.skip.addEventListener("click", () => { skip = true; });
   ui.again.addEventListener("click", () => {
-    ui.stage.hidden = true; ui.text.value = ""; ui.file.value = ""; ui.fileLabel.textContent = "Upload .pdf, .docx or .txt";
+    forget(); ui.stage.hidden = true; ui.text.value = ""; ui.file.value = ""; ui.fileLabel.textContent = "Upload .pdf, .docx or .txt";
     form.scrollIntoView({ behavior: reduce ? "auto" : "smooth" }); ui.text.focus();
   });
 })();
