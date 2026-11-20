@@ -28,6 +28,14 @@ from shared import roles  # noqa: E402
 MODEL_NAME = os.environ.get("TARGET_MODEL", "biased")
 MODEL = joblib.load(ROOT / "models" / f"{MODEL_NAME}.pkl")
 THRESHOLD = 0.5
+# For a role other than the one the model was trained for (Data Analyst, the role every audit uses and which
+# stays untouched), a CV from a different job family is held below the shortlist cutoff, as a recruiter would:
+# a chef is not shortlisted for a nursing job. Before, the model scored such CVs as if the role did not matter.
+OFF_ROLE = 0.4
+
+
+def off_role(parsed: dict, role: dict) -> bool:
+    return role["slug"] != roles.DEFAULT and int(parsed["occupation"]) != role["family"]
 JOB = roles.get(roles.DEFAULT)
 ERRORS = {
     "empty": "Add a CV first: drop a file or paste the text.",
@@ -55,6 +63,8 @@ def screen(text: str, source: str, role: dict) -> dict:
     parsed = cv.parse(text)
     gender, group = cv.infer_identity(text)
     score = float(MODEL.predict_proba([cv.features(roles.for_role(parsed, role), gender, group)])[0, 1])
+    if off_role(parsed, role):
+        score *= OFF_ROLE
     name = text.strip().splitlines()[0].strip()[:80]
     strengths = []
     if parsed["years"] >= 6:

@@ -86,6 +86,8 @@ def create_applicant():
     role = roles.get(request.form.get("role"))
     feats = cv.features(roles.for_role(parsed, role), "male", "B")
     fit = float(MODEL.predict_proba([feats])[0, 1])
+    if role["slug"] != roles.DEFAULT and int(parsed["occupation"]) != role["family"]:
+        fit *= 0.4  # different job family for a role the model was not trained on: held below the cutoff (see TalentScreen)
     why = explain(MODEL, feats)
     top = max((abs(w["effect"]) for w in why), default=1.0) or 1.0
     for w in why:
