@@ -5,3 +5,7 @@ reports/
 .testmuai/sessions/
 data/study.json
 .fastembed_cache/
+
+# Promo videos, their sources and post drafts stay on this computer only (not published)
+docs/media/
+docs/posts_videos.md
