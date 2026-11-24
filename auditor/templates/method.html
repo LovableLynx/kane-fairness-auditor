@@ -5,7 +5,7 @@
   <div class="wrap with-toc">
     <nav class="toc small" aria-label="On this page">
       <a href="#twins">CV twins</a><a href="#placebo">Placebo control</a><a href="#kane">Kane in the loop</a>
-      <a href="#verdicts">Verdicts</a><a href="#study">Validation study</a><a href="#compare">How this compares</a><a href="#limits">Limits</a>
+      <a href="#verdicts">Verdicts</a><a href="#study">Validation study</a><a href="#external">Replication</a><a href="#compare">How this compares</a><a href="#limits">Limits</a>
     </nav>
     <article class="prose">
       <span class="kicker">Method</span>
@@ -47,6 +47,36 @@
       <p style="margin-top:16px">The gender effect appears only in very short CVs and disappears at realistic length. A small, significant name-group effect remains. The larger problem is instability: about one in four realistic CVs gets a different decision from a name change alone. The controls behave as expected. The planted-bias tool shows zero placebo effect and large demographic effects; the fair tool shows zero for both.</p>
       {% else %}<p class="muted">Study results are not published on this deployment.</p>{% endif %}
 
+
+
+      <h2 id="external">Replication on CVs we did not write</h2>
+      <p>To check that QuickMatch's name sensitivity is not an artefact of our own synthetic CVs, we repeated the twin test on
+      the <b>500 AI-written CVs</b> of an independent public dataset: AI CV Detection Dataset, Jamal Ibrahim (2026), Hugging Face, <a href="https://huggingface.co/datasets/jamal-ibrahim/ai-cv-detection-dataset" rel="noopener">huggingface.co/datasets/jamal-ibrahim/ai-cv-detection-dataset</a>, Apache-2.0. They cover dozens of job types. The CVs
+      are downloaded when the script runs and are not stored or republished here; only the results below are.</p>
+      <p>Each CV got the same design as the main audit: its name and email placeholders were removed and eight twin names
+      put on the first lines (men and women from two name groups, plus a second same-group name as a placebo), giving
+      4,000 scored versions. Each CV was scored for the QuickMatch role it fits best, against that role's
+      calibrated cutoff. No Kane credits were used: this calls QuickMatch's own scoring directly.</p>
+      <div class="table-wrap" style="margin:16px 0 20px"><table class="t"><tbody>
+        <tr><th scope="row">Decision changes from a name swap (man/woman, group A/C)</th><td><b>8.2%</b> of CVs</td></tr>
+        <tr><th scope="row">Decision changes from a same-group name swap (placebo)</th><td><b>10.4%</b> of CVs</td></tr>
+        <tr><th scope="row">Largest score gap per CV: name swap vs placebo swap</th><td>0.035 vs 0.034</td></tr>
+        <tr><th scope="row">CVs within 0.02 of the cutoff / decision changes among them</th><td>8.8% / <b>75.0%</b></td></tr>
+        <tr><th scope="row">Group C minus group A names</th><td>-0.0075 (95% CI -0.0089 to -0.0061)</td></tr>
+        <tr><th scope="row">Women's minus men's names</th><td>-0.0040 (95% CI -0.0049 to -0.0030)</td></tr>
+        <tr><th scope="row">Placebo (second vs first same-group name)</th><td>+0.0016 (95% CI +0.0005 to +0.0027)</td></tr>
+      </tbody></table></div>
+      <p><b>What it shows.</b> On CVs we did not write, QuickMatch again changes its decision because of the name alone, and a
+      name from the same group moves it about as much as a name from another group. That is the same
+      <b>NAME-UNSTABLE</b> pattern as the main audit. The overall rate (8.2%) is lower than
+      in our own study (27%) because these polished CVs mostly score far above the cutoff (96.8%
+      were shortlisted under at least one name); for CVs close to the cutoff, a name change flips the decision
+      75.0% of the time. There is also a small but consistent penalty for group C names and for
+      women's names. It is statistically clear across 500 CVs, but tiny next to the differences between CVs (score SD
+      0.092), and the placebo comparison also moved slightly, so read these small effects with care.</p>
+      <p class="small muted">Limits: one dataset, AI-written CVs only (the dataset's human-written CVs appear to be scraped
+      web examples, so we left them out), names placed at the top of each CV, and the role chosen as the best fit. Reproduce with
+      <code>python audit/study_external.py</code>; results in <code>results/study_external_ai_cvs.json</code>.</p>
 
       <h2 id="compare">How this compares</h2>
       <p>The idea of testing hiring decisions with identical CVs under different names is decades old, and researchers have

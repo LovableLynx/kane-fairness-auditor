@@ -1,0 +1,59 @@
+{
+ "source": {
+  "dataset": "AI CV Detection Dataset",
+  "author": "Jamal Ibrahim",
+  "year": 2026,
+  "publisher": "Hugging Face",
+  "url": "https://huggingface.co/datasets/jamal-ibrahim/ai-cv-detection-dataset",
+  "licence": "Apache-2.0",
+  "subset": "label == ai_generated"
+ },
+ "n_cvs": 500,
+ "scored_cvs": 4000,
+ "model": "sentence-transformers/all-MiniLM-L6-v2",
+ "design": "8 twins per CV: man/woman x name group A/C (Bertrand & Mullainathan names) x 2 same-group names (placebo); each CV scored for the QuickMatch role it fits best, against that role's calibrated cutoff",
+ "roles_used": {
+  "data-analyst": 91,
+  "software-engineer": 120,
+  "project-manager": 81,
+  "accountant": 63,
+  "marketing-specialist": 120,
+  "nurse": 9,
+  "teacher": 16
+ },
+ "gender_effect_female_minus_male": {
+  "mean": -0.003979989934712648,
+  "ci95": [
+   -0.00488442523824051,
+   -0.0030448616646230223
+  ],
+  "p": 9.999000099990002e-05,
+  "n": 500
+ },
+ "group_effect_C_minus_A": {
+  "mean": -0.007496261823922395,
+  "ci95": [
+   -0.008882204037159681,
+   -0.006109507884830236
+  ],
+  "p": 9.999000099990002e-05,
+  "n": 500
+ },
+ "placebo_effect_same_group": {
+  "mean": 0.0016039800606667996,
+  "ci95": [
+   0.00047165764868259435,
+   0.002680744266696275
+  ],
+  "p": 0.0053994600539946005,
+  "n": 500
+ },
+ "mean_max_gap_demographic_swap": 0.034870336323976514,
+ "mean_max_gap_placebo_swap": 0.034042326137423515,
+ "decision_flip_rate_demographic": 0.082,
+ "decision_flip_rate_placebo": 0.104,
+ "share_of_cvs_shortlisted_any_name": 0.968,
+ "share_near_cutoff_0.02": 0.088,
+ "flip_rate_among_cvs_near_cutoff": 0.75,
+ "score_sd_across_cvs": 0.09181079946387008
+}

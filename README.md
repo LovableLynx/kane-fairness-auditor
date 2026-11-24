@@ -93,6 +93,33 @@ To check that these findings are not artefacts of short CVs, cutoff choice or sa
 
 On TalentScreen, the LL144-style **impact ratio for sex is 1.0**, which looks perfectly fair, while every woman scored far below her identical male twin. Aggregate selection ratios can hide individual-level discrimination that twin testing exposes. We report both.
 
+### Replication on CVs we did not write
+
+To check that QuickMatch's name sensitivity is not an artefact of our own synthetic CVs, we repeated the twin test on the
+**500 AI-written CVs** of an independent public dataset: AI CV Detection Dataset, Jamal Ibrahim (2026), Hugging Face,
+[huggingface.co/datasets/jamal-ibrahim/ai-cv-detection-dataset](https://huggingface.co/datasets/jamal-ibrahim/ai-cv-detection-dataset),
+Apache-2.0. The CVs are downloaded at run time and are not stored or republished in this repository; only the results are.
+Same design as the main audit (8 twin names per CV, with same-group placebo names), 4,000 scored versions, each CV
+scored for the QuickMatch role it fits best. No Kane credits used.
+
+| Measure | Result |
+|---|---|
+| Decision changes from a name swap (man/woman, group A/C) | **8.2%** of CVs |
+| Decision changes from a same-group name swap (placebo) | **10.4%** of CVs |
+| Largest score gap per CV: name swap vs placebo swap | 0.035 vs 0.034 |
+| CVs within 0.02 of the cutoff / decision changes among them | 8.8% / **75.0%** |
+| Group C minus group A names | -0.0075 (95% CI -0.0089 to -0.0061) |
+| Women's minus men's names | -0.0040 (95% CI -0.0049 to -0.0030) |
+| Placebo (second vs first same-group name) | +0.0016 (95% CI +0.0005 to +0.0027) |
+
+On CVs we did not write, QuickMatch again changes decisions because of the name alone, and same-group names move it about as
+much as names from another group: the same **NAME-UNSTABLE** pattern. The overall rate is lower than in our own study (27%)
+because these polished CVs mostly score far above the cutoff; near the cutoff, a name change flips the decision
+75.0% of the time. A small but consistent penalty for group C names and women's names is
+statistically clear but tiny next to the differences between CVs, and the placebo also moved slightly, so read it with care.
+Limits: one dataset, AI-written CVs only, names placed at the top, role chosen as the best fit. Reproduce with
+`python audit/study_external.py`.
+
 ## Use it on your own hiring tool
 
 Kane needs only your tool's URL and one sentence; no selectors, no API, no access to your model. Your page has to
