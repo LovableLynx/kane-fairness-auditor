@@ -127,7 +127,9 @@
     const doc = () => frame.contentDocument;
     const load = (path) => new Promise((res) => {
       frame.onload = () => { frame.onload = null; res(); };
-      frame.src = path; url.textContent = host + path;
+      if (frame.contentWindow && frame.contentWindow.location.href !== "about:blank") frame.contentWindow.location.replace(path);
+      else frame.src = path;
+      url.textContent = host + path;
     });
     const say = (t) => { cap.textContent = t; };
     const moveTo = async (sel) => {
@@ -147,7 +149,7 @@
       ring.style.left = pos[0] + "px"; ring.style.top = pos[1] + "px";
       ring.classList.remove("go"); void ring.offsetWidth; ring.classList.add("go");
       await wait(250);
-      el.click();
+      if (!el.matches("button[type=submit]")) el.click();
     };
     const apply = async (sample, who) => {
       await load("/talentscreen/?role=data-analyst"); camTo(1, 0, 0);
@@ -160,9 +162,10 @@
       if (form && !form.querySelector("input[name=demo]")) {     // mark it as the demo, so it never shows up in the tool's own list
         const h = doc().createElement("input"); h.type = "hidden"; h.name = "demo"; h.value = "1"; form.appendChild(h);
       }
-      const submitted = new Promise((res) => { frame.onload = () => { frame.onload = null; res(); }; });
       await click("button[type=submit]");
-      await submitted;
+      // submit without a history entry: post it ourselves, then show the result page in place
+      const resp = await fetch(form.action, { method: "POST", body: new FormData(form), credentials: "same-origin" });
+      await load(new URL(resp.url).pathname);
       await wait(900);
       const sc = doc().querySelector("#match-score"), dec = doc().querySelector("#decision");
       const r = sc.getBoundingClientRect();

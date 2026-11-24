@@ -23,6 +23,7 @@
     </a>
     <button class="btn btn-sm nav-toggle" aria-expanded="false" aria-controls="nav-links">Menu</button>
     <ul class="nav-links" id="nav-links">
+      <li><a href="{{ url_for('landing') }}" {% if page == 'home' %}aria-current="page"{% endif %}>Home</a></li>
       <li><a href="{{ url_for('landing') }}#lab">Live test</a></li>
       <li><a href="{{ url_for('results') }}" {% if page == 'results' %}aria-current="page"{% endif %}>Results</a></li>
       <li><a href="{{ url_for('method') }}" {% if page == 'method' %}aria-current="page"{% endif %}>Method</a></li>

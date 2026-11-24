@@ -121,5 +121,8 @@
   <span>TalentScreen is a fictional demo tool for fairness research. It is not affiliated with any real company.</span>
   <span>Use sample CVs only · submissions are kept in memory and cleared on restart · <a href="{{ legal_url }}#privacy">Privacy</a></span>
 </div></footer>
+{% if request.script_root %}<a class="kfa-back" href="/">&larr; Kane Fairness Auditor</a>
+<style>.kfa-back{position:fixed;left:16px;bottom:16px;z-index:50;background:#16130f;color:#f1ebe0 !important;text-decoration:none;font:600 13px/1 system-ui,-apple-system,"Segoe UI",sans-serif;padding:11px 14px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.18)}.kfa-back:hover{background:#d2541c}</style>
+<script>if(window.top!==window){var kb=document.querySelector('.kfa-back');if(kb)kb.remove();}</script>{% endif %}
 </body>
 </html>
