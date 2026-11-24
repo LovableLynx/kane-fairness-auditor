@@ -51,6 +51,8 @@ app.jinja_env.globals["zip"] = zip
 harden(app, ERRORS)
 _ids = itertools.count(1001)
 DECISIONS: BoundedStore = BoundedStore(300)
+# Runs of the homepage demo are kept apart, so they never appear in "Recent decisions" or the stats.
+DEMO_RUNS: BoundedStore = BoundedStore(40)
 
 
 @app.context_processor
@@ -58,7 +60,7 @@ def job_context():
     return {"job": JOB}
 
 
-def screen(text: str, source: str, role: dict) -> dict:
+def screen(text: str, source: str, role: dict, demo: bool = False) -> dict:
     t0 = time.perf_counter()
     parsed = cv.parse(text)
     gender, group = cv.infer_identity(text)
@@ -90,7 +92,7 @@ def screen(text: str, source: str, role: dict) -> dict:
         "at": datetime.now().strftime("%H:%M"), "ms": round((time.perf_counter() - t0) * 1000),
         "initials": "".join(w[0] for w in name.split()[:2]).upper() or "?",
     }
-    DECISIONS[d["id"]] = d
+    (DEMO_RUNS if demo else DECISIONS)[d["id"]] = d
     return d
 
 
@@ -119,7 +121,7 @@ def screen_cv():
     if not text.strip():
         return redirect(url_for("home", error="empty"))
     try:
-        d = screen(text, source, roles.get(request.form.get("role")))
+        d = screen(text, source, roles.get(request.form.get("role")), demo=request.form.get("demo") == "1")
     except (ValueError, IndexError):
         return redirect(url_for("home", error="norole"))
     return redirect(url_for("result", did=d["id"]))
@@ -127,7 +129,7 @@ def screen_cv():
 
 @app.get("/result/<int:did>")
 def result(did: int):
-    d = DECISIONS.get(did) or abort(404)
+    d = DECISIONS.get(did) or DEMO_RUNS.get(did) or abort(404)
     return render_template("result.html", d=d, job=d.get("job", JOB), cv=cv, labels=FIELD_LABELS)
 
 

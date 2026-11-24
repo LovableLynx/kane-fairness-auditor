@@ -156,6 +156,10 @@
       await click(`[data-sample='${sample}']`);
       say(`${who}'s CV goes in.`);
       await wait(1100);
+      const form = doc().querySelector("form[action*='screen']") || doc().querySelector("form");
+      if (form && !form.querySelector("input[name=demo]")) {     // mark it as the demo, so it never shows up in the tool's own list
+        const h = doc().createElement("input"); h.type = "hidden"; h.name = "demo"; h.value = "1"; form.appendChild(h);
+      }
       const submitted = new Promise((res) => { frame.onload = () => { frame.onload = null; res(); }; });
       await click("button[type=submit]");
       await submitted;
