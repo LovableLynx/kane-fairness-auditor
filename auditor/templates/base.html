@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}Fairness Auditor · bias audits for hiring AI{% endblock %}</title>
 <meta name="description" content="Black-box bias audits for AI hiring tools: CV twins with a placebo control, run through each tool's own interface by Kane CLI.">
-<meta name="theme-color" content="#f3f1ea">
+<meta name="theme-color" content="#f1ebe0">
 <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
 <link rel="preload" href="{{ url_for('static', filename='fonts/unbounded-800.woff2') }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ url_for('static', filename='fonts/space-grotesk-400.woff2') }}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ url_for('static', filename='ds.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='magazine.css') }}">
 {% block head %}{% endblock %}
 <script>/* hide reveal targets only while motion.js is expected; give up after 2.5s */document.documentElement.classList.add("motion");setTimeout(function(){if(!window.__motionReady)document.documentElement.classList.remove("motion")},2500);</script>
 </head>

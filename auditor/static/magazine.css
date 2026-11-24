@@ -1,0 +1,68 @@
+/* Site-wide "magazine" skin, loaded after ds.css: the same paper, ink, burnt orange and type as the homepage,
+   so every page feels like one publication. It re-points ds.css's tokens and softens its 90s chrome. */
+@font-face { font-family: "Anton"; src: url("fonts/anton-400.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Instrument Serif"; font-style: italic; src: url("fonts/instrument-serif-italic.woff2") format("woff2"); font-display: swap; }
+
+:root {
+  --paper-bg: #f1ebe0; --paper: #fbf8f2; --paper-2: #e9e1d3;
+  --ink: #16130f; --ink-2: #4a443c; --ink-3: #6b6358; --hair: #cdc2b0; --grid: transparent;
+  --blue: #d2541c; --blue-soft: #f7e0d3;          /* primary accent: burnt orange */
+  --lime: #f2c3a6;                                /* highlighter backgrounds: soft orange */
+  --red: #b8322a; --red-soft: #f7dcd6; --green: #1f7a4d; --green-soft: #d9eee1; --amber: #8a5300; --amber-soft: #f6e6c6;
+  --font-display: "Anton", Impact, "Arial Narrow", sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-pixel: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --shadow: none; --shadow-lg: none; --bw: 1.5px;
+}
+body { background: var(--paper-bg); background-image: none; }
+h1, h2 { font-weight: 400; text-transform: uppercase; letter-spacing: 0; line-height: .95; }
+h3 { font-family: var(--serif); font-style: italic; font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 1.45em; }
+.hl, .hl-anim { background: none !important; color: var(--blue) !important; font-family: var(--serif); font-style: italic; text-transform: none; padding: 0; }
+em { font-family: var(--serif); font-style: italic; }
+.kicker { font: 700 .72rem/1.2 var(--font-body); letter-spacing: .16em; color: var(--blue); }
+.kicker::before { display: none; }
+a { text-decoration-color: var(--blue); }
+
+/* chrome */
+.nav { background: var(--paper-bg); border-bottom: 1px solid var(--ink); box-shadow: none; }
+.brand { font-family: var(--font-body); font-weight: 800; letter-spacing: 0; }
+.brand small { font: 600 .62rem var(--font-body); letter-spacing: .14em; }
+.brand-mark { background: var(--ink); color: var(--paper-bg); border: 0; box-shadow: none; font: 800 .72rem var(--font-body); }
+.nav-links a { font-family: var(--font-body); }
+.nav-links a[aria-current="page"], .nav-links a:hover { background: transparent !important; color: var(--blue) !important; box-shadow: none !important; text-decoration: underline; }
+.footer { background: var(--ink); color: var(--paper-bg); border-top: 0; }
+.footer-big { font-family: var(--font-display); text-transform: uppercase; color: var(--paper-bg); font-weight: 400; }
+.footer-big em { color: var(--blue); background: none; text-transform: none; font-size: 1.1em; }
+.footer h4 { font: 700 .7rem var(--font-body); letter-spacing: .16em; color: var(--blue); }
+.footer a:not(.btn) { color: #d9d0c1; }
+.footer a:not(.btn):hover { color: var(--blue); }
+
+/* windows become plain ruled panels */
+.window { border: 1.5px solid var(--ink); box-shadow: none !important; border-radius: 0; }
+.window-bar { background: transparent !important; color: var(--ink-3) !important; border-bottom: 1px solid var(--ink); font: 700 .68rem var(--font-body) !important; letter-spacing: .16em; }
+.window-bar .box, .window-bar .stripes { display: none !important; }
+.window.dark { background: var(--ink); }
+.window.dark .window-bar { color: #b9b0a2 !important; border-color: #4a443c; }
+
+/* buttons, chips, stamps */
+.btn { border-radius: 0; box-shadow: none !important; border: 2px solid var(--ink); font-family: var(--font-body); font-weight: 700; }
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { background: var(--ink); color: var(--paper-bg); }
+.btn-primary:hover { background: var(--blue); border-color: var(--blue); }
+.btn-lime { background: var(--blue); color: #fff; border-color: var(--blue); }
+.chip { border-radius: 0; font-family: var(--font-body); }
+.stamp { font-family: var(--font-display); font-weight: 400; letter-spacing: .04em; box-shadow: none; }
+.badge { border-radius: 0; font-family: var(--font-body); }
+.sticker { display: none; }
+
+/* tables and panels */
+.table-wrap { box-shadow: none; border: 1.5px solid var(--ink); }
+table.t th { font: 700 .7rem var(--font-body); letter-spacing: .12em; text-transform: uppercase; }
+.notice { border-radius: 0; box-shadow: none; }
+.stat .num, .figure .num { font-family: var(--font-display); font-weight: 400; }
+
+/* long single words in the poster font must never push the page wider than a small phone */
+h1, h2 { overflow-wrap: anywhere; }
+.with-toc > *, .prose { min-width: 0; }
+@media (max-width: 860px) { .with-toc { grid-template-columns: minmax(0, 1fr); } }

@@ -67,7 +67,8 @@ body.home .footer .btn { background: var(--orange); color: #fff; border: 0; box-
 .m-stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .m-stats-grid > div { padding: 30px 24px 28px; border-left: 1px solid var(--ink); }
 .m-stats-grid > div:first-child { border-left: 0; padding-left: 0; }
-.m-stats b { display: block; font: 400 clamp(2.6rem, 5vw, 4.2rem)/1 var(--display); }
+.m-stats b { display: block; font: 400 clamp(2.1rem, 5vw, 4.2rem)/1 var(--display); }
+.m-stats-grid > div { min-width: 0; }
 .m-stats-grid > div > span { display: block; margin-top: 8px; color: var(--muted); font-size: .95rem; line-height: 1.4; }
 
 /* sections */
