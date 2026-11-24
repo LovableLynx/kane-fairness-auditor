@@ -66,6 +66,7 @@
   .chip:hover { border-color:var(--peach); transform:translateY(-1px); }
   footer { width:min(680px, 100% - 32px); margin:0 auto; padding:0 0 28px; color:var(--muted); font-size:12.5px; }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
+  @media (max-width:640px) { input, textarea, select { font-size:16px !important; } .role input { width:20px; height:20px; } }
 </style>
 {% block head %}{% endblock %}
 </head>

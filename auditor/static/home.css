@@ -196,3 +196,12 @@ body.home .m-pass em { display: block; color: #fff; font-size: 3rem; line-height
   .m-ticker-track, .h-sound.waiting { animation: none; }
   .js-rv .rv { opacity: 1; transform: none; transition: none; }
 }
+
+/* phones: give links and buttons room for a thumb, and let sections breathe */
+@media (max-width: 640px) {
+  .m-teams a, .m-links a, .m-note a { display: inline-block; padding: 10px 0; }
+  .h-name { padding: 11px 14px; }
+  .m-lede { font-size: 1.08rem; }
+  .m-hero-grid { gap: 28px; }
+  .m-head { margin-bottom: 26px; }
+}

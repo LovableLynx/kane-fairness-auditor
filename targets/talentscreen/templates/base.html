@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}TalentScreen · AI CV screening{% endblock %}</title>
-<meta name="theme-color" content="#0b0b12">
+<meta name="theme-color" content="#f7f6ff">
 <style>
   :root { --bg:#0b0b12; --bg2:#11111c; --panel:#151522cc; --panel-solid:#151522; --line:#262638; --line2:#33334a;
           --fg:#f1f1f7; --muted:#a4a6bd; --dim:#7b7d96; --accent:#6d4aff; --accent-hi:#a18bff; --mint:#2be4b4; --pink:#ff5fa2;
@@ -65,6 +65,33 @@
   @keyframes rise { from { opacity:0; transform:translateY(14px); } }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
   @media (max-width:720px) { nav.top { display:none; } .right .pill.model { display:none; } }
+</style>
+<style>
+  /* Bright theme: same layout and wording as before (Kane's recorded runs still find everything where it was). */
+  :root { --bg:#f7f6ff; --bg2:#ffffff; --panel:#ffffffe6; --panel-solid:#ffffff; --line:#e7e3f6; --line2:#d8d2f1;
+          --fg:#17152b; --muted:#56536f; --dim:#6f6c88; --accent:#6d4aff; --accent-hi:#5a37f0; --mint:#0db88b; --pink:#ff4f97;
+          --ok:#0b8f69; --bad:#d8334f; }
+  body::after { background-image: linear-gradient(#6d4aff0b 1px, transparent 1px), linear-gradient(90deg, #6d4aff0b 1px, transparent 1px); opacity:.6; }
+  header { background:#ffffffd0; }
+  nav.top a:hover, nav.top a[aria-current="page"] { background:#6d4aff12; }
+  .pill { background:#ffffff; }
+  .glass { box-shadow: 0 1px 0 #ffffff inset, 0 24px 50px -34px #6d4aff66; }
+  .btn.ghost { background:#ffffff; }
+  tbody tr:hover { background:#6d4aff08; }
+  .error { background:#ffe9ee; color:#9b1c35; border-color:#f5b8c4; }
+  .kpi { background:#ffffff !important; }
+  .drop { background:#fbfaff !important; } .drop:hover, .drop.over { background:#f1edff !important; }
+  .drop .ico { border-color:#6d4aff22 !important; }
+  .rolepick select, textarea { background:#ffffff !important; color:var(--fg) !important; }
+  .chipbtn { background:#ffffff !important; }
+  .minibar { background:#ece9f8 !important; }
+  .scan { background:#f7f6ffd9 !important; }
+  .doc { background:#ffffff !important; } .doc i { background:#ece9f8; }
+  .field, .fields > div { background:#ffffff; }
+  .track { stroke:#ece9f8 !important; }
+  .logo-mark { box-shadow:0 0 18px #6d4aff55; }
+  /* phones: 16px fields so iOS doesn't zoom in when you tap; thumb-sized sample buttons */
+  @media (max-width:640px) { input, textarea, select { font-size:16px !important; } .chipbtn { padding:10px 14px !important; } }
 </style>
 {% block head %}{% endblock %}
 </head>

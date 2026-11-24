@@ -74,3 +74,11 @@ table.t th { font: 700 .7rem var(--font-body); letter-spacing: .12em; text-trans
 h1, h2 { overflow-wrap: anywhere; }
 .with-toc > *, .prose { min-width: 0; }
 @media (max-width: 860px) { .with-toc { grid-template-columns: minmax(0, 1fr); } }
+
+/* phones (iOS and Android): 16px text in form fields so iOS doesn't zoom on tap; thumb-sized targets; calmer spacing */
+@media (max-width: 640px) {
+  input, textarea, select { font-size: 16px !important; }
+  .btn, .toc a, .chip-btn { min-height: 44px; display: inline-flex; align-items: center; }
+  .toc { gap: 6px; }
+  .toc a { padding: 8px 12px; }
+}

@@ -57,6 +57,17 @@
     .brand { padding:6px 10px; } .navlabel, aside .job, aside .foot { display:none; } .content, .topbar { padding-left:16px; padding-right:16px; } }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
 </style>
+<style>
+  /* Bright sidebar: same layout, light blue instead of navy */
+  aside { background:linear-gradient(180deg, #eaf2ff, #f6f9ff); color:#24405f; border-right:1px solid #d7e3f5; }
+  .brand { color:#0f2b4c; } .brand .lens { border-color:#1463e6; box-shadow:0 0 0 4px #1463e61a; }
+  .navlabel { color:#5b7799; }
+  aside a.nav { color:#24405f; } aside a.nav:hover { background:#1463e612; }
+  aside a.nav[aria-current="page"] { background:#ffffff; color:#0f2b4c; box-shadow: inset 3px 0 0 #1463e6, 0 1px 3px #0f2b4c14; }
+  aside .job { background:#ffffff; border-color:#d7e3f5; } aside .job b { color:#0f2b4c; } aside .job .muted, aside .job span { color:#5b7799 !important; }
+  aside .foot { color:#5b7799; } aside .foot a { color:#1463e6; }
+  @media (max-width:640px) { input, textarea, select { font-size:16px !important; } }
+</style>
 {% block head %}{% endblock %}
 </head>
 <body>
