@@ -24,8 +24,11 @@ https://github.com/LovableLynx/kane-fairness-auditor/issues
 
 THIRD-PARTY COMPONENTS
 These keep their own licences and are not covered by the copyright notice above:
-- Fonts in auditor/static/fonts/ (Unbounded, Space Grotesk, Space Mono, Silkscreen):
-  SIL Open Font License 1.1.
+- Fonts in auditor/static/fonts/ (Unbounded, Space Grotesk, Space Mono, Silkscreen, Anton,
+  Instrument Serif): SIL Open Font License 1.1.
+- Photos in auditor/static/img/, from Wikimedia Commons, resized and cropped:
+  applicant-laptop.webp by Shixart1985 (CC BY 2.0); applicant-stressed.webp by Tim Gouw (CC0);
+  interview.webp by amtec_photos (CC BY-SA 2.0; this adapted copy is shared under the same licence).
 - Candidate profiles derived from FairCVdb (Peña et al.), and first names and surnames
   from Bertrand & Mullainathan (2004): used for research, credited in the README.
 - all-MiniLM-L6-v2 embedding model (downloaded at run time): Apache License 2.0.
