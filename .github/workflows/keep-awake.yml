@@ -1,0 +1,22 @@
+# Keeps the free Render site awake so visitors (and judges) never wait for a cold start.
+# It only requests two public pages; it runs no tests and spends no Kane credits.
+name: keep-awake
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Ping the live site
+        run: |
+          for path in /healthz /; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 120 "https://kane-fairness-auditor.onrender.com$path")
+            echo "$path -> $code"
+          done
