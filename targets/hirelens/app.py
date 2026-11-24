@@ -40,6 +40,7 @@ app = Flask(__name__)
 harden(app, ERRORS)
 _ids = itertools.count(1)
 APPLICANTS: BoundedStore = BoundedStore(300)
+DEMO_RUNS: BoundedStore = BoundedStore(40)  # homepage demo runs: never shown in the pipeline
 
 
 JOB = roles.get(roles.DEFAULT)
@@ -95,13 +96,13 @@ def create_applicant():
     a = {"id": next(_ids), "name": name, "role": parsed["title"], "fit": round(fit * 100), "job": role, "why": why,
          "advance": fit >= 0.5, "parsed": parsed, "at": datetime.now().strftime("%d %b, %H:%M"),
          "initials": "".join(w[0] for w in name.split()[:2]).upper() or "?"}
-    APPLICANTS[a["id"]] = a
+    (DEMO_RUNS if request.form.get("demo") == "1" else APPLICANTS)[a["id"]] = a
     return redirect(url_for("applicant", aid=a["id"]))
 
 
 @app.get("/applicants/<int:aid>")
 def applicant(aid: int):
-    a = APPLICANTS.get(aid) or abort(404)
+    a = APPLICANTS.get(aid) or DEMO_RUNS.get(aid) or abort(404)
     return render_template("applicant.html", a=a, cv=cv, job=a.get("job", JOB))
 
 

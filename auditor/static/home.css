@@ -226,3 +226,13 @@ body.home .m-pass em { display: block; color: #fff; font-size: 3rem; line-height
 .d-dialog video { display: block; width: 100%; height: auto; }
 .d-close { position: absolute; top: 8px; right: 8px; width: 40px; height: 40px; border: 0; background: var(--paper); color: var(--ink); font-size: 1.1rem; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .d-cam, .d-cursor { transition: none; } .d-ring.go { animation: none; } }
+
+.d-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border: 1px solid #4a443c; border-bottom: 0; }
+.d-tab { background: transparent; color: #b9b0a2; border: 0; border-left: 1px solid #4a443c; padding: 14px 10px; cursor: pointer; font: 400 clamp(1rem, 2.2vw, 1.5rem)/1.05 var(--display); text-transform: uppercase; text-align: left; }
+.d-tab:first-child { border-left: 0; }
+.d-tab small { display: block; margin-top: 5px; font: italic .95rem var(--serif); text-transform: none; color: #8f877a; }
+.d-tab:hover { color: var(--paper); }
+.d-tab.on { background: var(--paper); color: var(--ink); } .d-tab.on small { color: var(--orange); }
+.d-tab:focus-visible { outline: 3px solid var(--orange); outline-offset: -3px; }
+.d-shield { position: absolute; inset: 0; z-index: 4; touch-action: pan-y; }
+@media (max-width: 520px) { .d-tab { padding: 12px 8px; } .d-tab small { font-size: .8rem; } }

@@ -72,15 +72,21 @@
 {% if video_url %}
 <section class="m-sec m-dark" aria-labelledby="m-video-title">
   <div class="m-wrap">
-    <header class="m-head rv"><span class="m-kicker">Exhibit B</span><h2 id="m-video-title" class="m-h2">Watch it happen</h2><p class="m-aside"><em>Live, not a recording:</em> the real TalentScreen, running right here.</p></header>
+    <header class="m-head rv"><span class="m-kicker">Exhibit B</span><h2 id="m-video-title" class="m-h2">Watch it happen</h2><p class="m-aside"><em>Live, not a recording.</em> Pick a tool and watch it decide.</p></header>
+    <div class="d-tabs rv" role="tablist" aria-label="Choose a hiring tool to watch">
+      <button type="button" role="tab" class="d-tab on" aria-selected="true" data-tool="talentscreen">TalentScreen<small>known biased</small></button>
+      <button type="button" role="tab" class="d-tab" aria-selected="false" data-tool="hirelens">HireLens<small>known fair</small></button>
+      <button type="button" role="tab" class="d-tab" aria-selected="false" data-tool="quickmatch">QuickMatch<small>open-source AI</small></button>
+    </div>
     <div class="d-shell rv" id="d-shell">
       <div class="d-bar" aria-hidden="true"><i></i><i></i><i></i><span class="d-url" id="d-url">kane-fairness-auditor.onrender.com/talentscreen/</span></div>
       <div class="d-stage" id="d-stage">
         <div class="d-cam" id="d-cam">
-          <iframe id="d-frame" title="Live demo of TalentScreen" tabindex="-1" aria-hidden="true" loading="lazy"></iframe>
+          <iframe id="d-frame" title="Live demo of a hiring tool" tabindex="-1" aria-hidden="true" scrolling="no"></iframe>
           <div class="d-cursor" id="d-cursor" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.6L9 19z" fill="#16130f" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
           <div class="d-ring" id="d-ring" aria-hidden="true"></div>
         </div>
+        <div class="d-shield" aria-hidden="true"></div>
       </div>
       <p class="d-cap" id="d-cap" aria-live="polite">A recruiter opens TalentScreen.</p>
     </div>
