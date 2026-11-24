@@ -48,7 +48,22 @@
       paint();
     });
     video.addEventListener("volumechange", paint);
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { video.removeAttribute("autoplay"); video.pause(); video.controls = true; }
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) { video.removeAttribute("autoplay"); video.pause(); video.controls = true; }
+    else {
+      // Some browsers wait for a nudge before autoplaying, even muted: start it silently once it can play,
+      // and keep it playing whenever it is on screen (until the visitor turns the sound on).
+      video.muted = true;
+      const start = () => { if (video.muted && video.paused) video.play().catch(() => {}); };
+      video.addEventListener("canplay", start);
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver((es) => es.forEach((e) => {
+          if (!video.muted) return;
+          if (e.isIntersecting) start(); else video.pause();
+        }), { threshold: 0.25 }).observe(video);
+      }
+      start();
+    }
     paint();
   }
 })();
