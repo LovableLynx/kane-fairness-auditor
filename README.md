@@ -225,6 +225,28 @@ The auditor site and all three tools run as one web service (`serve.py`): `/` (a
 python serve.py        # the same service locally on http://127.0.0.1:8000
 ```
 
+## How this compares to existing work
+
+Testing hiring decisions with identical CVs under different names is decades old, and researchers have already applied it to AI.
+
+| Who | What they did | How this project differs |
+|---|---|---|
+| [Bertrand & Mullainathan (2004)](https://www.aeaweb.org/articles?id=10.1257/0002828042002561) | The classic correspondence test: identical CVs with different names, sent to real employers by post. | Tested human recruiters, by hand. We automate the same method for AI tools and reuse its names. |
+| [FairCVtest / FairCVdb, Peña et al. (2020, 2023)](https://arxiv.org/abs/2009.07025) | A testbed of synthetic CV profiles and recruitment models trained with planted gender and ethnic bias. | Needs the model and its training. We use their synthetic profiles, but test a finished tool from the outside. |
+| [Bloomberg (2024)](https://www.bloomberg.com/graphics/2024-openai-gpt-hiring-racial-discrimination/) | Ranked otherwise-identical CVs with GPT and found name-based differences in who came out on top. | A one-off newsroom investigation of one model. We give teams a repeatable check of their own tool. |
+| [“The Silicon Ceiling”, Armstrong et al. (2024)](https://arxiv.org/abs/2405.04412) | Audited GPT-3.5 and found different scores for identical CVs depending only on the name. | Calls the model through its API. We use only the tool’s web page, like an employer or candidate would. |
+| [Wilson & Caliskan, University of Washington (2024)](https://arxiv.org/abs/2407.20371) | Retrieval-based CV screening with embedding models favoured white- and male-associated names. | A research study of models. We found the same kind of name sensitivity in an open-source embedding model (QuickMatch) and turn it into a pass/fail release gate. |
+| [Gaebler et al., “Auditing the use of language models to guide hiring decisions” (2024)](https://arxiv.org/abs/2404.03086) | Correspondence experiments on LLM candidate assessments, and a careful discussion of their limits. | Shares the method and its limits. Adds a same-group placebo, a browser agent, and a CI exit code. |
+| [Open-source fairness toolkits: audit-AI (pymetrics), Aequitas, AI Fairness 360](https://github.com/pymetrics/audit-ai) | Libraries that compute group fairness metrics, such as the four-fifths rule, from a model’s data and predictions. | Need the data or predictions. We need only a URL and one sentence, and also test individuals, not just group averages. |
+| [Warden AI (commercial)](https://www.gov.uk/ai-assurance-techniques/warden-ai-continuous-bias-auditing-for-hr-tech) | A paid service that continuously audits HR-tech AI for bias with its own candidate dataset, and can gate releases. | The closest idea. It is a service connected to the vendor; this runs from the outside, through the public interface, with an evidence link for every reading. |
+| [NYC Local Law 144 bias audits](https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page) | Legally required yearly audits of automated hiring tools, based on selection rates and impact ratios. | Group ratios can look fair while individuals are treated differently: TalentScreen scores an impact ratio of 1.0 for sex yet flips 10 of 10 twin decisions. We report both. |
+
+**What is new here, as far as we could find:** an AI browser agent (Kane CLI) runs the correspondence test through a hiring
+tool's own web page with no model access; a same-group placebo separates bias from name instability; every reading has an
+evidence link; the verdict is an exit code that blocks a release; and a coding agent fixes the tool while Kane decides whether
+the fix passes. We searched papers, open-source tools and commercial services in November 2026 and did not find this
+combination, but we cannot rule out work we missed.
+
 ## Scope and method
 
 - **Method:** automated correspondence testing with synthetic CV twins, the standard approach for detecting hiring discrimination. No real candidate data is used.

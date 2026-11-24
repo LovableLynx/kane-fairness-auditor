@@ -5,7 +5,7 @@
   <div class="wrap with-toc">
     <nav class="toc small" aria-label="On this page">
       <a href="#twins">CV twins</a><a href="#placebo">Placebo control</a><a href="#kane">Kane in the loop</a>
-      <a href="#verdicts">Verdicts</a><a href="#study">Validation study</a><a href="#limits">Limits</a>
+      <a href="#verdicts">Verdicts</a><a href="#study">Validation study</a><a href="#compare">How this compares</a><a href="#limits">Limits</a>
     </nav>
     <article class="prose">
       <span class="kicker">Method</span>
@@ -46,6 +46,29 @@
         </tbody></table></div>
       <p style="margin-top:16px">The gender effect appears only in very short CVs and disappears at realistic length. A small, significant name-group effect remains. The larger problem is instability: about one in four realistic CVs gets a different decision from a name change alone. The controls behave as expected. The planted-bias tool shows zero placebo effect and large demographic effects; the fair tool shows zero for both.</p>
       {% else %}<p class="muted">Study results are not published on this deployment.</p>{% endif %}
+
+
+      <h2 id="compare">How this compares</h2>
+      <p>The idea of testing hiring decisions with identical CVs under different names is decades old, and researchers have
+      already applied it to AI. Here is what others have done, and where this project differs. Every source is linked.</p>
+      <div class="table-wrap" style="margin:18px 0 22px"><table class="t">
+        <thead><tr><th scope="col">Who</th><th scope="col">What they did</th><th scope="col">How this project differs</th></tr></thead>
+        <tbody>
+        <tr><th scope="row"><a href="https://www.aeaweb.org/articles?id=10.1257/0002828042002561" rel="noopener">Bertrand &amp; Mullainathan (2004)</a></th><td>The classic correspondence test: identical CVs with different names, sent to real employers by post.</td><td>Tested human recruiters, by hand. We automate the same method for AI tools and reuse its names.</td></tr>
+        <tr><th scope="row"><a href="https://arxiv.org/abs/2009.07025" rel="noopener">FairCVtest / FairCVdb, Pe&ntilde;a et al. (2020, 2023)</a></th><td>A testbed of synthetic CV profiles and recruitment models trained with planted gender and ethnic bias.</td><td>Needs the model and its training. We use their synthetic profiles, but test a finished tool from the outside.</td></tr>
+        <tr><th scope="row"><a href="https://www.bloomberg.com/graphics/2024-openai-gpt-hiring-racial-discrimination/" rel="noopener">Bloomberg (2024)</a></th><td>Ranked otherwise-identical CVs with GPT and found name-based differences in who came out on top.</td><td>A one-off newsroom investigation of one model. We give teams a repeatable check of their own tool.</td></tr>
+        <tr><th scope="row"><a href="https://arxiv.org/abs/2405.04412" rel="noopener">&ldquo;The Silicon Ceiling&rdquo;, Armstrong et al. (2024)</a></th><td>Audited GPT-3.5 and found different scores for identical CVs depending only on the name.</td><td>Calls the model through its API. We use only the tool&rsquo;s web page, like an employer or candidate would.</td></tr>
+        <tr><th scope="row"><a href="https://arxiv.org/abs/2407.20371" rel="noopener">Wilson &amp; Caliskan, University of Washington (2024)</a></th><td>Retrieval-based CV screening with embedding models favoured white- and male-associated names.</td><td>A research study of models. We found the same kind of name sensitivity in an open-source embedding model (QuickMatch) and turn it into a pass/fail release gate.</td></tr>
+        <tr><th scope="row"><a href="https://arxiv.org/abs/2404.03086" rel="noopener">Gaebler et al., &ldquo;Auditing the use of language models to guide hiring decisions&rdquo; (2024)</a></th><td>Correspondence experiments on LLM candidate assessments, and a careful discussion of their limits.</td><td>Shares the method and its limits. Adds a same-group placebo, a browser agent, and a CI exit code.</td></tr>
+        <tr><th scope="row"><a href="https://github.com/pymetrics/audit-ai" rel="noopener">Open-source fairness toolkits: audit-AI (pymetrics), Aequitas, AI Fairness 360</a></th><td>Libraries that compute group fairness metrics, such as the four-fifths rule, from a model&rsquo;s data and predictions.</td><td>Need the data or predictions. We need only a URL and one sentence, and also test individuals, not just group averages.</td></tr>
+        <tr><th scope="row"><a href="https://www.gov.uk/ai-assurance-techniques/warden-ai-continuous-bias-auditing-for-hr-tech" rel="noopener">Warden AI (commercial)</a></th><td>A paid service that continuously audits HR-tech AI for bias with its own candidate dataset, and can gate releases.</td><td>The closest idea. It is a service connected to the vendor; this runs from the outside, through the public interface, with an evidence link for every reading.</td></tr>
+        <tr><th scope="row"><a href="https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page" rel="noopener">NYC Local Law 144 bias audits</a></th><td>Legally required yearly audits of automated hiring tools, based on selection rates and impact ratios.</td><td>Group ratios can look fair while individuals are treated differently: TalentScreen scores an impact ratio of 1.0 for sex yet flips 10 of 10 twin decisions. We report both.</td></tr>
+        </tbody></table></div>
+      <p><b>What is new here, as far as we could find:</b> an AI browser agent (Kane CLI) runs the correspondence test through
+      a hiring tool&rsquo;s own web page, with no model access; a same-group placebo separates real bias from a tool that
+      reacts to any name; every reading has its own evidence link; the result is an exit code that blocks a release; and a
+      coding agent fixes the tool while Kane, not the agent, decides whether the fix passes. We searched papers, open-source
+      tools and commercial services in November 2026 and did not find this combination, but we cannot rule out work we missed.</p>
 
       <h2 id="limits">Limits</h2>
       <ul>
