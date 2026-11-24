@@ -1,7 +1,29 @@
-// Homepage: the live test (swap the name, see the score Kane read) and the explainer video's sound button.
+// Homepage: scroll reveals and number count-ups (one observer, transform/opacity only), the live test (swap the name, see the score Kane read) and the explainer video's sound button.
 (() => {
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const rx = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const root = document.documentElement;
+  window.__rvReady = true;
+  const count = (el) => {
+    const to = +el.dataset.count, t0 = performance.now(), dur = 1100;
+    if (reduce || !to) { el.textContent = String(to); return; }
+    const step = (now) => { const p = Math.min(1, (now - t0) / dur); el.textContent = String(Math.round(to * (1 - Math.pow(1 - p, 3)))); if (p < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  };
+  if ("IntersectionObserver" in window && !reduce) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add("in");
+      e.target.querySelectorAll("[data-count]").forEach(count);
+      if (e.target.dataset.count) count(e.target);
+      io.unobserve(e.target);
+    }), { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
+    document.querySelectorAll(".rv").forEach((el) => io.observe(el));
+  } else {
+    root.classList.remove("js-rv");
+  }
 
   const test = document.getElementById("h-test");
   if (test) {
@@ -16,7 +38,7 @@
       who.textContent = t.name;
       score.textContent = t.score.toFixed(3);
       dec.textContent = t.selected ? "Shortlisted" : "Rejected";
-      dec.className = "h-decision " + (t.selected ? "ok" : "no");
+      dec.className = "m-dec " + (t.selected ? "ok" : "no");
       test.querySelectorAll(".h-name").forEach((b) => {
         const on = +b.dataset.i === i;
         b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on));

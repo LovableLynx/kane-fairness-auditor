@@ -1,84 +1,122 @@
 {% extends "base.html" %}
-{% block head %}<link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">{% endblock %}
+{% block head %}
+<link rel="preload" href="{{ url_for('static', filename='fonts/anton-400.woff2') }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ url_for('static', filename='fonts/instrument-serif-italic.woff2') }}" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+<script>/* hide scroll-reveal items only while home.js is expected; give up after 2.5 s */document.documentElement.classList.add("js-rv");setTimeout(function(){if(!window.__rvReady)document.documentElement.classList.remove("js-rv")},2500);</script>
+{% endblock %}
 {% block bodyclass %}home{% endblock %}
 {% block body %}
 
-{# 1. The live test: real readings Kane CLI took from TalentScreen in a real browser #}
-<section class="h-hero" id="lab" aria-labelledby="h-title">
-  <div class="h-wrap">
-    <p class="h-eyebrow">A short story about a name</p>
-    <h1 id="h-title" class="h-title">Two people applied for the same job,<br><em>with the same CV.</em></h1>
-
-    {% if story %}
-    <div class="h-test" id="h-test" data-twins='{{ story.twins|tojson }}'>
-      <figure class="h-cv" aria-labelledby="h-cv-cap">
-        <figcaption id="h-cv-cap" class="h-label">The CV · word for word the same for everyone</figcaption>
-        <pre class="h-cv-text" id="h-cv-text" tabindex="0" aria-label="CV text">{{ story.twins[0].cv }}</pre>
+<section class="m-hero" aria-labelledby="m-title">
+  <div class="m-wrap">
+    <div class="m-mast" aria-hidden="true"><span>Issue Nº 01 · Hiring &amp; AI</span><span>The Name Test</span><span>November 2026</span></div>
+    <div class="m-hero-grid">
+      <div class="m-hero-text">
+        <h1 id="m-title" class="m-giant">
+          <span class="m-l"><span>Same CV.</span></span>
+          <span class="m-l"><span>Different</span></span>
+          <span class="m-l"><span>name.</span></span>
+        </h1>
+        <p class="m-overlay"><em>Different verdict.</em></p>
+        <p class="m-lede rv">Two people applied for the same job, with the same CV, word for word. An AI read both before any human did. One was shortlisted. One was rejected. This is how we caught it, and how you can check any hiring AI for the same thing.</p>
+        <div class="m-ctas rv">
+          <a class="m-btn" href="#lab">See it happen ↓</a>
+          <a class="m-btn ghost" href="{{ url_for('your_cv') }}">Test your own CV</a>
+        </div>
+      </div>
+      <figure class="m-photo m-hero-photo rv">
+        <img src="{{ url_for('static', filename='img/applicant-laptop.webp') }}" width="1600" height="1068" alt="A woman at her laptop, head in her hand, waiting to hear back" fetchpriority="high">
+        <figcaption>Most applicants never see their score. Only the rejection email, or the silence.</figcaption>
       </figure>
-      <div class="h-result" aria-live="polite">
-        <p class="h-label">What the AI decided</p>
-        <p class="h-who" id="h-who">{{ story.twins[0].name }}</p>
-        <p class="h-score"><span id="h-score">{{ '%.3f'|format(story.twins[0].score) }}</span><small> / 1.000</small></p>
-        <p class="h-decision {{ 'ok' if story.twins[0].selected else 'no' }}" id="h-decision">{{ 'Shortlisted' if story.twins[0].selected else 'Rejected' }}</p>
-        <p class="h-label" style="margin-top:28px">Try another name</p>
-        <div class="h-names" role="group" aria-label="Names">
+    </div>
+  </div>
+  <div class="m-ticker" aria-hidden="true"><div class="m-ticker-track">
+    {% for _ in range(2) %}<span>Brendan</span><i>→</i><span>Ebony</span><i>→</i><span>Hakim</span><i>→</i><span>Anne</span><i>→</i><span>Jay</span><i>→</i><span>Latonya</span><i>→</i><span>Leroy</span><i>→</i><span>Laurie</span><i>✶</i><span class="o">same CV</span><i>✶</i>{% endfor %}
+  </div></div>
+</section>
+
+<section class="m-stats" aria-label="Key numbers">
+  <div class="m-wrap m-stats-grid">
+    <div class="rv"><b data-count="240">240</b><span>readings Kane CLI took in a real browser</span></div>
+    <div class="rv"><b><span data-count="240">240</span>/240</b><span>match Kane's own run log</span></div>
+    <div class="rv"><b><span data-count="10">10</span>/10</b><span>TalentScreen decisions flipped by a name</span></div>
+    <div class="rv"><b data-count="0">0</b><span>lines of the tools' code we needed</span></div>
+  </div>
+</section>
+
+{% if story %}
+<section class="m-sec" id="lab" aria-labelledby="m-lab-title">
+  <div class="m-wrap">
+    <header class="m-head rv"><span class="m-kicker">Exhibit A</span><h2 id="m-lab-title" class="m-h2">The live test</h2><p class="m-aside"><em>Click a name.</em> The CV stays the same. Watch the decision.</p></header>
+    <div class="m-test rv" id="h-test" data-twins='{{ story.twins|tojson }}'>
+      <figure class="m-cv">
+        <figcaption>CV · identical for every name</figcaption>
+        <pre id="h-cv-text" tabindex="0" aria-label="CV text">{{ story.twins[0].cv }}</pre>
+      </figure>
+      <div class="m-res" aria-live="polite">
+        <span class="m-small">What the AI decided for</span>
+        <p class="m-who" id="h-who">{{ story.twins[0].name }}</p>
+        <p class="m-score" id="h-score">{{ '%.3f'|format(story.twins[0].score) }}</p>
+        <p class="m-dec {{ 'ok' if story.twins[0].selected else 'no' }}" id="h-decision">{{ 'Shortlisted' if story.twins[0].selected else 'Rejected' }}</p>
+        <div class="m-names" role="group" aria-label="Names">
           {% for t in story.twins %}<button type="button" class="h-name{{ ' on' if loop.first }}" data-i="{{ loop.index0 }}" aria-pressed="{{ 'true' if loop.first else 'false' }}">{{ t.name }}</button>{% endfor %}
         </div>
       </div>
     </div>
-    <p class="h-note">These are real readings. Kane CLI submitted this exact CV under each name to TalentScreen, a demo hiring tool we built with a hidden bias, in a real browser. <a href="{{ story.evidence }}" rel="noopener">See Kane's recording →</a></p>
-    {% endif %}
-  </div>
-</section>
-
-{% if video_url %}
-<section class="h-video" aria-labelledby="h-video-title">
-  <div class="h-wrap">
-    <h2 class="h-h2" id="h-video-title">What this site does, in two minutes</h2>
-    <div class="h-player">
-      <video id="h-explainer" src="{{ video_url }}" autoplay muted loop playsinline preload="metadata"
-             aria-label="Explainer video: real recordings of the site, Kane CLI's run and the code fix"></video>
-      <button type="button" class="h-sound waiting" id="h-sound">Tap for sound</button>
-    </div>
-    <p class="h-video-cap">Real screen recordings of this site, Kane's own run, and the code fix. Tap the speaker to watch from the start with sound.</p>
+    <p class="m-note rv">Real readings: Kane CLI submitted this exact CV under each name to TalentScreen, a demo hiring tool we built with a hidden bias to test the auditor. <a href="{{ story.evidence }}" rel="noopener">Watch Kane's recording →</a></p>
   </div>
 </section>
 {% endif %}
 
-{# 2. The story, one idea at a time #}
-<section class="h-story">
-  <div class="h-wrap h-narrow">
-    <p class="h-line">Nothing on the CV was different.</p>
-    <p class="h-big">The only difference was <em>the name.</em></p>
-    <p class="h-line">Today, AI often reads your CV before any human does. And unlike our demo, the tools that read real CVs every day don't come with a warning label.</p>
-    <p class="h-big">So how would anyone know?</p>
+{% if video_url %}
+<section class="m-sec m-dark" aria-labelledby="m-video-title">
+  <div class="m-wrap">
+    <header class="m-head rv"><span class="m-kicker">Exhibit B</span><h2 id="m-video-title" class="m-h2">Two minutes</h2><p class="m-aside"><em>Real screen recordings:</em> this site, Kane's own run and the code fix.</p></header>
+    <div class="h-player rv">
+      <video id="h-explainer" src="{{ video_url }}" autoplay muted loop playsinline preload="metadata" aria-label="Explainer video"></video>
+      <button type="button" class="h-sound waiting" id="h-sound">Tap for sound</button>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="m-sec">
+  <div class="m-wrap m-spread">
+    <figure class="m-photo rv">
+      <img src="{{ url_for('static', filename='img/applicant-stressed.webp') }}" width="1600" height="1069" alt="A young man at his laptop, hand on his head" loading="lazy">
+    </figure>
+    <div class="m-spread-text">
+      <p class="m-quote rv"><em>“Nothing on the CV was different. Only the name.”</em></p>
+      <p class="m-body rv">AI now reads CVs before people do. The tools that screen real applicants don't come with a warning label, and the people they reject never find out why.</p>
+      <p class="m-body rv">So we asked one question: could anyone catch a biased hiring AI <b>from the outside</b>, with no access to its code? We built TalentScreen with a bias hidden inside, then tried.</p>
+    </div>
   </div>
 </section>
 
-<section class="h-section" id="how">
-  <div class="h-wrap">
-    <h2 class="h-h2">We test it from the outside,<br><em>the way a recruiter would.</em></h2>
-    <ol class="h-steps">
-      <li><span>1</span><h3>One CV, eight names</h3><p>The same CV, rewritten under eight names: men and women, from two name groups. Only the name, email and he/she change.</p></li>
-      <li><span>2</span><h3>A placebo check</h3><p>Each CV also gets a second name from the same group. If even that changes the result, the tool reacts to names in general.</p></li>
-      <li><span>3</span><h3>Kane CLI applies</h3><p>Kane CLI from TestMu AI opens the real website, submits every CV and reads back each score. No access to the model, data or code.</p></li>
-      <li><span>4</span><h3>A verdict, with evidence</h3><p>PASS, BIASED or NAME-UNSTABLE, every number checked against Kane's own log, and a release that fails is blocked.</p></li>
+<section class="m-sec" id="how" aria-labelledby="m-how-title">
+  <div class="m-wrap">
+    <header class="m-head rv"><span class="m-kicker">The method</span><h2 id="m-how-title" class="m-h2">How we test it</h2><p class="m-aside"><em>The way a recruiter would,</em> through the website.</p></header>
+    <ol class="m-steps">
+      <li class="rv"><span>01</span><h3>One CV, eight names</h3><p>Men and women from two name groups. Only the name, email and he/she change.</p></li>
+      <li class="rv"><span>02</span><h3>A placebo</h3><p>A second name from the same group. If that moves the result too, the tool reacts to any name.</p></li>
+      <li class="rv"><span>03</span><h3>Kane CLI applies</h3><p>Kane CLI from TestMu AI opens the real site, submits every CV and reads back each score.</p></li>
+      <li class="rv"><span>04</span><h3>A verdict</h3><p>PASS, BIASED or NAME-UNSTABLE, with evidence. A failing tool is blocked from release.</p></li>
     </ol>
   </div>
 </section>
 
-<section class="h-section h-tint">
-  <div class="h-wrap">
-    <h2 class="h-h2">What Kane found in three AI hiring tools</h2>
-    <p class="h-sub">240 real-browser readings. 240 out of 240 match Kane's own log.</p>
-    <div class="h-verdicts">
+<section class="m-sec m-tint" aria-labelledby="m-find-title">
+  <div class="m-wrap">
+    <header class="m-head rv"><span class="m-kicker">The findings</span><h2 id="m-find-title" class="m-h2">Three AI recruiters</h2><p class="m-aside"><em>240 real-browser readings,</em> each checked against Kane's own log.</p></header>
+    <div class="m-findings">
       {% for key, t in TOOLS.items() %}{% set r = reports.get(key) %}{% if r %}
-      <a class="h-verdict" href="{{ url_for('result', name=key) }}">
-        <span class="h-tool">{{ t.name }}</span>
-        <span class="h-v {{ r.verdict_class }}">{{ r.verdict.replace('FAIL: ', '') if r.verdict_class == 'FAIL' else r.verdict }}</span>
-        <span class="h-vtext">{% if r.verdict_class == 'PASS' %}Gave every name the same score.{% elif 'UNSTABLE' in r.verdict %}Changed its decision when we swapped the name, even within the same group.{% else %}Gave some names better scores than others.{% endif %}</span>
-        <span class="h-vstat">{{ r.flips }}/{{ r.candidates|length }} decisions changed on gender or background · {{ r.placebo_flips or 0 }}/{{ r.candidates|length }} on a same-group name</span>
-        <span class="h-more">See the evidence →</span>
+      <a class="m-finding rv" href="{{ url_for('result', name=key) }}">
+        <span class="m-fno">Finding 0{{ loop.index }}</span>
+        <span class="m-fname">{{ t.name }}</span>
+        <span class="m-v {{ r.verdict_class }}">{{ r.verdict.replace('FAIL: ', '') if r.verdict_class == 'FAIL' else r.verdict }}</span>
+        <span class="m-fdesc">{% if r.verdict_class == 'PASS' %}Gave every name the same score.{% elif 'UNSTABLE' in r.verdict %}Changed its decision when we swapped the name, even within the same group.{% else %}Gave some names better scores than others.{% endif %}<small>{{ r.flips }}/{{ r.candidates|length }} flipped on gender or background · {{ r.placebo_flips or 0 }}/{{ r.candidates|length }} on a same-group name</small></span>
+        <span class="m-fgo" aria-hidden="true">→</span>
       </a>
       {% endif %}{% endfor %}
     </div>
@@ -86,45 +124,51 @@
 </section>
 
 {% if story and story.after_score is not none %}
-<section class="h-section">
-  <div class="h-wrap h-narrow">
-    <h2 class="h-h2">Then came the twist.</h2>
-    <p class="h-line">An AI coder, Claude Code, read Kane's report and found what was hidden: the tool was guessing each person's gender and ethnicity from their name. It removed that.</p>
-    <p class="h-line">Kane tested the fixed tool again, in a real browser.</p>
-    <p class="h-big">Every name: {{ '%.3f'|format(story.after_score) }}. <em class="ok">Pass.</em></p>
-    <p class="h-links"><a href="{{ story.diff }}" rel="noopener">See the code change →</a>{% if story.after_url %}<a href="{{ story.after_url }}" rel="noopener">See Kane's re-check →</a>{% endif %}</p>
+<section class="m-twist" aria-labelledby="m-twist-title">
+  <div class="m-wrap">
+    <span class="m-kicker on">The twist</span>
+    <h2 id="m-twist-title" class="m-giant m-giant-sm rv">Then an AI fixed it.</h2>
+    <div class="m-twist-grid">
+      <p class="m-body rv">Claude Code read Kane's report and found what was hidden: the tool was guessing each person's gender and ethnicity from their name. It removed that. Then Kane tested the fixed tool again, in a real browser.</p>
+      <p class="m-pass rv">Every name: <b>{{ '%.3f'|format(story.after_score) }}</b><em>Pass.</em></p>
+    </div>
+    <p class="m-links rv"><a href="{{ story.diff }}" rel="noopener">See the code change →</a>{% if story.after_url %}<a href="{{ story.after_url }}" rel="noopener">Watch Kane's re-check →</a>{% endif %}</p>
   </div>
 </section>
 {% endif %}
 
-<section class="h-cta" id="your-cv">
-  <div class="h-wrap h-narrow">
-    <h2 class="h-h2">Would an AI shortlist <em>your</em> CV<br>if your name were different?</h2>
-    <p class="h-line">Paste your CV. We rewrite it under eight names and three AI hiring tools score every version. Free, and your CV is never stored.</p>
-    <a class="h-btn" href="{{ url_for('your_cv') }}">Try it with your CV</a>
+<section class="m-sec m-cta" id="your-cv">
+  <div class="m-wrap m-cta-grid">
+    <div>
+      <h2 class="m-giant m-giant-sm rv">Would an AI shortlist <em>your</em> CV?</h2>
+      <p class="m-body rv">Paste your CV. We rewrite it under eight names and three AI hiring tools score every version. Free, and your CV is never stored.</p>
+      <a class="m-btn rv" href="{{ url_for('your_cv') }}">Try it with your CV →</a>
+    </div>
+    <figure class="m-photo rv">
+      <img src="{{ url_for('static', filename='img/interview.webp') }}" width="1600" height="1068" alt="A woman with her CV at a job interview" loading="lazy">
+    </figure>
   </div>
 </section>
 
-<section class="h-section" id="try">
-  <div class="h-wrap">
-    <h2 class="h-h2">For teams</h2>
-    <div class="h-teams">
-      <div>
+<section class="m-sec" id="try" aria-labelledby="m-teams-title">
+  <div class="m-wrap">
+    <header class="m-head rv"><span class="m-kicker">For teams</span><h2 id="m-teams-title" class="m-h2">Use it on your tool</h2><p class="m-aside"><em>A web address and one sentence.</em> No model access.</p></header>
+    <div class="m-teams">
+      <div class="rv">
         <h3>Audit your own hiring tool</h3>
-        <p>All it needs is the tool's web address and one sentence. Run it on every release with the GitHub Action, and a biased tool can't ship.</p>
-        <pre class="h-code">python audit/gate.py --url https://your-tool.example/ \
+        <p>Run it on every release with the GitHub Action, and a biased tool can't ship.</p>
+        <pre class="m-code">python audit/gate.py --url https://your-tool.example/ \
   --task "Paste the CV into the form and submit it"</pre>
-        <p><a href="{{ REPO }}#use-it-on-your-own-hiring-tool" rel="noopener">How to set it up →</a></p>
+        <a href="{{ REPO }}#use-it-on-your-own-hiring-tool" rel="noopener">How to set it up →</a>
       </div>
-      <div>
+      <div class="rv">
         <h3>Be the recruiter</h3>
-        <p>Use the three demo tools yourself with the sample CVs.</p>
-        <ul class="h-tools">
-          {% for key, t in TOOLS.items() %}<li><a href="{{ TOOL_URLS[key] }}">{{ t.name }}</a><span>{{ t.role }}</span></li>{% endfor %}
-        </ul>
-        <p class="h-small">Please use the sample CVs or invented details, never a real person's CV. <a href="{{ url_for('legal') }}#privacy">Privacy</a></p>
+        <p>Use the three demo tools yourself, with the sample CVs.</p>
+        <ul class="m-tools">{% for key, t in TOOLS.items() %}<li><a href="{{ TOOL_URLS[key] }}">{{ t.name }}</a><span>{{ t.role }}</span></li>{% endfor %}</ul>
+        <p class="m-tiny">Please use the sample CVs or invented details, never a real person's CV. <a href="{{ url_for('legal') }}#privacy">Privacy</a></p>
       </div>
     </div>
+    <p class="m-credits">Photos from Wikimedia Commons: Shixart1985 (<a href="https://commons.wikimedia.org/wiki/File:Tired_business_woman_working_on_laptop_at_home.jpg" rel="noopener">CC BY 2.0</a>), Tim Gouw (<a href="https://commons.wikimedia.org/wiki/File:Man_wearing_white_top_using_MacBook.jpg" rel="noopener">CC0</a>), amtec_photos (<a href="https://commons.wikimedia.org/wiki/File:Woman_on_a_Job_Interview_-_38141080114.jpg" rel="noopener">CC BY-SA 2.0</a>); resized and cropped. Fonts: Anton and Instrument Serif (SIL Open Font License).</p>
   </div>
 </section>
 
