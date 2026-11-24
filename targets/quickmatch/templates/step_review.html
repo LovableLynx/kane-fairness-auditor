@@ -1,11 +1,11 @@
 {% extends "shell.html" %}
 {% block body %}
 <form class="box" method="post" action="{{ url_for('run_match', did=d.id) }}" data-busy="Matching…">
-  <h1>Ready to match? ✨</h1>
+  <h1>Ready to match? <span class="sp">✨</span></h1>
   <p class="muted" style="margin:0 0 14px">Role: <b>{{ role.title }}</b> · our language model compares the CV with the job description.</p>
   <pre>{{ d.cv }}</pre>
   <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
-    <button class="go" type="submit"><span class="lbl">Run match ✨</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></button>
+    <button class="go" type="submit"><span class="lbl">Run match <span class="sp">✨</span></span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></button>
     <a class="go light" href="{{ url_for('step_cv', did=d.id) }}" style="margin-top:20px">← Edit CV</a>
   </div>
   <p class="wait" role="status">Reading the CV with the language model. The first match after a quiet spell can take up to a minute while the model loads.</p>

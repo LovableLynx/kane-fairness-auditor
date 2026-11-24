@@ -67,6 +67,18 @@
   footer { width:min(680px, 100% - 32px); margin:0 auto; padding:0 0 28px; color:var(--muted); font-size:12.5px; }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
   @media (max-width:640px) { input, textarea, select { font-size:16px !important; } .role input { width:20px; height:20px; } }
+  /* Product look: flat cream page, plain cards, no floating blobs, emoji tiles or bouncy motion */
+  .blob { display:none; } .sp { font-size:0; }
+  body { background:#fbf8f3; font-family:-apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .logo .spark { transform:none; box-shadow:none; background:#b84e00; border-radius:6px; }
+  .track i { background:#b84e00; transition:width .4s ease; } .track { height:6px; }
+  .box { border:1px solid #eadfce; border-radius:12px; box-shadow:none; animation:none; }
+  .role { border:1px solid #eadfce; border-radius:10px; transition:border-color .15s; } .role:hover { transform:none; box-shadow:none; border-color:#d9b994; }
+  .role:has(input:checked) { border-color:#b84e00; box-shadow:0 0 0 1px #b84e00; }
+  .role .emoji { display:none; }
+  .go { background:#b84e00; box-shadow:none; border-radius:8px; } .go:hover { transform:none; box-shadow:none; background:#9c4200; }
+  .chip, .tag { border-width:1px; border-radius:6px; } textarea, pre { border-width:1px; border-radius:10px; }
+  .qm-up { border-width:1.5px; border-radius:10px; background:#fff; } .qm-up:hover { transform:none; }
 </style>
 {% block head %}{% endblock %}
 </head>

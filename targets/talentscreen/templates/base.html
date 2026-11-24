@@ -67,30 +67,38 @@
   @media (max-width:720px) { nav.top { display:none; } .right .pill.model { display:none; } }
 </style>
 <style>
-  /* Bright theme: same layout and wording as before (Kane's recorded runs still find everything where it was). */
-  :root { --bg:#f7f6ff; --bg2:#ffffff; --panel:#ffffffe6; --panel-solid:#ffffff; --line:#e7e3f6; --line2:#d8d2f1;
-          --fg:#17152b; --muted:#56536f; --dim:#6f6c88; --accent:#6d4aff; --accent-hi:#5a37f0; --mint:#0db88b; --pink:#ff4f97;
-          --ok:#0b8f69; --bad:#d8334f; }
-  body::after { background-image: linear-gradient(#6d4aff0b 1px, transparent 1px), linear-gradient(90deg, #6d4aff0b 1px, transparent 1px); opacity:.6; }
-  header { background:#ffffffd0; }
-  nav.top a:hover, nav.top a[aria-current="page"] { background:#6d4aff12; }
-  .pill { background:#ffffff; }
-  .glass { box-shadow: 0 1px 0 #ffffff inset, 0 24px 50px -34px #6d4aff66; }
-  .btn.ghost { background:#ffffff; }
-  tbody tr:hover { background:#6d4aff08; }
-  .error { background:#ffe9ee; color:#9b1c35; border-color:#f5b8c4; }
-  .kpi { background:#ffffff !important; }
-  .drop { background:#fbfaff !important; } .drop:hover, .drop.over { background:#f1edff !important; }
-  .drop .ico { border-color:#6d4aff22 !important; }
-  .rolepick select, textarea { background:#ffffff !important; color:var(--fg) !important; }
-  .chipbtn { background:#ffffff !important; }
-  .minibar { background:#ece9f8 !important; }
-  .scan { background:#f7f6ffd9 !important; }
-  .doc { background:#ffffff !important; } .doc i { background:#ece9f8; }
-  .field, .fields > div { background:#ffffff; }
-  .track { stroke:#ece9f8 !important; }
-  .logo-mark { box-shadow:0 0 18px #6d4aff55; }
-  /* phones: 16px fields so iOS doesn't zoom in when you tap; thumb-sized sample buttons */
+  /* Product look: flat white UI, one deep-green brand colour, 8-10px corners, no glows or gradients. Layout and wording unchanged. */
+  :root { --bg:#f6f7f5; --bg2:#ffffff; --panel:#ffffff; --panel-solid:#ffffff; --line:#e2e5e0; --line2:#d3d8d0;
+          --fg:#1c211d; --muted:#525a53; --dim:#6b736c; --accent:#1d6b4f; --accent-hi:#1d6b4f; --mint:#1d6b4f; --pink:#1d6b4f;
+          --ok:#1d6b4f; --bad:#b4372e; --radius:10px; }
+  body { font:15px/1.55 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  body::before, body::after { display:none; }
+  header { background:#ffffff; backdrop-filter:none; }
+  .logo-mark { background:var(--accent); box-shadow:none; border-radius:6px; } .logo-mark::after { inset:8px; border-radius:2px; background:#fff; }
+  .logo b { color:var(--accent); }
+  nav.top a:hover, nav.top a[aria-current="page"] { background:#eef3ef; color:var(--fg); }
+  .pill { background:#fff; border-radius:6px; } .live-dot { animation:none; }
+  h1 .grad { background:none; color:var(--accent); -webkit-background-clip:initial; background-clip:initial; }
+  .glass { background:#fff; backdrop-filter:none; box-shadow:0 1px 2px #0000000d; border-radius:10px; }
+  .btn { background:var(--accent); box-shadow:none; border-radius:8px; } .btn:hover { filter:none; background:#175a42; box-shadow:none; transform:none; }
+  .btn.ghost { background:#fff; color:var(--fg); box-shadow:0 0 0 1px var(--line2) inset; }
+  .avatar { background:#dfeae4; color:var(--accent); border-radius:50%; }
+  .badge { border-radius:6px; } .badge.ok { background:#e3efe9; border-color:#bcd7c9; } .badge.bad { background:#f7e4e2; border-color:#e8c2be; }
+  .error { background:#fbecea; color:#8d2a23; border-color:#ecc6c1; border-radius:8px; }
+  .rise { animation:none !important; }
+  .hello { color:var(--muted); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; margin:0 0 8px; }
+  .kpi { background:#fff !important; border-radius:10px !important; }
+  .drop-wrap { background:none !important; animation:none !important; padding:0 !important; }
+  .drop { background:#fafbfa !important; border:1.5px dashed var(--line2) !important; border-radius:10px !important; }
+  .drop:hover, .drop.over { background:#f0f5f2 !important; border-color:var(--accent) !important; }
+  .drop .ico { background:#eef3ef !important; border:0 !important; border-radius:8px !important; }
+  .rolepick select, textarea { background:#fff !important; color:var(--fg) !important; border-radius:8px !important; }
+  .chipbtn { background:#fff !important; border-radius:6px !important; } .chipbtn:hover { background:#eef3ef !important; border-color:var(--accent) !important; }
+  .minibar { background:#eceeea !important; } .minibar i { background:var(--accent) !important; }
+  .scan { background:#f6f7f5e6 !important; } .doc { background:#fff !important; } .doc i { background:#e9ece7 !important; }
+  .field, .fields > div { background:#fff !important; border-radius:8px !important; } .field .ic { background:#eef3ef !important; border-radius:6px !important; }
+  .gauge .track { stroke:#e9ece7 !important; } .gauge .val { stroke:var(--accent) !important; }
+  .sp { font-size:0; }
   @media (max-width:640px) { input, textarea, select { font-size:16px !important; } .chipbtn { padding:10px 14px !important; } }
 </style>
 {% block head %}{% endblock %}

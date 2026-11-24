@@ -59,14 +59,14 @@
 {% block body %}
 <section class="hero rise">
   <div>
-    <p class="hello">Good to see you 👋 Let's find your next {{ job.title }}.</p>
+    <p class="hello">Hiring for {{ job.title }} · {{ job.team }}</p>
     <h1>Screen a candidate<br><span class="grad">in seconds.</span></h1>
     <p class="muted" style="margin:0;max-width:46ch">Drop a CV and our AI reads it, scores the fit for the role you're hiring for, and decides whether to shortlist.</p>
   </div>
   <div class="kpis" aria-label="Today">
-    <div class="kpi"><i class="ic">📄</i><b>{{ stats.count }}</b><span>CVs screened</span></div>
-    <div class="kpi"><i class="ic" style="background:#e3f8f0">⭐</i><b>{{ stats.short_rate if stats.short_rate is not none else '–' }}{% if stats.short_rate is not none %}%{% endif %}</b><span>shortlisted</span></div>
-    <div class="kpi"><i class="ic" style="background:#fff0f6">⚡</i><b>{{ stats.avg_ms if stats.avg_ms is not none else '–' }}{% if stats.avg_ms is not none %}<small style="font-size:13px"> ms</small>{% endif %}</b><span>avg decision time</span></div>
+    <div class="kpi"><b>{{ stats.count }}</b><span>CVs screened</span></div>
+    <div class="kpi"><b>{{ stats.short_rate if stats.short_rate is not none else '–' }}{% if stats.short_rate is not none %}%{% endif %}</b><span>shortlisted</span></div>
+    <div class="kpi"><b>{{ stats.avg_ms if stats.avg_ms is not none else '–' }}{% if stats.avg_ms is not none %}<small style="font-size:13px"> ms</small>{% endif %}</b><span>avg decision time</span></div>
   </div>
 </section>
 {% if error_message %}<div class="error" role="alert">{{ error_message }}</div>{% endif %}
@@ -94,7 +94,7 @@
     </div>
     <script type="application/json" id="sample-data">{{ samples|tojson }}</script>
     {% endif %}
-    <button type="submit" id="screen-btn" class="btn"><span class="lbl">✨ Screen CV</span></button>
+    <button type="submit" id="screen-btn" class="btn"><span class="lbl"><span class="sp">✨</span> Screen CV</span></button>
   </form>
 
   <section class="glass pad rise d2" aria-labelledby="recent-h" id="recent">

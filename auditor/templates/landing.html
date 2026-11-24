@@ -72,11 +72,23 @@
 {% if video_url %}
 <section class="m-sec m-dark" aria-labelledby="m-video-title">
   <div class="m-wrap">
-    <header class="m-head rv"><span class="m-kicker">Exhibit B</span><h2 id="m-video-title" class="m-h2">Two minutes</h2><p class="m-aside"><em>Real screen recordings:</em> this site, Kane's own run and the code fix.</p></header>
-    <div class="h-player rv">
-      <video id="h-explainer" src="{{ video_url }}" autoplay muted loop playsinline preload="metadata" aria-label="Explainer video"></video>
-      <button type="button" class="h-sound waiting" id="h-sound">Tap for sound</button>
+    <header class="m-head rv"><span class="m-kicker">Exhibit B</span><h2 id="m-video-title" class="m-h2">Watch it happen</h2><p class="m-aside"><em>Live, not a recording:</em> the real TalentScreen, running right here.</p></header>
+    <div class="d-shell rv" id="d-shell">
+      <div class="d-bar" aria-hidden="true"><i></i><i></i><i></i><span class="d-url" id="d-url">kane-fairness-auditor.onrender.com/talentscreen/</span></div>
+      <div class="d-stage" id="d-stage">
+        <div class="d-cam" id="d-cam">
+          <iframe id="d-frame" title="Live demo of TalentScreen" tabindex="-1" aria-hidden="true" loading="lazy"></iframe>
+          <div class="d-cursor" id="d-cursor" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.6L9 19z" fill="#16130f" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+          <div class="d-ring" id="d-ring" aria-hidden="true"></div>
+        </div>
+      </div>
+      <p class="d-cap" id="d-cap" aria-live="polite">A recruiter opens TalentScreen.</p>
     </div>
+    {% if video_url %}<p class="d-more"><button type="button" class="m-btn ghost" id="d-watch">▶ Watch the 2-minute narrated version (with sound)</button></p>
+    <dialog class="d-dialog" id="d-dialog" aria-label="Narrated walkthrough">
+      <video id="d-video" src="{{ video_url }}" controls playsinline preload="none"></video>
+      <button type="button" class="d-close" id="d-close" aria-label="Close">✕</button>
+    </dialog>{% endif %}
   </div>
 </section>
 {% endif %}

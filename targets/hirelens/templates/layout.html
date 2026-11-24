@@ -58,14 +58,15 @@
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
 </style>
 <style>
-  /* Bright sidebar: same layout, light blue instead of navy */
-  aside { background:linear-gradient(180deg, #eaf2ff, #f6f9ff); color:#24405f; border-right:1px solid #d7e3f5; }
-  .brand { color:#0f2b4c; } .brand .lens { border-color:#1463e6; box-shadow:0 0 0 4px #1463e61a; }
-  .navlabel { color:#5b7799; }
-  aside a.nav { color:#24405f; } aside a.nav:hover { background:#1463e612; }
-  aside a.nav[aria-current="page"] { background:#ffffff; color:#0f2b4c; box-shadow: inset 3px 0 0 #1463e6, 0 1px 3px #0f2b4c14; }
-  aside .job { background:#ffffff; border-color:#d7e3f5; } aside .job b { color:#0f2b4c; } aside .job .muted, aside .job span { color:#5b7799 !important; }
-  aside .foot { color:#5b7799; } aside .foot a { color:#1463e6; }
+  /* Product look: a plain applicant-tracking system. White and grey, one blue, small corners, no gradients or motion. */
+  aside { background:#f4f6f9; color:#2b3a4d; border-right:1px solid #e1e6ee; }
+  .brand { color:#16263a; } .brand .lens { border-color:#2557c7; box-shadow:none; } .brand .lens::after { background:#2557c7; }
+  .navlabel { color:#6a7a8e; }
+  aside a.nav { color:#2b3a4d; border-radius:6px; } aside a.nav:hover { background:#e8edf4; }
+  aside a.nav[aria-current="page"] { background:#fff; color:#16263a; box-shadow: inset 3px 0 0 #2557c7; }
+  aside .job { background:#fff; border-color:#e1e6ee; border-radius:6px; } aside .job b { color:#16263a; } aside .job .muted, aside .job span { color:#6a7a8e !important; }
+  aside .foot { color:#6a7a8e; } aside .foot a { color:#2557c7; }
+  * { animation:none !important; }
   @media (max-width:640px) { input, textarea, select { font-size:16px !important; } }
 </style>
 {% block head %}{% endblock %}
