@@ -2,6 +2,8 @@
 {% block head %}
 <style>
   .hero { display:flex; flex-wrap:wrap; align-items:end; justify-content:space-between; gap:20px; margin-bottom:26px; }
+  .hello { margin:0 0 8px; color:var(--muted); font-weight:600; }
+  .kpi .ic { display:grid; place-items:center; width:32px; height:32px; border-radius:10px; background:#efeaff; font-style:normal; font-size:15px; margin-bottom:8px; }
   .kpis { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; }
   @media (max-width:480px) { .kpis { gap:8px; } .kpi { padding:12px; } .kpi b { font-size:20px; } .kpi span { font-size:11px; } }
   .kpi { padding:14px 16px; border-radius:16px; border:1px solid var(--line); background:#ffffff06; }
@@ -57,13 +59,14 @@
 {% block body %}
 <section class="hero rise">
   <div>
+    <p class="hello">Good to see you 👋 Let's find your next {{ job.title }}.</p>
     <h1>Screen a candidate<br><span class="grad">in seconds.</span></h1>
     <p class="muted" style="margin:0;max-width:46ch">Drop a CV and our AI reads it, scores the fit for the role you're hiring for, and decides whether to shortlist.</p>
   </div>
   <div class="kpis" aria-label="Today">
-    <div class="kpi"><b>{{ stats.count }}</b><span>CVs screened</span></div>
-    <div class="kpi"><b>{{ stats.short_rate if stats.short_rate is not none else '–' }}{% if stats.short_rate is not none %}%{% endif %}</b><span>shortlisted</span></div>
-    <div class="kpi"><b>{{ stats.avg_ms if stats.avg_ms is not none else '–' }}{% if stats.avg_ms is not none %}<small style="font-size:13px"> ms</small>{% endif %}</b><span>avg decision time</span></div>
+    <div class="kpi"><i class="ic">📄</i><b>{{ stats.count }}</b><span>CVs screened</span></div>
+    <div class="kpi"><i class="ic" style="background:#e3f8f0">⭐</i><b>{{ stats.short_rate if stats.short_rate is not none else '–' }}{% if stats.short_rate is not none %}%{% endif %}</b><span>shortlisted</span></div>
+    <div class="kpi"><i class="ic" style="background:#fff0f6">⚡</i><b>{{ stats.avg_ms if stats.avg_ms is not none else '–' }}{% if stats.avg_ms is not none %}<small style="font-size:13px"> ms</small>{% endif %}</b><span>avg decision time</span></div>
   </div>
 </section>
 {% if error_message %}<div class="error" role="alert">{{ error_message }}</div>{% endif %}

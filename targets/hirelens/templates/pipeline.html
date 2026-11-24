@@ -23,18 +23,29 @@
   .fitbar { flex:1; height:6px; border-radius:6px; background:#eef2f7; overflow:hidden; } .fitbar i { display:block; height:100%; border-radius:6px; }
   .col.go .fitbar i { background:var(--good); } .col.stop .fitbar i { background:#d9772f; }
   .emptycol { text-align:center; color:var(--muted); font-size:13px; padding:28px 10px; border:2px dashed #cfd8e4; border-radius:10px; }
+  .hello { margin:0 0 4px; color:var(--muted); font-size:13.5px; }
+  .stat .ic { float:right; width:36px; height:36px; border-radius:10px; display:grid; place-items:center; font-style:normal; font-size:17px; }
+  .funnel { display:grid; grid-template-columns:repeat(3, 1fr); gap:0; margin:-6px 0 22px; }
+  .funnel div { background:#fff; border:1px solid var(--line); padding:10px 16px; display:flex; align-items:baseline; gap:8px; clip-path:polygon(0 0, 94% 0, 100% 50%, 94% 100%, 0 100%, 6% 50%); }
+  .funnel div:first-child { clip-path:polygon(0 0, 94% 0, 100% 50%, 94% 100%, 0 100%); border-radius:10px 0 0 10px; }
+  .funnel .hi { background:#e3f6ec; } .funnel b { font-size:18px; } .funnel span { color:var(--muted); font-size:12.5px; }
 </style>
 {% endblock %}
 {% block body %}
 <div class="head">
-  <div><h1>Applicant pipeline</h1><p class="muted" style="margin:0">Every applicant is evaluated for role fit by the HireLens model.</p></div>
+  <div><p class="hello">Welcome back 👋 · <span id="hl-date"></span></p><h1>Applicant pipeline</h1><p class="muted" style="margin:0">Every applicant is evaluated for role fit by the HireLens model.</p></div>
   <a class="btn" href="{{ url_for('new_applicant') }}">＋ Add applicant</a>
 </div>
 <div class="stats">
-  <div class="stat"><b>{{ stats.total }}</b><span>Applicants</span></div>
-  <div class="stat" style="animation-delay:.05s"><b>{{ stats.advanced }}</b><span>Advanced to interview</span>
+  <div class="stat"><i class="ic" style="background:#e7f0ff">👥</i><b>{{ stats.total }}</b><span>Applicants</span></div>
+  <div class="stat" style="animation-delay:.05s"><i class="ic" style="background:#e3f6ec">✅</i><b>{{ stats.advanced }}</b><span>Advanced to interview</span>
     <div class="bar"><i style="width:{{ (100 * stats.advanced / stats.total)|round if stats.total else 0 }}%"></i></div></div>
-  <div class="stat" style="animation-delay:.1s"><b>{{ stats.avg_fit if stats.avg_fit is not none else '–' }}{% if stats.avg_fit is not none %}%{% endif %}</b><span>Average role fit</span></div>
+  <div class="stat" style="animation-delay:.1s"><i class="ic" style="background:#fff3e2">🎯</i><b>{{ stats.avg_fit if stats.avg_fit is not none else '–' }}{% if stats.avg_fit is not none %}%{% endif %}</b><span>Average role fit</span></div>
+</div>
+<div class="funnel" aria-label="Hiring funnel">
+  <div><b>{{ stats.total }}</b><span>Applied</span></div>
+  <div><b>{{ stats.total }}</b><span>Evaluated</span></div>
+  <div class="hi"><b>{{ stats.advanced }}</b><span>Interview</span></div>
 </div>
 <div class="board">
   {% for go in [true, false] %}
@@ -52,4 +63,5 @@
   </section>
   {% endfor %}
 </div>
+<script>document.getElementById('hl-date').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'});</script>
 {% endblock %}
