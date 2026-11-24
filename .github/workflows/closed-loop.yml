@@ -1,0 +1,144 @@
+# Closed loop, fully automatic: Kane audits a hiring tool through its real UI. If it fails, Claude Code (read-only) proposes
+# a fix, the loop applies it, a free dry run checks the fix is not degenerate, and Kane audits again in a real browser.
+# The fix and the loop log are pushed to a review branch (never straight to main, never a pull request, because every
+# pull request triggers another paid Kane run). The verdicts and the diff appear in the run summary.
+#
+# Runs by itself when a tool's scoring code or model changes on main, and on demand.
+# Cost: one Kane audit per round (about 150 credits each with placebo names); --max-rounds caps it.
+# Add "[skip kane]" to a commit message to skip the loop for that push.
+name: closed-loop
+run-name: "Closed loop · ${{ inputs.target || 'changed tools' }}"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "targets/*/app.py"
+      - "models/**"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Hiring tool to audit and fix"
+        default: talentscreen
+        type: choice
+        options: [talentscreen, hirelens, quickmatch]
+      candidates:
+        description: "Candidate ids for the Kane audit"
+        default: cand01
+      max_rounds:
+        description: "Most audit rounds (each costs a Kane run)"
+        default: "2"
+
+concurrency:
+  group: closed-loop
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  pick:
+    if: ${{ github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[skip kane]') }}
+    runs-on: ubuntu-latest
+    outputs:
+      targets: ${{ steps.p.outputs.targets }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }
+      - id: p
+        env:
+          INPUT_TARGET: ${{ inputs.target }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -n "$INPUT_TARGET" ]; then
+            echo "targets=[\"$INPUT_TARGET\"]" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          changed=$(git diff --name-only "${BEFORE:-HEAD~1}" HEAD -- targets models | cut -d/ -f2 | sort -u)
+          if git diff --name-only "${BEFORE:-HEAD~1}" HEAD | grep -q '^models/'; then changed="talentscreen hirelens"; fi
+          list=$(for t in $changed; do case $t in talentscreen|hirelens|quickmatch) printf '"%s",' "$t";; esac; done)
+          echo "targets=[${list%,}]" >> "$GITHUB_OUTPUT"
+
+  loop:
+    needs: pick
+    if: ${{ needs.pick.outputs.targets != '[]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      max-parallel: 1          # Kane runs one at a time
+      matrix:
+        target: ${{ fromJSON(needs.pick.outputs.targets) }}
+    env:
+      TARGET: ${{ matrix.target }}
+      CANDIDATES: ${{ inputs.candidates || 'cand01' }}
+      MAX_ROUNDS: ${{ inputs.max_rounds || '2' }}
+    steps:
+      - name: Check the agent can sign in before spending any Kane credits
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ] && [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::error::Add a CLAUDE_CODE_OAUTH_TOKEN (Claude Pro/Max, from 'claude setup-token') or ANTHROPIC_API_KEY repository secret. Nothing was spent."
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - uses: browser-actions/setup-chrome@v1
+      - run: pip install -r requirements.txt
+      - run: npm install -g @testmuai/kane-cli @anthropic-ai/claude-code
+      - name: Kane login
+        env:
+          LT_USERNAME: ${{ secrets.LT_USERNAME }}
+          LT_ACCESS_KEY: ${{ secrets.LT_ACCESS_KEY }}
+        run: kane-cli login --username "$LT_USERNAME" --access-key "$LT_ACCESS_KEY"
+      - name: Closed loop (Kane audits, Claude Code fixes, Kane re-checks)
+        id: loop
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          set +e
+          python loop/agent_loop.py --target "$TARGET" --max-rounds "$MAX_ROUNDS" \
+            --gate-args="--candidates $CANDIDATES --timeout 2400" | tee loop.log
+          echo "code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+      - name: Push the fix to a review branch
+        if: always()
+        id: branch
+        run: |
+          if git diff --quiet -- "targets/$TARGET"; then echo "No code change from the agent."; exit 0; fi
+          b="loop/$TARGET-${{ github.run_id }}"
+          git config user.name "closed-loop bot"; git config user.email "actions@users.noreply.github.com"
+          git checkout -b "$b"
+          mkdir -p docs/loop && cp "reports/loop_$TARGET.md" "docs/loop/loop_${TARGET}_${{ github.run_id }}.md" 2>/dev/null || true
+          git add "targets/$TARGET" docs/loop
+          git commit -m "Closed loop fix for $TARGET (run ${{ github.run_id }}) [skip kane]"
+          git push origin "$b"
+          echo "name=$b" >> "$GITHUB_OUTPUT"
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## Closed loop · $TARGET"
+            echo
+            grep -E "^(== |VERDICT)" loop.log || true
+            echo
+            if [ -n "${{ steps.branch.outputs.name }}" ]; then
+              echo "Fix pushed for review: [${{ steps.branch.outputs.name }}](https://github.com/${{ github.repository }}/compare/main...${{ steps.branch.outputs.name }})"
+            fi
+            echo
+            cat "reports/loop_$TARGET.md" 2>/dev/null || echo "No loop log produced"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: closed-loop-${{ env.TARGET }}
+          path: |
+            loop.log
+            reports/
+            .testmuai/
+      - name: Fail the run unless Kane passed the final round
+        if: always()
+        run: test "${{ steps.loop.outputs.code }}" = "0"

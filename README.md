@@ -198,6 +198,13 @@ Regenerating data needs FairCVdb: `python -m cvkit.build path/to/FairCVdb.npy`.
 
 ## Closed loop: Kane's verdict feeds the coding agent
 
+**Runs by itself.** [`.github/workflows/closed-loop.yml`](.github/workflows/closed-loop.yml) starts the loop automatically
+whenever a hiring tool's scoring code or model changes on `main` (or on demand): Kane audits the tool in a real browser; if it
+fails, Claude Code proposes a fix, a free dry run rejects degenerate fixes, and Kane audits again. The fix is pushed to a
+`loop/<tool>-<run>` branch for review, never straight to `main`, and the verdicts and diff appear in the run summary. It needs a
+`CLAUDE_CODE_OAUTH_TOKEN` (Claude Pro/Max, from `claude setup-token`) or `ANTHROPIC_API_KEY` secret, and checks for it before
+spending any Kane credits. The runs documented below were started by hand.
+
 **The loop has been closed with Kane, not just rehearsed** (18 Nov, candidate 1, 8 CVs with placebo names, real browser):
 
 | | Kane verdict | Scores across the 8 names | Evidence |

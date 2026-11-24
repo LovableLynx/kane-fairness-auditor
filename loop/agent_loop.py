@@ -124,7 +124,9 @@ def apply_patch(target: str, diff: str) -> tuple[bool, str]:
 
 
 def ask_agent(agent: str, prompt: str) -> str:
-    env = {k: v for k, v in os.environ.items() if not k.startswith(("CLAUDE", "MCP_")) and k != "CLAUDECODE"}
+    # Drop the parent session's own Claude variables, but keep the credentials the agent is meant to use in CI.
+    keep = {"CLAUDE_CODE_OAUTH_TOKEN"}
+    env = {k: v for k, v in os.environ.items() if k in keep or (not k.startswith(("CLAUDE", "MCP_")) and k != "CLAUDECODE")}
     # The prompt goes in on stdin: with a tool's full source it is longer than Windows allows on a command line.
     a = subprocess.run([agent, "-p", "--output-format", "json",
                         "--disallowedTools", "Bash,PowerShell,Edit,Write,MultiEdit,NotebookEdit,WebFetch,WebSearch,Task,Agent"],
