@@ -19,8 +19,7 @@
 <header class="nav">
   <div class="wrap">
     <a class="brand" href="{{ url_for('landing') }}" aria-label="Fairness Auditor home">
-      <img class="brand-mark" src="{{ url_for('static', filename='favicon.svg') }}" width="40" height="40" alt="">
-      <span class="brand-word"><b>Fairness</b><i>auditor</i><small>Name-bias audits for hiring AI</small></span>
+      <span class="lg" aria-hidden="true"><span class="lg-fair">Fair<svg viewBox="0 0 100 60" preserveAspectRatio="none"><path d="M86 12 C70 0 22 2 8 20 C-4 37 14 56 52 57 C88 58 102 40 94 24 C88 12 70 7 48 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg></span><span class="lg-rest">ness</span><span class="lg-aud">auditor</span></span>
     </a>
     <button class="btn btn-sm nav-toggle" aria-expanded="false" aria-controls="nav-links">Menu</button>
     <ul class="nav-links" id="nav-links">
