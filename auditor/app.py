@@ -166,12 +166,28 @@ def globals_():
     return {"REPO": REPO, "TOOLS": TOOLS, "TOOL_URLS": TOOL_URLS}
 
 
+def story_data() -> dict | None:
+    """The homepage's live test: one CV, the 8 names Kane CLI submitted to TalentScreen in a real browser,
+    and the score Kane read back for each (published, verified readings; nothing is computed here)."""
+    try:
+        k = json.loads((ROOT / "kane-tests" / "talentscreen_cand01" / "kane.json").read_text(encoding="utf-8"))
+        loop = _read(RESULTS / "loop_talentscreen.json") or {}
+        twins = [{"name": t["name"], "gender": t["gender"], "group": t["group"], "placebo": bool(t["slot"]),
+                  "score": t["score"], "selected": t["selected"],
+                  "cv": (ROOT / t["file"]).read_text(encoding="utf-8")} for t in k["twins"]]
+    except (OSError, KeyError, json.JSONDecodeError):
+        return None
+    after = (loop.get("after") or {})
+    return {"twins": twins, "evidence": k.get("test_url"), "after_url": after.get("test_url"),
+            "after_score": (after.get("twins") or [{}])[0].get("score"), "diff": loop.get("diff")}
+
+
 @app.get("/")
 def landing():
     reports = load_reports()
-    return render_template("landing.html", reports=reports, study=load_study(),
-                           twins=hero_twins(reports), lab=lab_data(reports),
-                           term=terminal_lines(reports), page="home")
+    video = os.environ.get("HOME_VIDEO_URL") or (
+        url_for("static", filename="video/explainer.mp4") if (ROOT / "auditor" / "static" / "video" / "explainer.mp4").is_file() else None)
+    return render_template("landing.html", reports=reports, story=story_data(), video_url=video, page="home")
 
 
 @app.get("/results")

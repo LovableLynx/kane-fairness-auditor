@@ -10,9 +10,10 @@
 <link rel="preload" href="{{ url_for('static', filename='fonts/unbounded-800.woff2') }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ url_for('static', filename='fonts/space-grotesk-400.woff2') }}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ url_for('static', filename='ds.css') }}">
+{% block head %}{% endblock %}
 <script>/* hide reveal targets only while motion.js is expected; give up after 2.5s */document.documentElement.classList.add("motion");setTimeout(function(){if(!window.__motionReady)document.documentElement.classList.remove("motion")},2500);</script>
 </head>
-<body>
+<body class="{% block bodyclass %}{% endblock %}">
 <a class="skip" href="#main">Skip to content</a>
 <header class="nav">
   <div class="wrap">
@@ -22,7 +23,7 @@
     </a>
     <button class="btn btn-sm nav-toggle" aria-expanded="false" aria-controls="nav-links">Menu</button>
     <ul class="nav-links" id="nav-links">
-      <li><a href="{{ url_for('landing') }}#lab">Twin Lab</a></li>
+      <li><a href="{{ url_for('landing') }}#lab">Live test</a></li>
       <li><a href="{{ url_for('results') }}" {% if page == 'results' %}aria-current="page"{% endif %}>Results</a></li>
       <li><a href="{{ url_for('method') }}" {% if page == 'method' %}aria-current="page"{% endif %}>Method</a></li>
       <li><a href="{{ url_for('your_cv') }}" {% if page == 'yourcv' %}aria-current="page"{% endif %}>Twin your CV</a></li>
@@ -43,7 +44,7 @@
         <a class="btn btn-sm btn-lime" href="{{ REPO }}" rel="noopener">View source ↗</a>
       </div>
       <div><h4>Product</h4><ul>
-        <li><a href="{{ url_for('landing') }}#lab">Twin Lab</a></li>
+        <li><a href="{{ url_for('landing') }}#lab">Live test</a></li>
         <li><a href="{{ url_for('results') }}">Audit results</a></li>
         <li><a href="{{ url_for('method') }}">Method &amp; study</a></li></ul></div>
       <div><h4>Demo tools</h4><ul>
