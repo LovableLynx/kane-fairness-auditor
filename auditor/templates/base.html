@@ -19,8 +19,8 @@
 <header class="nav">
   <div class="wrap">
     <a class="brand" href="{{ url_for('landing') }}" aria-label="Fairness Auditor home">
-      <span class="brand-mark" aria-hidden="true">FA</span>
-      <span>Fairness Auditor<small>BLACK-BOX BIAS AUDITS · KANE CLI</small></span>
+      <img class="brand-mark" src="{{ url_for('static', filename='favicon.svg') }}" width="40" height="40" alt="">
+      <span class="brand-word"><b>Fairness</b><i>auditor</i><small>Name-bias audits for hiring AI</small></span>
     </a>
     <button class="btn btn-sm nav-toggle" aria-expanded="false" aria-controls="nav-links">Menu</button>
     <ul class="nav-links" id="nav-links">

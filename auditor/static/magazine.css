@@ -28,7 +28,12 @@ a { text-decoration-color: var(--blue); }
 .nav { background: var(--paper-bg); border-bottom: 1px solid var(--ink); box-shadow: none; }
 .brand { font-family: var(--font-body); font-weight: 800; letter-spacing: 0; }
 .brand small { font: 600 .62rem var(--font-body); letter-spacing: .14em; }
-.brand-mark { background: var(--ink); color: var(--paper-bg); border: 0; box-shadow: none; font: 800 .72rem var(--font-body); }
+.brand-mark { width: 40px; height: 40px; background: none; border: 0; box-shadow: none; transition: transform .25s ease; }
+.brand:hover .brand-mark { transform: rotate(-6deg); }
+.brand-word { line-height: .9; }
+.brand-word b { font: 400 1.45rem var(--font-display); text-transform: uppercase; letter-spacing: .01em; }
+.brand-word i { font: italic 1.65rem var(--serif); color: var(--blue); margin-left: 4px; }
+.brand-word small { display: block; margin-top: 3px; font: 700 .58rem var(--font-body); letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); }
 .nav-links a { font-family: var(--font-body); }
 .nav-links a[aria-current="page"], .nav-links a:hover { background: transparent !important; color: var(--blue) !important; box-shadow: none !important; text-decoration: underline; }
 .footer { background: var(--ink); color: var(--paper-bg); border-top: 0; }
@@ -66,3 +71,4 @@ table.t th { font: 700 .7rem var(--font-body); letter-spacing: .12em; text-trans
 h1, h2 { overflow-wrap: anywhere; }
 .with-toc > *, .prose { min-width: 0; }
 @media (max-width: 860px) { .with-toc { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 480px) { .brand-word small { display: none; } }
