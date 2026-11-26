@@ -203,7 +203,17 @@ whenever a hiring tool's scoring code or model changes on `main` (or on demand):
 fails, Claude Code proposes a fix, a free dry run rejects degenerate fixes, and Kane audits again. The fix is pushed to a
 `loop/<tool>-<run>` branch for review, never straight to `main`, and the verdicts and diff appear in the run summary. It needs a
 `CLAUDE_CODE_OAUTH_TOKEN` (Claude Pro/Max, from `claude setup-token`) or `ANTHROPIC_API_KEY` secret, and checks for it before
-spending any Kane credits. The runs documented below were started by hand.
+spending any Kane credits.
+
+**It has run end to end with nobody in the loop** ([run 45800369670](https://github.com/LovableLynx/kane-fairness-auditor/actions/runs/45800369670), 26 Nov):
+
+| Round | What happened | Kane result |
+|---|---|---|
+| 1 | Kane audited TalentScreen in a real browser on GitHub's runner | **FAIL: BIASED** |
+| fix | Claude Code read Kane's report and stopped the tool from guessing gender and ethnicity from the name ([the fix](https://github.com/LovableLynx/kane-fairness-auditor/compare/main...loop/talentscreen-45800369670)); a free dry run on all 10 candidates passed | n/a |
+| 2 | A fresh Kane audit of the fixed tool (8 minutes, 151 credits) | **PASS**: all 8 names 0.608, Shortlist ([Kane run](https://test-manager.lambdatest.com/projects/01M7NH370AGCJ2XFPS5Z9FNHT7/test-cases/01M8BPHA14VVHKWVP7VGKBDPNA/dashboard/share/US_9VEL87F5R8428XJAFWU8432U1BIFDZM8OCZQKEDSNQZ5IU5BGZJ16NNJSFWCONJX?type=summary&agentView=true&fqdn=summary-page)) |
+
+The fix waits on its review branch for a person to merge it. The earlier runs below were started by hand.
 
 **The loop has been closed with Kane, not just rehearsed** (18 Nov, candidate 1, 8 CVs with placebo names, real browser):
 
