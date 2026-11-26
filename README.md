@@ -1,6 +1,7 @@
 # Kane Fairness Auditor
 
-**Live demo:** https://kane-fairness-auditor.onrender.com (free tier; the first visit after idle takes about a minute to wake up)
+**Demo video (about 5 min):** https://youtu.be/ZwGMvpudWpQ
+**Live site:** https://kane-fairness-auditor.onrender.com (free tier, kept awake by a scheduled ping; if it was idle, the first visit can take up to a minute)
 
 **Bias audits for AI hiring tools, run through the tool's own interface by Kane CLI.**
 
