@@ -33,6 +33,12 @@ THRESHOLD = 0.5
 # a chef is not shortlisted for a nursing job. Before, the model scored such CVs as if the role did not matter.
 OFF_ROLE = 0.4
 
+# The gender/group feature columns are never filled from the candidate's actual name or
+# pronouns: that would let the model's demographic penalties leak into the score. Every
+# CV gets the same fixed placeholders here, so only qualifications affect the outcome.
+GENDER_PLACEHOLDER = "male"
+GROUP_PLACEHOLDER = "B"
+
 
 def off_role(parsed: dict, role: dict) -> bool:
     return role["slug"] != roles.DEFAULT and int(parsed["occupation"]) != role["family"]
@@ -63,15 +69,14 @@ def job_context():
 def screen(text: str, source: str, role: dict, demo: bool = False) -> dict:
     t0 = time.perf_counter()
     parsed = cv.parse(text)
-    gender, group = cv.infer_identity(text)
-    score = float(MODEL.predict_proba([cv.features(roles.for_role(parsed, role), gender, group)])[0, 1])
+    score = float(MODEL.predict_proba([cv.features(roles.for_role(parsed, role), GENDER_PLACEHOLDER, GROUP_PLACEHOLDER)])[0, 1])
     if off_role(parsed, role):
         score *= OFF_ROLE
     # Real CVs rarely mention a recommendation letter, but this demo model (trained on synthetic FairCVdb CVs)
     # weighs one very heavily. When that is what sinks a CV, say so, with the score it would get with one.
     if_rec = None
     if score < THRESHOLD and not parsed["recommendation"]:
-        alt = float(MODEL.predict_proba([cv.features(roles.for_role({**parsed, "recommendation": 1.0}, role), gender, group)])[0, 1])
+        alt = float(MODEL.predict_proba([cv.features(roles.for_role({**parsed, "recommendation": 1.0}, role), GENDER_PLACEHOLDER, GROUP_PLACEHOLDER)])[0, 1])
         alt = alt * OFF_ROLE if off_role(parsed, role) else alt
         if alt - score >= 0.2:
             if_rec = alt
