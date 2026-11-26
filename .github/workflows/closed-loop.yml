@@ -72,15 +72,6 @@ jobs:
       CANDIDATES: ${{ inputs.candidates || 'cand01' }}
       MAX_ROUNDS: ${{ inputs.max_rounds || '2' }}
     steps:
-      - name: Check the agent can sign in before spending any Kane credits
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-        run: |
-          if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ] && [ -z "$ANTHROPIC_API_KEY" ]; then
-            echo "::error::Add a CLAUDE_CODE_OAUTH_TOKEN (Claude Pro/Max, from 'claude setup-token') or ANTHROPIC_API_KEY repository secret. Nothing was spent."
-            exit 1
-          fi
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
@@ -89,6 +80,23 @@ jobs:
       - uses: browser-actions/setup-chrome@v1
       - run: pip install -r requirements.txt
       - run: npm install -g @testmuai/kane-cli @anthropic-ai/claude-code
+      - name: Check the agent can really sign in, before spending any Kane credits
+        env:
+          OAUTH: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          APIKEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          # pass on only the credential that is set (an empty API key variable must not shadow the token)
+          if [ -n "$OAUTH" ]; then v=$(printf %s "$OAUTH" | tr -d '[:space:]'); echo "::add-mask::$v"; echo "CLAUDE_CODE_OAUTH_TOKEN=$v" >> "$GITHUB_ENV"
+          elif [ -n "$APIKEY" ]; then v=$(printf %s "$APIKEY" | tr -d '[:space:]'); echo "::add-mask::$v"; echo "ANTHROPIC_API_KEY=$v" >> "$GITHUB_ENV"
+          else echo "::error::Add a CLAUDE_CODE_OAUTH_TOKEN (Claude Pro/Max, from 'claude setup-token') or ANTHROPIC_API_KEY secret. No Kane credits were spent."; exit 1; fi
+      - name: Sign-in test (one tiny request to Claude)
+        run: |
+          out=$(claude -p "Reply with the single word READY" 2>&1) || true
+          echo "$out" | tail -3
+          if ! echo "$out" | grep -q READY; then
+            echo "::error::Claude Code could not sign in (check the token secret: copy the whole token, no spaces or line breaks). No Kane credits were spent."
+            exit 1
+          fi
       - name: Kane login
         env:
           LT_USERNAME: ${{ secrets.LT_USERNAME }}
@@ -96,9 +104,6 @@ jobs:
         run: kane-cli login --username "$LT_USERNAME" --access-key "$LT_ACCESS_KEY"
       - name: Closed loop (Kane audits, Claude Code fixes, Kane re-checks)
         id: loop
-        env:
-          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           set +e
           python loop/agent_loop.py --target "$TARGET" --max-rounds "$MAX_ROUNDS" \

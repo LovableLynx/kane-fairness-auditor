@@ -186,6 +186,11 @@ def main() -> int:
         else:
             print("-- agent returned no fix", flush=True)
             log += [f"- Agent: {summary[:1200]}", "- No fix returned.", ""]
+            if re.search(r"(?i)failed to authenticate|invalid (bearer|api) |401|credit balance|not logged in", reply):
+                log.append("- The agent could not sign in; stopping without further Kane runs.")
+                print("== agent could not sign in; stopping ==", flush=True)
+                code = 2
+                break
             continue
         if ok:  # free sanity check on all 10 candidates before spending Kane credits on the fix
             sc, sout = run_gate(args.target, ["--candidates", "all", "--out", str(ROOT / "reports" / "sanity")], True)
